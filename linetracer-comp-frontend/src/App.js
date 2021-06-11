@@ -5,6 +5,8 @@ import {
 	Link
 } from 'react-router-dom';
 
+import MarkdownIt from 'markdown-it';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
@@ -16,13 +18,13 @@ function App() {
 	return (
 		<Router>
 			<Container>
-				<Navbar bg="light" expand="lg">
+				<Navbar expand="lg">
 					<Navbar.Brand href="/">ZETIN Competition</Navbar.Brand>
 					<Navbar.Toggle aria-controls="basic-navbar-nav" />
 					<Navbar.Collapse id="basic-navbar-nav">
 						<Nav className="mr-auto">
-							<Link className="nav-link" to="/">Home</Link>
-							<Link className="nav-link" to="/entry">Entry</Link>
+							<Link className="nav-link" to="/">홈</Link>
+							<Link className="nav-link" to="/entry">참가</Link>
 						</Nav>
 					</Navbar.Collapse>
 				</Navbar>
@@ -43,8 +45,11 @@ function App() {
 }
 
 function Home() {
+	let md = new MarkdownIt();
+	let result = md.render('# Welcome to ZETIN Competition Page');
+	
 	return (
-		<h1>Welcome to ZETIN Competition Page</h1>
+		<div dangerouslySetInnerHTML={{__html: result}}></div>
 	);
 }
 
