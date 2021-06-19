@@ -11,12 +11,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
-import Table from 'react-bootstrap/Table';
 
 import LinetracerCompEntryForm from './forms/entry/LinetracerCompEntryForm';
-
-// import sample data
-import getLinetracerCompSampleData from './samples/linetracer';
+import ParticipantsTable from './components/ParticipantsTable';
 
 function App() {
   return (
@@ -40,7 +37,7 @@ function App() {
           
           <Route path="/">
             <Home />
-            <ParticipantsTable data={getLinetracerCompSampleData()} />
+            <ParticipantsTable />
           </Route>
         </Switch>
         
@@ -55,38 +52,6 @@ function Home() {
   
   return (
     <div dangerouslySetInnerHTML={{__html: result}}></div>
-  );
-}
-
-function ParticipantsTable(props) {
-  const participants = props.data.participants.map((p) =>
-    <tr>
-      <td>{p.order}</td>
-      <td>{p.name}</td>
-      <td>{p.group}</td>
-      <td>{p.robotName}</td>
-    </tr>
-  );
-
-  console.log(participants)
-
-  return (
-    <div>
-      <h2>{props.data.compName}</h2>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>번호</th>
-            <th>이름</th>
-            <th>소속</th>
-            <th>로봇 이름</th>
-          </tr>
-        </thead>
-        <tbody>
-          {participants}
-        </tbody>
-      </Table>
-    </div>
   );
 }
 
