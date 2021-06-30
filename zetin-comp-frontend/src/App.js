@@ -13,6 +13,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 
 import LinetracerCompEntryForm from './forms/entry/LinetracerCompEntryForm';
+import CompetitionMakingForm from './forms/CompetitionMakingForm';
 import ParticipantsTable from './components/ParticipantsTable';
 
 function App() {
@@ -25,6 +26,8 @@ function App() {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
               <Link className="nav-link" to="/">홈</Link>
+              <Link className="nav-link" to="/makecomp">대회 페이지 개설</Link>
+              <Link className="nav-link" to="/participants">참가자</Link>
               <Link className="nav-link" to="/entry">참가</Link>
             </Nav>
           </Navbar.Collapse>
@@ -34,10 +37,14 @@ function App() {
           <Route path="/entry">
             <LinetracerCompEntryForm />
           </Route>
-          
+          <Route path="/participants">
+            <ParticipantsTable />
+          </Route>
+          <Route path="/makecomp">
+            <CompetitionMakingForm />
+          </Route>
           <Route path="/">
             <Home />
-            <ParticipantsTable />
           </Route>
         </Switch>
         
