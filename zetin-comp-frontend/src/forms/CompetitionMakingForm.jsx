@@ -8,11 +8,17 @@ import Row from 'react-bootstrap/Row';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Modal from 'react-bootstrap/Modal';
 
+/*
+  Simple onChange handler for simple form control (just for value). 
+  You must have to bind this function to the appropriate instance.
+*/
 function handleChange(e) {
-  const target = e.target;
+  const targ = e.target;
   
   this.setState({
-    [target.id]: target.value
+    [targ.id]: targ.value
+  }, () => {
+    // console.log('id: ' + targ.id + ', value: ' + targ.value); // for debugging
   });
 }
 
@@ -40,7 +46,7 @@ class CompetitionMakingForm extends React.Component {
         </Form.Group>
         <Form.Group controlId="compDesc">
           <Form.Label>설명</Form.Label>
-          <Form.Control type="text" />
+          <Form.Control as="textarea" rows={4} />
         </Form.Group>
         <EventField controlId="compEvents"/>
         <DateTimeField prefixOfLabel="대회" controlId="compDate" />
@@ -72,62 +78,160 @@ class EventField extends React.Component {
   constructor(props) {
     super(props);
 
+    this.CONTENTS_FORM = 'contentForm';
+    this.CONTENTS_DELETION = 'contentDeletion';
+
     // State
     this.state = {
-      classNameOfComp: "",
-      classDescOfComp: "",
-      listOfEvents: [],
+      currIndex: -1,
+      currEvent: { name: '', desc: '', numb: 0 },
+      // events: [],
+      events: [ { name: 'Freshman', desc: '라인트레이서 대회에 처음 출전하는 인원을 대상으로 하여 STEP 라인트레이서를 입문자용 맵에서 주행하는 경연 대회입니다.', numb: 50 }, { name: 'Expert-DC', desc: '라인트레이서 대회에 능숙한 인원을 위한 경연 대회입니다. DC 라인트레이서만 주행 가능하며, 예선과 본선으로 경기가 나눠지며 본선 맵의 경우 어려우니 주의 바랍니다.', numb: 25 } ],
       modalShow: false,
+      modalContents: this.CONTENTS_FORM,
     };
 
     // Event handlers
-    this.showModal = this.showModal.bind(this);
-    this.hideModal = this.hideModal.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = handleChange.bind(this);
+    this.handleHideModal = this.handleHideModal.bind(this);
   }
 
   showModal() {
-    this.setState({
-      classNameOfComp: "",
-      classDescOfComp: "",
-      modalShow: true,
-    });
+    const currIndex = this.state.currIndex;
+
+    // Initialize fields
+    if (currIndex < 0) { // for adding mode
+      this.setState({
+        currEvent: { name: '', desc: '', numb: 0 }
+      });
+    } else {
+      this.setState({ // for editing mode
+        currEvent: { ...this.state.events[currIndex] }
+      });
+    }
+    
+    this.setState({ modalShow: true }); // Show modal
   }
 
-  hideModal() {
+  handleHideModal(e) {
     this.setState({ modalShow: false });
   }
 
   handleSubmit(e) {
-    const events = this.state.listOfEvents.slice();
+    const events = this.state.events.slice();
+    const index = this.state.currIndex;
+    const method = this.state.modalContents;
 
-    events.push({
-      name: this.state.classNameOfComp,
-      desc: this.state.classDescOfComp,
-    });
+    switch (method) {
+      case this.CONTENTS_FORM:
+        if (index < 0) {
+          events.push({ ...this.state.currEvent });
+        } else {
+          events[index] = { ...this.state.currEvent };
+        }
+        break;
+      case this.CONTENTS_DELETION:
+        events.splice(index, 1);
+        break;
+      default:
+        break;
+    }
 
     // 중복 체크 해야 함.
-    this.setState({
-      listOfEvents: events,
-      modalShow: false,
-    });
+    this.setState({ events, modalShow: false });
 
     e.preventDefault();
   }
 
   render() {
-    let lgItems;
-    let events = this.state.listOfEvents;
-    if (events.length) {
-      lgItems = events.map((item) =>
-        <ListGroup.Item key={item.name}>
-          <div>{item.name}</div>
-          <div className="text-muted small">{item.desc}</div>
-        </ListGroup.Item>
-      );
-    } else {
-      lgItems = <ListGroup.Item>없음</ListGroup.Item>
+    const lgItems = this.state.events.map((item, index) =>
+      <ListGroup.Item key={item.name} className="pb-2">
+        <div>{item.name} ({item.numb})</div>
+        <div className="text-muted small">{item.desc}</div>
+        <div className="float-right">
+          <Button variant="outline-secondary" size="sm" className="mr-1 border-0" onClick={() => {
+            // set edit mode (index >= 0) and show modal
+            this.setState({
+              currIndex: index,
+              modalContents: this.CONTENTS_FORM
+            }, () => {
+              this.showModal();
+            });
+          }}>수정</Button>
+          <Button variant="outline-danger" size="sm" className="border-0" onClick={() => {
+            this.setState({
+              currIndex: index,
+              modalContents: this.CONTENTS_DELETION
+            }, () => {
+              this.showModal();
+            });
+          }}>삭제</Button>
+        </div>
+      </ListGroup.Item>
+    );
+
+    const formContents = (
+      <Form onSubmit={this.handleSubmit}>
+        <Form.Group controlId="eventName">
+          <Form.Label>이름</Form.Label>
+          <Form.Control
+            type="text"
+            value={this.state.currEvent.name}
+            onChange={(e) => {
+              this.setState((prevState) => ({
+                currEvent: { ...prevState.currEvent, name: e.target.value }
+              }));
+            }} />
+        </Form.Group>
+        <Form.Group controlId="eventDescription">
+          <Form.Label>설명</Form.Label>
+          <Form.Control
+            as="textarea" rows={4}
+            value={this.state.currEvent.desc}
+            onChange={(e) => {
+              this.setState((prevState) => ({
+                currEvent: { ...prevState.currEvent, desc: e.target.value }
+              }));
+            }} />
+        </Form.Group>
+        <Form.Group controlId="eventNumberOfParticipants">
+          <Form.Label>참가 인원</Form.Label>
+          <Form.Control
+            type="number"
+            value={this.state.currEvent.numb}
+            onChange={(e) => {
+              this.setState((prevState) => ({
+                currEvent: { ...prevState.currEvent, numb: parseInt(e.target.value) }
+              }));
+            }} />
+        </Form.Group>
+      </Form>
+    );
+
+    const deletionContents = (
+      <p>정말로 {this.state.currEvent.name} 경연 부문을 삭제하시겠습니까?</p>
+    );
+
+    let buttonAttr = {};
+    let title;
+    let contents;
+
+    switch (this.state.modalContents) {
+      case this.CONTENTS_FORM:
+        buttonAttr.caption = this.state.currIndex < 0 ? '추가' : '수정';
+        buttonAttr.variant = 'primary';
+        title = this.state.currIndex < 0 ? '새 경연 부문' : '경연 부문 수정'
+        contents = formContents;
+        break;
+      case this.CONTENTS_DELETION:
+        buttonAttr.caption = '삭제';
+        buttonAttr.variant = 'danger';
+        title = '경연 부문 삭제';
+        contents = deletionContents;
+        break;
+      default:
+        title = '';
+        contents = '';
     }
 
     return (
@@ -135,30 +239,33 @@ class EventField extends React.Component {
         <Form.Group controlId={this.props.controlId} className="clearfix">
           <Form.Label>경연 부문</Form.Label>
           <ListGroup className="mb-2">
-            {lgItems}
+            {lgItems.length ? lgItems : <ListGroup.Item>없음</ListGroup.Item>}
           </ListGroup>
-          <Button variant="secondary" className="float-right" onClick={this.showModal}>추가</Button>
+          <Button variant="secondary" className="float-right" onClick={() => {
+            // set add mode (index < 0) and show modal
+            this.setState({ currIndex: -1 }, () => {
+              this.showModal();
+            });
+          }}>추가</Button>
         </Form.Group>
 
-        <Modal show={this.state.modalShow} onHide={this.hideModal}>
+        {/*
+          < Issue >
+          - If animation is true, 'findDOMNode is deprecated in StrictMode' warning is occured.
+            (https://github.com/react-bootstrap/react-bootstrap/issues/5075)
+          */}
+        <Modal show={this.state.modalShow} onHide={this.handleHideModal} animation={false}>
           <Modal.Header closeButton>
-            <Modal.Title>새 경연 부문</Modal.Title>
+            <Modal.Title>{title}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form onSubmit={this.handleSubmit}>
-              <Form.Group controlId="classNameOfComp">
-                <Form.Label>이름</Form.Label>
-                <Form.Control type="text" onChange={this.handleChange}></Form.Control>
-              </Form.Group>
-              <Form.Group controlId="classDescOfComp">
-                <Form.Label>설명</Form.Label>
-                <Form.Control as="textarea" rows={2} onChange={this.handleChange}></Form.Control>
-              </Form.Group>
-            </Form>
+            {contents}
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.hideModal}>취소</Button>
-            <Button variant="primary" onClick={this.handleSubmit}>추가</Button>
+            <Button variant="secondary" onClick={this.handleHideModal}>취소</Button>
+            <Button variant={buttonAttr.variant} onClick={this.handleSubmit}>
+              {buttonAttr.caption}
+            </Button>
           </Modal.Footer>
         </Modal>
       </>
