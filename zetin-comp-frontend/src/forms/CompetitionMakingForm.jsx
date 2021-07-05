@@ -28,17 +28,38 @@ class CompetitionMakingForm extends React.Component {
 
     // instance: 스키마에 대한 실제 데이터, 테이블의 각 행을 의미
     this.state = {
-      instance: { },
-      compName: '',
-      compDesc: '',
+      instance: {
+        compName: '',
+        compDesc: '',
+        compEvents: {},
+      },
     }
 
     this.handleTextFieldChange = handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleEventsUpdate = this.handleEventsUpdate.bind(this);
+  }
+
+  handleSubmit(e) {
+    console.log(this.state);
+
+    e.preventDefault();
+  }
+
+  handleEventsUpdate(events) {
+    const eventList = events.slice();
+
+    this.setState((prevState) => ({
+      instance: {
+        ...prevState.instance,
+        compEvents: eventList
+      }
+    }));
   }
 
   render() {
     return (
-      <Form>
+      <Form onSubmit={this.handleSubmit}>
         <h2>대회 페이지 개설</h2>
         <Form.Group controlId="compName">
           <Form.Label>이름</Form.Label>
@@ -48,10 +69,10 @@ class CompetitionMakingForm extends React.Component {
           <Form.Label>설명</Form.Label>
           <Form.Control as="textarea" rows={4} />
         </Form.Group>
-        <EventField controlId="compEvents"/>
+        <EventField controlId="compEvents" onUpdate={this.handleEventsUpdate} />
         <DateTimeField prefixOfLabel="대회" controlId="compDate" />
         <DateTimeField prefixOfLabel="참가 신청" controlId="compRegDate" />
-        <Button variant="primary" type="submit">개설</Button>
+        <Button variant="primary" type="submit" onClick={this.handleSubmit}>개설</Button>
       </Form>
     );
   }
@@ -78,22 +99,34 @@ class EventField extends React.Component {
   constructor(props) {
     super(props);
 
-    this.CONTENTS_FORM = 'contentForm';
-    this.CONTENTS_DELETION = 'contentDeletion';
+    // Modal contents classification
+    this.MODE = {
+      EDIT: 'method.edit',
+      DELETE: 'method.delete',
+    }
 
     // State
     this.state = {
       currIndex: -1,
       currEvent: { name: '', desc: '', numb: 0 },
-      // events: [],
-      events: [ { name: 'Freshman', desc: '라인트레이서 대회에 처음 출전하는 인원을 대상으로 하여 STEP 라인트레이서를 입문자용 맵에서 주행하는 경연 대회입니다.', numb: 50 }, { name: 'Expert-DC', desc: '라인트레이서 대회에 능숙한 인원을 위한 경연 대회입니다. DC 라인트레이서만 주행 가능하며, 예선과 본선으로 경기가 나눠지며 본선 맵의 경우 어려우니 주의 바랍니다.', numb: 25 } ],
+      events: [],
       modalShow: false,
-      modalContents: this.CONTENTS_FORM,
+      modalMode: this.MODE.EDIT,
+      modalFormValidation: {
+        nameField: { valid: true, message: '' }
+      }
     };
 
     // Event handlers
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleHideModal = this.handleHideModal.bind(this);
+
+    // Callback functions
+    if (this.props.onUpdate) {
+      this.onUpdate = this.props.onUpdate;
+    } else {
+      this.onUpdate = function (events) { }
+    }
   }
 
   showModal() {
@@ -110,6 +143,11 @@ class EventField extends React.Component {
       });
     }
     
+    this.setState({
+      modalFormValidation: {
+        nameField: { valid: true, message: '' }
+      }
+    });
     this.setState({ modalShow: true }); // Show modal
   }
 
@@ -120,25 +158,51 @@ class EventField extends React.Component {
   handleSubmit(e) {
     const events = this.state.events.slice();
     const index = this.state.currIndex;
-    const method = this.state.modalContents;
+    const method = this.state.modalMode;
 
     switch (method) {
-      case this.CONTENTS_FORM:
-        if (index < 0) {
+      case this.MODE.EDIT:
+        // Check for empty field
+        if (this.state.currEvent.name === '') {
+          this.setState((prevState) => ({
+            modalFormValidation: {
+              ...prevState.modalFormValidation,
+              nameField: { valid: false, message: '이름을 입력해주세요.' }
+            }
+          }));
+          return;
+        }
+
+        // Check for redundancy
+        for (let i = 0; i < events.length; i++) {
+          if (i === index) continue;
+          if (events[i].name === this.state.currEvent.name) {
+            this.setState((prevState) => ({
+              modalFormValidation: {
+                ...prevState.modalFormValidation,
+                nameField: { valid: false, message: '중복된 경연 부문이 존재합니다. 다른 이름을 입력해주세요.' }
+              }
+            }));
+            return;
+          }
+        }
+
+        if (index < 0) { // for adding mode
           events.push({ ...this.state.currEvent });
-        } else {
+        } else { // for editing mode
           events[index] = { ...this.state.currEvent };
         }
         break;
-      case this.CONTENTS_DELETION:
+      case this.MODE.DELETE: // for deletion mode
         events.splice(index, 1);
         break;
       default:
         break;
     }
 
-    // 중복 체크 해야 함.
-    this.setState({ events, modalShow: false });
+    this.setState({ events, modalShow: false }, () => {
+      this.onUpdate(this.state.events);
+    });
 
     e.preventDefault();
   }
@@ -153,7 +217,7 @@ class EventField extends React.Component {
             // set edit mode (index >= 0) and show modal
             this.setState({
               currIndex: index,
-              modalContents: this.CONTENTS_FORM
+              modalMode: this.MODE.EDIT
             }, () => {
               this.showModal();
             });
@@ -161,7 +225,7 @@ class EventField extends React.Component {
           <Button variant="outline-danger" size="sm" className="border-0" onClick={() => {
             this.setState({
               currIndex: index,
-              modalContents: this.CONTENTS_DELETION
+              modalMode: this.MODE.DELETE
             }, () => {
               this.showModal();
             });
@@ -181,7 +245,11 @@ class EventField extends React.Component {
               this.setState((prevState) => ({
                 currEvent: { ...prevState.currEvent, name: e.target.value }
               }));
-            }} />
+            }}
+            required isInvalid={!this.state.modalFormValidation.nameField.valid} />
+          <Form.Control.Feedback type="invalid">
+            {this.state.modalFormValidation.nameField.message}
+          </Form.Control.Feedback>
         </Form.Group>
         <Form.Group controlId="eventDescription">
           <Form.Label>설명</Form.Label>
@@ -216,14 +284,14 @@ class EventField extends React.Component {
     let title;
     let contents;
 
-    switch (this.state.modalContents) {
-      case this.CONTENTS_FORM:
+    switch (this.state.modalMode) {
+      case this.MODE.EDIT:
         buttonAttr.caption = this.state.currIndex < 0 ? '추가' : '수정';
         buttonAttr.variant = 'primary';
         title = this.state.currIndex < 0 ? '새 경연 부문' : '경연 부문 수정'
         contents = formContents;
         break;
-      case this.CONTENTS_DELETION:
+      case this.MODE.DELETE:
         buttonAttr.caption = '삭제';
         buttonAttr.variant = 'danger';
         title = '경연 부문 삭제';
@@ -243,7 +311,10 @@ class EventField extends React.Component {
           </ListGroup>
           <Button variant="secondary" className="float-right" onClick={() => {
             // set add mode (index < 0) and show modal
-            this.setState({ currIndex: -1 }, () => {
+            this.setState({
+              currIndex: -1,
+              modalMode: this.MODE.EDIT
+            }, () => {
               this.showModal();
             });
           }}>추가</Button>
