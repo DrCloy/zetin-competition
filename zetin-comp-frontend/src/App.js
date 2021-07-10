@@ -13,7 +13,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 
 import LinetracerCompEntryForm from './forms/entry/LinetracerCompEntryForm';
-import CompetitionMakingForm from './forms/CompetitionMakingForm';
+import CompMakingForm from './forms/CompMakingForm/CompMakingForm';
 import ParticipantsTable from './components/ParticipantsTable';
 
 function App() {
@@ -41,13 +41,14 @@ function App() {
             <ParticipantsTable />
           </Route>
           <Route path="/makecomp">
-            <CompetitionMakingForm />
+            <CompMakingForm />
           </Route>
           <Route path="/">
             <Home />
           </Route>
         </Switch>
         
+        <footer className="mt-5"></footer>
       </Container>
     </Router>
   );
