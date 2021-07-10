@@ -26,23 +26,22 @@ class EventField extends React.Component {
     this.handleEventDelSubmit = this.handleEventDelSubmit.bind(this);
     this.handleEventModHide = this.handleEventModHide.bind(this);
     this.handleEventDelHide = this.handleEventDelHide.bind(this);
-    this.validateEvent = this.validateEvent.bind(this);
   }
 
   handleEventModSubmit(e) {
     const value = {
       event: e.event,
       index: this.state.targIndex,
-    }
+    };
 
     this.setState({ showModModal: false }, () => {
       this.props.onChange(value);
     });
   }
 
-  handleEventDelSubmit(e) {
+  handleEventDelSubmit() {
     const value = {
-      event: null,
+      event: null, // null value means deletion
       index: this.state.targIndex,
     };
 
@@ -59,26 +58,42 @@ class EventField extends React.Component {
     this.setState({ showDelModal: false });
   }
 
-  validateEvent(validations, event) {
+  // Validation function for modal form of event modification
+  validateEvent = (validations, event) => {
     const events = this.props.events;
 
-    // Search for duplicate names
-    for (let i = 0; i < events.length; i++) {
-      if (events[i].name === event.name) {
-        validations.name.setInvalid('중복된 경연 부문 이름이 존재합니다.');
-        break;
+    // Check name state
+    if (event.name === '') {
+      validations.name.setInvalid('대회 이름을 입력해주세요.');
+    } else {
+      // Search for duplicate names
+      // !! Issue: Modification Modal에서 같은 이름으로 수정할 시 Invalid한 문제
+      for (let i = 0; i < events.length; i++) {
+        if (events[i].name === event.name) {
+          validations.name.setInvalid('중복된 경연 부문 이름이 존재합니다.');
+          break;
+        }
       }
     }
-  }
+
+    // Check numb state
+    if (event.numb <= 0) {
+      validations.numb.setInvalid();
+    }
+  };
 
   render() {
-    const events = this.props.events.map((item, index) =>
+    const events = this.props.events.map((item, index) => (
       <ListGroup.Item key={item.name} className="pb-2">
-        <div>{item.name} ({item.numb})</div>
+        <div>
+          {item.name} ({item.numb})
+        </div>
         <div className="text-muted small">{item.desc}</div>
         <div className="float-right">
           <Button
-            variant="outline-secondary" size="sm" className="mr-1 border-0"
+            variant="outline-secondary"
+            size="sm"
+            className="border-0 mr-2"
             onClick={() => {
               this.setState({
                 targEvent: item,
@@ -86,9 +101,13 @@ class EventField extends React.Component {
                 showModModal: true,
               });
             }}
-          >수정</Button>
+          >
+            수정
+          </Button>
           <Button
-            variant="outline-danger" size="sm" className="border-0"
+            variant="outline-danger"
+            size="sm"
+            className="border-0"
             onClick={() => {
               this.setState({
                 targEvent: item,
@@ -96,10 +115,12 @@ class EventField extends React.Component {
                 showDelModal: true,
               });
             }}
-          >삭제</Button>
+          >
+            삭제
+          </Button>
         </div>
       </ListGroup.Item>
-    );
+    ));
 
     return (
       <Form.Group controlId="compEvents" className="clearfix">
@@ -108,21 +129,24 @@ class EventField extends React.Component {
           {events.length ? events : <ListGroup.Item>없음</ListGroup.Item>}
         </ListGroup>
         <Button
-          variant="secondary" className="float-right"
+          variant="secondary"
+          className="float-right"
           onClick={() => {
             this.setState({
-              targEvent: null,
-              targIndex: -1,  // number of -1 means new event
+              targEvent: null, // null value means new event (used in modal form)
+              targIndex: -1, // number of -1 means new event (used in handler)
               showModModal: true,
             });
           }}
-        >추가</Button>
-        <EventModModal 
+        >
+          추가
+        </Button>
+        <EventModModal
           event={this.state.targEvent}
           show={this.state.showModModal}
           onSubmit={this.handleEventModSubmit}
           onHide={this.handleEventModHide}
-          cbValidation={this.validateEvent}
+          fnValidation={this.validateEvent}
         />
         <EventDelModal
           event={this.state.targEvent}
@@ -140,8 +164,6 @@ class EventField extends React.Component {
 - If animation property in Modal Component is true,
   'findDOMNode is deprecated in StrictMode' warning is occured.
   (https://github.com/react-bootstrap/react-bootstrap/issues/5075)
-- when duplicated object is added, key 충돌이 일어남.
-  EventModModal의 프로퍼티로 전체 이벤트 데이터 들고오면 좋을 듯.
 */
 
 class EventModModal extends React.Component {
@@ -163,39 +185,22 @@ class EventModModal extends React.Component {
     return {
       name: new Validation(),
       numb: new Validation(),
-    }
+    };
   }
 
   validate() {
     const validations = this.makeValidations();
 
-    // validate name state
-    if (this.state.event.name === '') {
-      validations.name.setInvalid('대회 이름을 입력해주세요.');
-    }
-
-    // validate numb state
-    if (this.state.event.numb <= 0) {
-      validations.numb.setInvalid();
-    }
-
-    // custom validation
-    if (this.props.cbValidation) {
-      this.props.cbValidation(validations, this.state.event);
+    // validation
+    if (this.props.fnValidation) {
+      this.props.fnValidation(validations, this.state.event);
     }
 
     // update state
     this.setState({ validations });
 
     // return true when form is valid
-    let ret = true;
-    for (const val in validations) {
-      if (validations[val].isInvalid) {
-        ret = false;
-        break;
-      }
-    }
-    return ret;
+    return Validation.areValidationsValid(validations);
   }
 
   handleSubmit(e) {
@@ -207,10 +212,12 @@ class EventModModal extends React.Component {
 
   // Initialize Modal Form
   handleShow() {
-    // Update state from props
-    if (this.props.event === null) {  // add mode
+    // Update state from event property
+    if (this.props.event === null) {
+      // add mode
       this.setState({ event: { name: '', desc: '', numb: '' } });
-    } else {  // edit mode
+    } else {
+      // edit mode
       this.setState({ event: { ...this.props.event } });
     }
 
@@ -220,9 +227,16 @@ class EventModModal extends React.Component {
 
   render() {
     return (
-      <Modal show={this.props.show} onShow={this.handleShow} onHide={this.props.onHide}>
+      <Modal
+        show={this.props.show}
+        onShow={this.handleShow}
+        onHide={this.props.onHide}
+        backdrop="static"
+      >
         <Modal.Header closeButton>
-          <Modal.Title>{this.props.event ? '경연 부문 수정' : '새 경연 부문'}</Modal.Title>
+          <Modal.Title>
+            {this.props.event ? '경연 부문 수정' : '새 경연 부문'}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={this.handleSubmit}>
@@ -233,10 +247,11 @@ class EventModModal extends React.Component {
                 value={this.state.event.name}
                 onChange={(e) => {
                   this.setState((prevState) => ({
-                    event: { ...prevState.event, name: e.target.value }
+                    event: { ...prevState.event, name: e.target.value },
                   }));
                 }}
-                isInvalid={this.state.validations.name.isInvalid} />
+                isInvalid={this.state.validations.name.isInvalid}
+              />
               <Form.Control.Feedback type="invalid">
                 {this.state.validations.name.message}
               </Form.Control.Feedback>
@@ -244,13 +259,15 @@ class EventModModal extends React.Component {
             <Form.Group controlId="eventDesc">
               <Form.Label>설명</Form.Label>
               <Form.Control
-                as="textarea" rows={4}
+                as="textarea"
+                rows={4}
                 value={this.state.event.desc}
                 onChange={(e) => {
                   this.setState((prevState) => ({
-                    event: { ...prevState.event, desc: e.target.value }
+                    event: { ...prevState.event, desc: e.target.value },
                   }));
-                }} />
+                }}
+              />
             </Form.Group>
             <Form.Group controlId="eventNumb">
               <Form.Label>참가 인원</Form.Label>
@@ -259,10 +276,11 @@ class EventModModal extends React.Component {
                 value={this.state.event.numb}
                 onChange={(e) => {
                   this.setState((prevState) => ({
-                    event: { ...prevState.event, numb: e.target.value }
+                    event: { ...prevState.event, numb: e.target.value },
                   }));
                 }}
-                isInvalid={this.state.validations.numb.isInvalid} />
+                isInvalid={this.state.validations.numb.isInvalid}
+              />
               <Form.Control.Feedback type="invalid">
                 {this.state.validations.numb.message}
               </Form.Control.Feedback>
@@ -270,7 +288,9 @@ class EventModModal extends React.Component {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={this.props.onHide}>취소</Button>
+          <Button variant="secondary" onClick={this.props.onHide}>
+            취소
+          </Button>
           <Button variant="primary" onClick={this.handleSubmit}>
             {this.props.event ? '수정' : '추가'}
           </Button>
@@ -286,7 +306,11 @@ class EventDelModal extends React.Component {
     const name = event ? event.name : '';
 
     return (
-      <Modal show={this.props.show} onHide={this.props.onHide}>
+      <Modal
+        show={this.props.show}
+        onHide={this.props.onHide}
+        backdrop="static"
+      >
         <Modal.Header closeButton>
           <Modal.Title>경연 부문 삭제</Modal.Title>
         </Modal.Header>
@@ -294,8 +318,12 @@ class EventDelModal extends React.Component {
           <p>정말로 {name} 경연 부문을 삭제하시겠습니까?</p>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={this.props.onHide}>취소</Button>
-          <Button variant="danger" onClick={this.props.onSubmit}>삭제</Button>
+          <Button variant="secondary" onClick={this.props.onHide}>
+            취소
+          </Button>
+          <Button variant="danger" onClick={this.props.onSubmit}>
+            삭제
+          </Button>
         </Modal.Footer>
       </Modal>
     );
