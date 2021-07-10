@@ -11,6 +11,15 @@ class Validation {
     }
     this.message = msg;
   }
+
+  static areValidationsValid(validations) {
+    for (const val in validations) {
+      if (validations[val].isInvalid) {
+        return false;
+      }
+    }
+    return true;
+  }
 }
 
 export default Validation;
