@@ -67,8 +67,9 @@ class EventField extends React.Component {
       validations.name.setInvalid('대회 이름을 입력해주세요.');
     } else {
       // Search for duplicate names
-      // !! Issue: Modification Modal에서 같은 이름으로 수정할 시 Invalid한 문제
       for (let i = 0; i < events.length; i++) {
+        if (i === this.state.targIndex) continue; // don't check itself.
+
         if (events[i].name === event.name) {
           validations.name.setInvalid('중복된 경연 부문 이름이 존재합니다.');
           break;
