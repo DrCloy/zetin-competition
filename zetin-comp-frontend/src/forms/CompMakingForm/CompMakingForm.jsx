@@ -17,11 +17,10 @@ class CompMakingForm extends React.Component {
     this.state = {
       name: '',
       desc: '',
-      events: [ { name: 'Freshman', desc: 'A freshman, first year, or frosh, is a person in the first year at an educational institution, usually a secondary or post-secondary school.', numb: 10 }, { name: 'Expert-DC', desc: 'An expert is somebody who has a broad and deep competence in terms of knowledge, skill and experience through practice and education in a particular field.', numb: 8 } ],
-      // events: [],
+      events: [],
       validations: this.makeValidations(),
-    }
-    
+    };
+
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleEventChange = this.handleEventChange.bind(this);
   }
@@ -30,7 +29,7 @@ class CompMakingForm extends React.Component {
     return {
       name: new Validation(),
       events: new Validation(),
-    }
+    };
   }
 
   validate() {
@@ -39,6 +38,11 @@ class CompMakingForm extends React.Component {
     // validate name state
     if (this.state.name === '') {
       validations.name.setInvalid('대회 이름을 입력해주세요.');
+    }
+
+    // validate events state
+    if (this.state.events.length === 0) {
+      validations.events.setInvalid('하나 이상의 경연 대회를 추가해주세요.');
     }
 
     // update state
@@ -68,12 +72,15 @@ class CompMakingForm extends React.Component {
     const evt = e.event;
     const events = this.state.events.slice();
 
-    if (idx === -1) { // add event
+    if (idx === -1) {
+      // add event
       events.push({ ...evt });
-    } else { // modify event
-      if (evt === null) { // delete event
+    } else {
+      if (evt === null) {
+        // delete event
         events.splice(idx, 1);
-      } else { // modify event
+      } else {
+        // modify event
         events.splice(idx, 1, { ...evt });
       }
     }
@@ -108,8 +115,15 @@ class CompMakingForm extends React.Component {
             }}
           />
         </Form.Group>
-        <EventField events={this.state.events} onChange={this.handleEventChange} />
-        <Button variant="primary" type="submit" onClick={this.handleSubmit}>개설</Button>
+        <EventField
+          events={this.state.events}
+          onChange={this.handleEventChange}
+          isInvalid={this.state.validations.events.isInvalid}
+          msgForInvalid={this.state.validations.events.message}
+        />
+        <Button variant="primary" type="submit" onClick={this.handleSubmit}>
+          개설
+        </Button>
       </Form>
     );
   }

@@ -126,12 +126,21 @@ class EventField extends React.Component {
     return (
       <Form.Group controlId="compEvents" className="clearfix">
         <Form.Label>경연 부문</Form.Label>
-        <ListGroup className="mb-2">
-          {events.length ? events : <ListGroup.Item>없음</ListGroup.Item>}
+        <ListGroup className={this.props.isInvalid ? 'is-invalid' : ''}>
+          {events.length ? (
+            events
+          ) : (
+            <ListGroup.Item
+              className={this.props.isInvalid ? 'border-danger' : ''}
+            >
+              없음
+            </ListGroup.Item>
+          )}
         </ListGroup>
+        <div className="invalid-feedback">{this.props.msgForInvalid}</div>
         <Button
           variant="secondary"
-          className="float-right"
+          className="float-right mt-2"
           onClick={() => {
             this.setState({
               targEvent: null, // null value means new event (used in modal form)
