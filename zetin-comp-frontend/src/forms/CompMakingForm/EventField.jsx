@@ -1,7 +1,5 @@
 import React from 'react';
-
-// Custom modules
-import Validation from '../Validation';
+import { Formik } from 'formik';
 
 // Bootstrap Components
 import Form from 'react-bootstrap/Form';
@@ -30,7 +28,7 @@ class EventField extends React.Component {
 
   handleEventModSubmit(e) {
     const value = {
-      event: e.event,
+      event: e,
       index: this.state.targIndex,
     };
 
@@ -59,28 +57,31 @@ class EventField extends React.Component {
   }
 
   // Validation function for modal form of event modification
-  validateEvent = (validations, event) => {
+  validateEvent = (event) => {
     const events = this.props.events;
+    const errors = {};
 
-    // Check name state
+    // Check name field
     if (event.name === '') {
-      validations.name.setInvalid('대회 이름을 입력해주세요.');
+      errors.name = '대회 이름을 입력해주세요.';
     } else {
       // Search for duplicate names
       for (let i = 0; i < events.length; i++) {
         if (i === this.state.targIndex) continue; // don't check itself.
 
         if (events[i].name === event.name) {
-          validations.name.setInvalid('중복된 경연 부문 이름이 존재합니다.');
+          errors.name = '중복된 경연 부문 이름이 존재합니다.';
           break;
         }
       }
     }
 
-    // Check numb state
+    // Check numb field
     if (event.numb <= 0) {
-      validations.numb.setInvalid();
+      errors.numb = '참가 인원은 1명 이상이어야 합니다.';
     }
+
+    return errors;
   };
 
   render() {
@@ -124,8 +125,7 @@ class EventField extends React.Component {
     ));
 
     return (
-      <Form.Group controlId="compEvents" className="clearfix">
-        <Form.Label>경연 부문</Form.Label>
+      <>
         <ListGroup className={this.props.isInvalid ? 'is-invalid' : ''}>
           {events.length ? (
             events
@@ -164,7 +164,7 @@ class EventField extends React.Component {
           onSubmit={this.handleEventDelSubmit}
           onHide={this.handleEventDelHide}
         />
-      </Form.Group>
+      </>
     );
   }
 }
@@ -177,135 +177,88 @@ class EventField extends React.Component {
 */
 
 class EventModModal extends React.Component {
-  constructor(props) {
-    super(props);
-
-    // State
-    this.state = {
-      event: { name: '', desc: '', numb: '' },
-      validations: this.makeValidations(),
-    };
-
-    // Event Handlers
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleShow = this.handleShow.bind(this);
-  }
-
-  makeValidations() {
-    return {
-      name: new Validation(),
-      numb: new Validation(),
-    };
-  }
-
-  validate() {
-    const validations = this.makeValidations();
-
-    // validation
-    if (this.props.fnValidation) {
-      this.props.fnValidation(validations, this.state.event);
-    }
-
-    // update state
-    this.setState({ validations });
-
-    // return true when form is valid
-    return Validation.areValidationsValid(validations);
-  }
-
-  handleSubmit(e) {
-    if (this.validate()) {
-      e.event = { ...this.state.event };
-      this.props.onSubmit(e);
-    }
-  }
-
-  // Initialize Modal Form
-  handleShow() {
-    // Update state from event property
-    if (this.props.event === null) {
-      // add mode
-      this.setState({ event: { name: '', desc: '', numb: '' } });
-    } else {
-      // edit mode
-      this.setState({ event: { ...this.props.event } });
-    }
-
-    // Restore validation
-    this.setState({ validations: this.makeValidations() });
-  }
-
   render() {
     return (
-      <Modal
-        show={this.props.show}
-        onShow={this.handleShow}
-        onHide={this.props.onHide}
-        backdrop="static"
+      <Formik
+        initialValues={{ name: '', desc: '', numb: 0 }}
+        validate={(values) => this.props.fnValidation(values)}
+        onSubmit={this.props.onSubmit}
       >
-        <Modal.Header closeButton>
-          <Modal.Title>
-            {this.props.event ? '경연 부문 수정' : '새 경연 부문'}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={this.handleSubmit}>
-            <Form.Group controlId="eventName">
-              <Form.Label>이름</Form.Label>
-              <Form.Control
-                type="text"
-                value={this.state.event.name}
-                onChange={(e) => {
-                  this.setState((prevState) => ({
-                    event: { ...prevState.event, name: e.target.value },
-                  }));
-                }}
-                isInvalid={this.state.validations.name.isInvalid}
-              />
-              <Form.Control.Feedback type="invalid">
-                {this.state.validations.name.message}
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group controlId="eventDesc">
-              <Form.Label>설명</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={4}
-                value={this.state.event.desc}
-                onChange={(e) => {
-                  this.setState((prevState) => ({
-                    event: { ...prevState.event, desc: e.target.value },
-                  }));
-                }}
-              />
-            </Form.Group>
-            <Form.Group controlId="eventNumb">
-              <Form.Label>참가 인원</Form.Label>
-              <Form.Control
-                type="number"
-                value={this.state.event.numb}
-                onChange={(e) => {
-                  this.setState((prevState) => ({
-                    event: { ...prevState.event, numb: e.target.value },
-                  }));
-                }}
-                isInvalid={this.state.validations.numb.isInvalid}
-              />
-              <Form.Control.Feedback type="invalid">
-                {this.state.validations.numb.message}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={this.props.onHide}>
-            취소
-          </Button>
-          <Button variant="primary" onClick={this.handleSubmit}>
-            {this.props.event ? '수정' : '추가'}
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        {({
+          handleSubmit,
+          handleChange,
+          values,
+          touched,
+          errors,
+          setValues,
+          resetForm,
+        }) => (
+          <Modal
+            show={this.props.show}
+            onShow={() => {
+              const event = this.props.event;
+              if (event) setValues({ ...event });
+              else resetForm();
+            }}
+            onHide={this.props.onHide}
+            backdrop="static"
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>
+                {this.props.event ? '경연 부문 수정' : '새 경연 부문'}
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form onSubmit={handleSubmit}>
+                <Form.Group controlId="eventName">
+                  <Form.Label>이름</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="name"
+                    value={values.name}
+                    onChange={handleChange}
+                    isInvalid={touched.name && errors.name}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.name}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="eventDesc">
+                  <Form.Label>설명</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={4}
+                    name="desc"
+                    value={values.desc}
+                    onChange={handleChange}
+                  />
+                </Form.Group>
+                <Form.Group controlId="eventNumb">
+                  <Form.Label>참가 인원</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="numb"
+                    value={values.numb}
+                    onChange={handleChange}
+                    isInvalid={touched.numb && errors.numb}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.numb}
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={this.props.onHide}>
+                취소
+              </Button>
+              <Button variant="primary" onClick={handleSubmit}>
+                {this.props.event ? '수정' : '추가'}
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        )}
+      </Formik>
     );
   }
 }
