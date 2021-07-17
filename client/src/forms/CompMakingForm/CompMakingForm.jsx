@@ -7,17 +7,20 @@ import EventField from './EventField';
 // Bootstrap Components
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 class CompMakingForm extends React.Component {
   render() {
     return (
       <>
-        <h2>대회 페이지 개설</h2>
         <Formik
           initialValues={{
             name: '',
             desc: '',
             events: [],
+            date: { start: '', end: '' },
+            regDate: { start: '', end: '' },
           }}
           validate={(values) => {
             const errors = {};
@@ -36,24 +39,22 @@ class CompMakingForm extends React.Component {
           }}
         >
           {({
-            handleSubmit,
-            handleChange,
             values,
             touched,
             errors,
             submitCount,
+            handleSubmit,
             setFieldValue,
             setFieldTouched,
+            getFieldProps,
           }) => (
             <Form noValidate onSubmit={handleSubmit}>
               <Form.Group controlId="compName">
                 <Form.Label>이름</Form.Label>
                 <Form.Control
                   type="text"
-                  name="name"
-                  value={values.name}
-                  onChange={handleChange}
                   isInvalid={touched.name && errors.name}
+                  {...getFieldProps('name')}
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.name}
@@ -64,12 +65,10 @@ class CompMakingForm extends React.Component {
                 <Form.Control
                   as="textarea"
                   rows="4"
-                  name="desc"
-                  value={values.desc}
-                  onChange={handleChange}
+                  {...getFieldProps('desc')}
                 />
               </Form.Group>
-              <Form.Group controlId="compEvents">
+              <Form.Group controlId="compEvents" className="clearfix">
                 <Form.Label>경연 부문</Form.Label>
                 <EventField
                   events={values.events}
@@ -95,6 +94,46 @@ class CompMakingForm extends React.Component {
                   msgForInvalid={errors.events}
                 />
               </Form.Group>
+              <Row>
+                <Col lg>
+                  <Form.Group controlId="compDateStart">
+                    <Form.Label>경연 대회 시작일</Form.Label>
+                    <Form.Control
+                      type="datetime-local"
+                      {...getFieldProps('date.start')}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col lg>
+                  <Form.Group controlId="compDateEnd">
+                    <Form.Label>경연 대회 종료일</Form.Label>
+                    <Form.Control
+                      type="datetime-local"
+                      {...getFieldProps('date.end')}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col lg>
+                  <Form.Group controlId="compRegDateStart">
+                    <Form.Label>참가 신청 접수 시작일</Form.Label>
+                    <Form.Control
+                      type="datetime-local"
+                      {...getFieldProps('regDate.start')}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col lg>
+                  <Form.Group controlId="compRegDateEnd">
+                    <Form.Label>참가 신청 접수 종료일</Form.Label>
+                    <Form.Control
+                      type="datetime-local"
+                      {...getFieldProps('regDate.end')}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
               <Button type="submit">개설</Button>
             </Form>
           )}
