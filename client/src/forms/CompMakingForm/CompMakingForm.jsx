@@ -1,5 +1,6 @@
 import React from 'react';
 import { Formik } from 'formik';
+import * as Yup from 'yup';
 
 // Custom UIs
 import EventField from './EventField';
@@ -11,6 +12,17 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 class CompMakingForm extends React.Component {
+  schema = Yup.object().shape({
+    name: Yup.string().required('대회 이름을 입력해주세요.'),
+    desc: Yup.string(),
+    events: Yup.array().min(1, '하나 이상의 경연 대회를 추가해주세요.'),
+    date: Yup.string().required('대회 실시 날짜를 입력해주세요.'),
+    regDateStart: Yup.string().required(
+      '참가 신청 접수 시작일을 입력해주세요.',
+    ),
+    regDateEnd: Yup.string().required('참가 신청 접수 종료일을 입력해주세요.'),
+  });
+
   render() {
     return (
       <>
@@ -19,21 +31,11 @@ class CompMakingForm extends React.Component {
             name: '',
             desc: '',
             events: [],
-            date: { start: '', end: '' },
-            regDate: { start: '', end: '' },
+            date: '',
+            regDateStart: '',
+            regDateEnd: '',
           }}
-          validate={(values) => {
-            const errors = {};
-
-            if (!values.name) {
-              errors.name = '대회 이름을 입력해주세요.';
-            }
-            if (values.events.length === 0) {
-              errors.events = '하나 이상의 경연 대회를 추가해주세요.';
-            }
-
-            return errors;
-          }}
+          validationSchema={this.schema}
           onSubmit={(e) => {
             console.log(e);
           }}
@@ -42,7 +44,6 @@ class CompMakingForm extends React.Component {
             values,
             touched,
             errors,
-            submitCount,
             handleSubmit,
             setFieldValue,
             setFieldTouched,
@@ -87,7 +88,7 @@ class CompMakingForm extends React.Component {
                       }
                     }
 
-                    if (submitCount) setFieldTouched('events', true);
+                    setFieldTouched('events', true);
                     setFieldValue('events', events);
                   }}
                   isInvalid={touched.events && errors.events}
@@ -96,41 +97,50 @@ class CompMakingForm extends React.Component {
               </Form.Group>
               <Row>
                 <Col lg>
-                  <Form.Group controlId="compDateStart">
-                    <Form.Label>경연 대회 시작일</Form.Label>
-                    <Form.Control
-                      type="datetime-local"
-                      {...getFieldProps('date.start')}
-                    />
-                  </Form.Group>
-                </Col>
-                <Col lg>
-                  <Form.Group controlId="compDateEnd">
-                    <Form.Label>경연 대회 종료일</Form.Label>
-                    <Form.Control
-                      type="datetime-local"
-                      {...getFieldProps('date.end')}
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col lg>
                   <Form.Group controlId="compRegDateStart">
                     <Form.Label>참가 신청 접수 시작일</Form.Label>
                     <Form.Control
-                      type="datetime-local"
-                      {...getFieldProps('regDate.start')}
+                      type="date"
+                      max={values.regDateEnd}
+                      isInvalid={touched.regDateStart && errors.regDateStart}
+                      {...getFieldProps('regDateStart')}
                     />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.regDateStart}
+                    </Form.Control.Feedback>
+                    <Form.Text className="text-muted">
+                      대회 참가 신청 페이지가 입력한 날짜에 자동으로 열립니다.
+                    </Form.Text>
                   </Form.Group>
                 </Col>
                 <Col lg>
                   <Form.Group controlId="compRegDateEnd">
                     <Form.Label>참가 신청 접수 종료일</Form.Label>
                     <Form.Control
-                      type="datetime-local"
-                      {...getFieldProps('regDate.end')}
+                      type="date"
+                      min={values.regDateStart}
+                      disabled={!values.regDateStart}
+                      isInvalid={touched.regDateEnd && errors.regDateEnd}
+                      {...getFieldProps('regDateEnd')}
                     />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.regDateEnd}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
+                <Col lg>
+                  <Form.Group controlId="compDate">
+                    <Form.Label>대회 개최일</Form.Label>
+                    <Form.Control
+                      type="date"
+                      min={values.regDateEnd}
+                      disabled={!values.regDateEnd}
+                      isInvalid={touched.date && errors.date}
+                      {...getFieldProps('date')}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.date}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
               </Row>
