@@ -1,9 +1,4 @@
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 import MarkdownIt from 'markdown-it';
 
@@ -25,14 +20,22 @@ function App() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
-              <Link className="nav-link" to="/">홈</Link>
-              <Link className="nav-link" to="/makecomp">대회 페이지 개설</Link>
-              <Link className="nav-link" to="/participants">참가자</Link>
-              <Link className="nav-link" to="/entry">참가</Link>
+              <Link className="nav-link" to="/">
+                홈
+              </Link>
+              <Link className="nav-link" to="/makecomp">
+                대회 페이지 개설
+              </Link>
+              <Link className="nav-link" to="/participants">
+                참가자
+              </Link>
+              <Link className="nav-link" to="/entry">
+                참가
+              </Link>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
-        
+
         <Switch>
           <Route path="/entry">
             <LinetracerCompEntryForm />
@@ -47,7 +50,7 @@ function App() {
             <Home />
           </Route>
         </Switch>
-        
+
         <footer className="mt-5"></footer>
       </Container>
     </Router>
@@ -57,10 +60,8 @@ function App() {
 function Home() {
   let md = new MarkdownIt();
   let result = md.render('**Enjoy the ZETIN linetracer competition!**');
-  
-  return (
-    <div dangerouslySetInnerHTML={{__html: result}}></div>
-  );
+
+  return <div dangerouslySetInnerHTML={{ __html: result }}></div>;
 }
 
 export default App;
