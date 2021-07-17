@@ -16,7 +16,9 @@ function App() {
     <Router>
       <Container>
         <Navbar expand="lg">
-          <Navbar.Brand href="/">ZETIN Competition</Navbar.Brand>
+          <Navbar.Brand as={Link} to="/">
+            ZETIN Competition
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
@@ -44,6 +46,7 @@ function App() {
             <ParticipantsTable />
           </Route>
           <Route path="/makecomp">
+            <h2 className="my-4 text-center">대회 페이지 개설</h2>
             <CompMakingForm />
           </Route>
           <Route path="/">
