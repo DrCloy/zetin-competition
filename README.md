@@ -1,3 +1,7 @@
-# Linetracer Competition Page
+# ZETIN Competition
 
-Initial README.md
+## 환경 변수
+
+`.env` 파일이나 시스템 환경 변수에 다음의 환경 변수를 설정해야 제대로 동작할 수 있습니다.
+
+- `PATH_FILES`: 업로드된 파일들을 보관하는 디렉터리를 지정합니다.

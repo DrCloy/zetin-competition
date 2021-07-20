@@ -4,6 +4,7 @@ const path = require('path');
 const app = express();
 
 /* Constants */
+require('dotenv').config();
 const PORT = process.env.PORT || 8000;
 const DB_NAME = process.env.DB_NAME || 'zetin-competition';
 const MONGO_URI =
@@ -27,6 +28,9 @@ app.use('/api/competitions', require('./routes/api/competitions'));
 app.get(['/api', '/api/*'], (req, res) => {
   res.status(400).send('Invalid access');
 });
+
+/* File server routes */
+app.use('/files/posters', require('./routes/files/poster'));
 
 /* Static server for react */
 app.use('/', express.static(path.join(__dirname, 'client/build')));
