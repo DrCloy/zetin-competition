@@ -1,7 +1,5 @@
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
-import MarkdownIt from 'markdown-it';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
@@ -11,11 +9,13 @@ import LinetracerCompEntryForm from './forms/entry/LinetracerCompEntryForm';
 import CompMakingForm from './forms/CompMakingForm/CompMakingForm';
 import ParticipantsTable from './components/ParticipantsTable';
 
+import Home from './pages/Home';
+
 function App() {
   return (
     <Router>
       <Container>
-        <Navbar expand="lg">
+        <Navbar expand="md">
           <Navbar.Brand as={Link} to="/">
             ZETIN Competition
           </Navbar.Brand>
@@ -50,7 +50,7 @@ function App() {
             <CompMakingForm />
           </Route>
           <Route path="/">
-            <Home />
+            <Home title="Competitions" />
           </Route>
         </Switch>
 
@@ -58,13 +58,6 @@ function App() {
       </Container>
     </Router>
   );
-}
-
-function Home() {
-  let md = new MarkdownIt();
-  let result = md.render('**Enjoy the ZETIN linetracer competition!**');
-
-  return <div dangerouslySetInnerHTML={{ __html: result }}></div>;
 }
 
 export default App;
