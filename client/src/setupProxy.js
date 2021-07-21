@@ -6,7 +6,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 // https://velog.io/@neity16/React-CORS-http-proxy-middleware
 module.exports = function (app) {
   app.use(
-    '/api',
+    ['/api', '/files'],
     createProxyMiddleware({
       target: 'https://linetracer-comp.run.goorm.io',
       changeOrigin: true,

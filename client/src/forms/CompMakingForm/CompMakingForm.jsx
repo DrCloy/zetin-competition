@@ -1,9 +1,11 @@
 import React from 'react';
 import { Formik } from 'formik';
+import axios from 'axios';
 import * as Yup from 'yup';
 
 // Custom UIs
 import EventField from './EventField';
+import Thumb from '../Thumb';
 
 // Bootstrap Components
 import Form from 'react-bootstrap/Form';
@@ -23,6 +25,16 @@ class CompMakingForm extends React.Component {
     regDateEnd: Yup.string().required('참가 신청 접수 종료일을 입력해주세요.'),
   });
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      poster: null,
+    };
+
+    this.posterFileInput = React.createRef();
+  }
+
   render() {
     return (
       <>
@@ -35,9 +47,27 @@ class CompMakingForm extends React.Component {
             regDateStart: '',
             regDateEnd: '',
           }}
-          validationSchema={this.schema}
-          onSubmit={(e) => {
-            console.log(e);
+          onSubmit={(data) => {
+            axios // Post new competition form
+              .post('/api/competitions', data)
+              .then((res) => {
+                if (this.state.poster) {
+                  const id = res.data._id;
+                  const formData = new FormData();
+                  formData.set('poster', this.state.poster);
+                  axios // Post poster image
+                    .post(`/files/posters/${id}`, formData)
+                    .then(() => {
+                      alert('성공!');
+                    })
+                    .catch((err) => {
+                      alert(err);
+                    });
+                } else {
+                  alert('성공!');
+                }
+              })
+              .catch((err) => alert(err));
           }}
         >
           {({
@@ -144,6 +174,45 @@ class CompMakingForm extends React.Component {
                   </Form.Group>
                 </Col>
               </Row>
+              <Form.Group controlId="compPoster">
+                <Form.Label>대회 포스터</Form.Label>
+                <Form.Control
+                  type="file"
+                  ref={this.posterFileInput}
+                  style={{ display: 'none' }}
+                  onChange={(e) => {
+                    this.setState({ poster: e.target.files[0] });
+                  }}
+                />
+                <div>
+                  <Thumb file={this.state.poster} width={400} />
+                  {/* TODO: ButtonGroup으로 묶어버리기 */}
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      this.posterFileInput.current.click();
+                    }}
+                    className={
+                      'align-bottom mt-2' + (this.state.poster ? ' ml-2' : '')
+                    }
+                  >
+                    파일 선택
+                  </Button>
+                  <Button
+                    variant="danger"
+                    className={
+                      'align-bottom mt-2 ml-2' +
+                      (this.state.poster ? '' : ' d-none')
+                    }
+                    onClick={() => {
+                      this.setState({ poster: null });
+                    }}
+                  >
+                    파일 삭제
+                  </Button>
+                </div>
+              </Form.Group>
+              <hr />
               <Button type="submit">개설</Button>
             </Form>
           )}
