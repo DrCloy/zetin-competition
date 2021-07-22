@@ -4,6 +4,7 @@ const Competition = require('../../models/competition');
 // Find all
 router.get('/', (req, res) => {
   Competition.findAll()
+    .sort({ date: 'desc' })
     .then((comps) => {
       res.json(comps);
     })
