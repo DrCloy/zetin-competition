@@ -40,7 +40,7 @@ competitionSchema.statics.updateById = function (_id, payload) {
 
 // Delete by _id
 competitionSchema.statics.deleteById = function (_id) {
-  return this.remove({ _id });
+  return this.deleteOne({ _id });
 };
 
 // Create Model & Export
