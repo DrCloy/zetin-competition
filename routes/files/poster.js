@@ -15,7 +15,7 @@ function getPosterPath(id) {
     fs.readdir(PATH, (err, files) => {
       if (err) reject(err);
 
-      let regex = new RegExp(`^(${id})\\.(?:jpg|png)`, 'gi');
+      let regex = new RegExp(`^(${id})\\.(?:jpg|jpeg|png)`, 'gi');
       let candidates = files.filter((file) => file.match(regex));
 
       if (candidates.length == 0) {
@@ -52,9 +52,34 @@ router.post('/:id', upload.single('poster'), (req, res) => {
     buffer,
     (err) => {
       if (err) res.sendStatus(500);
-      else res.sendStatus(201);
+      else
+        res
+          .status(201)
+          .header('Location', req.baseUrl + req.path)
+          .send();
     },
   );
 });
 
-module.exports = router;
+// delete poster image
+router.delete('/:id', (req, res) => {
+  getPosterPath(req.params.id)
+    .then((path) => {
+      fs.unlink(path, function (err) {
+        if (err) res.sendStatus(500);
+        else res.status(200).send('The poster has been deleted');
+      });
+    })
+    .catch((err) => {
+      res.status(200).send('The poster is not found');
+    });
+});
+
+module.exports = (function () {
+  // make directory if it doesn't exist.
+  fs.mkdir(PATH, { recursive: true }, (err) => {
+    if (err) throw err;
+  });
+
+  return router;
+})();
