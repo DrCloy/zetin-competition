@@ -33,7 +33,13 @@ class MarkdownEditor extends React.Component {
       (prevState) => ({ previewMode: !prevState.previewMode }),
       () => {
         if (this.state.previewMode) {
-          const html = this.md.render(this.state.content);
+          const { content } = this.state;
+          let html;
+          if (content === '') {
+            html = '<p>내용이 없습니다.</p>';
+          } else {
+            html = this.md.render(this.state.content);
+          }
           this.setState({ html });
         }
       },
@@ -69,13 +75,10 @@ class MarkdownEditor extends React.Component {
               placeholder="내용을 작성해주세요"
             />
           </Form.Group>
-          <div className={'p-2 ' + (previewMode ? '' : 'd-none')}>
-            {html ? (
-              <div dangerouslySetInnerHTML={{ __html: html }}></div>
-            ) : (
-              <div>내용이 없습니다</div>
-            )}
-          </div>
+          <div
+            dangerouslySetInnerHTML={{ __html: html }}
+            className={'p-2 ' + (previewMode ? '' : 'd-none')}
+          />
           <Button
             className="float-right"
             size="sm"
