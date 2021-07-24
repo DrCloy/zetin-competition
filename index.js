@@ -25,6 +25,7 @@ app.use(express.json());
 
 /* API server routes */
 app.use('/api/competitions', require('./routes/api/competitions'));
+app.use('/api/rules', require('./routes/api/rules'));
 app.get(['/api', '/api/*'], (req, res) => {
   res.status(400).send('Invalid access');
 });
