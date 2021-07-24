@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 // Custom UIs
 import EventField from './EventField';
 import Thumb from '../Thumb';
+import MarkdownWrapper from '../../components/MarkdownWrapper';
 
 // Bootstrap Components
 import Form from 'react-bootstrap/Form';
@@ -23,16 +24,27 @@ class CompMakingForm extends React.Component {
       '참가 신청 접수 시작일을 입력해주세요.',
     ),
     regDateEnd: Yup.string().required('참가 신청 접수 종료일을 입력해주세요.'),
+    googleMap: Yup.string().url('URL 형식이 올바르지 않습니다.'),
   });
 
   constructor(props) {
     super(props);
 
     this.state = {
+      rules: [],
       poster: null,
     };
 
     this.posterFileInput = React.createRef();
+  }
+
+  componentDidMount() {
+    axios
+      .get('/api/rules')
+      .then((res) => {
+        this.setState({ rules: res.data.slice() });
+      })
+      .catch((err) => alert(err));
   }
 
   render() {
@@ -46,7 +58,15 @@ class CompMakingForm extends React.Component {
             date: '',
             regDateStart: '',
             regDateEnd: '',
+            place: '',
+            googleMap: '',
+            organizer: '',
+            sponser: '',
+            prize: '',
+            rule: '',
+            moreInfo: '',
           }}
+          validationSchema={this.schema}
           onSubmit={(data) => {
             axios // Post new competition form
               .post('/api/competitions', data)
@@ -93,11 +113,13 @@ class CompMakingForm extends React.Component {
               </Form.Group>
               <Form.Group controlId="compDesc">
                 <Form.Label>설명</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows="4"
-                  {...getFieldProps('desc')}
-                />
+                <MarkdownWrapper>
+                  <Form.Control
+                    as="textarea"
+                    rows="4"
+                    {...getFieldProps('desc')}
+                  />
+                </MarkdownWrapper>
               </Form.Group>
               <Form.Group controlId="compEvents" className="clearfix">
                 <Form.Label>경연 부문</Form.Label>
@@ -174,6 +196,71 @@ class CompMakingForm extends React.Component {
                   </Form.Group>
                 </Col>
               </Row>
+              <Form.Group controlId="compPlace">
+                <Form.Label>장소</Form.Label>
+                <Form.Control type="text" {...getFieldProps('place')} />
+              </Form.Group>
+              <Form.Group controlId="compGoogleMap">
+                <Form.Label>구글 지도</Form.Label>
+                <Form.Control
+                  type="text"
+                  isInvalid={touched.googleMap && errors.googleMap}
+                  {...getFieldProps('googleMap')}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.googleMap}
+                </Form.Control.Feedback>
+                <Form.Text className="text-muted">
+                  <a
+                    href="https://www.google.com/maps/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    구글 지도
+                  </a>
+                  의 "공유 &gt; 지도 퍼가기"에서 iframe의 src 속성을
+                  입력해주세요.
+                </Form.Text>
+              </Form.Group>
+              <Form.Group controlId="compOrganizer">
+                <Form.Label>주최 및 주관</Form.Label>
+                <Form.Control type="text" {...getFieldProps('organizer')} />
+              </Form.Group>
+              <Form.Group controlId="compSponser">
+                <Form.Label>후원</Form.Label>
+                <Form.Control type="text" {...getFieldProps('sponser')} />
+              </Form.Group>
+              <Form.Group controlId="compPrize">
+                <Form.Label>시상 내역</Form.Label>
+                <MarkdownWrapper>
+                  <Form.Control
+                    as="textarea"
+                    rows="4"
+                    {...getFieldProps('prize')}
+                  />
+                </MarkdownWrapper>
+              </Form.Group>
+              <Form.Group controlId="compRule">
+                <Form.Label>대회 규정</Form.Label>
+                <Form.Control as="select" {...getFieldProps('rule')}>
+                  <option value="">대회 규정 선택</option>
+                  {this.state.rules.map((value) => (
+                    <option key={value._id} value={value._id}>
+                      {value.name} ({value.version})
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+              <Form.Group controlId="compMoreInfo">
+                <Form.Label>추가 정보</Form.Label>
+                <MarkdownWrapper>
+                  <Form.Control
+                    as="textarea"
+                    rows="8"
+                    {...getFieldProps('moreInfo')}
+                  />
+                </MarkdownWrapper>
+              </Form.Group>
               <Form.Group controlId="compPoster">
                 <Form.Label>대회 포스터</Form.Label>
                 <Form.Control
@@ -213,7 +300,18 @@ class CompMakingForm extends React.Component {
                 </div>
               </Form.Group>
               <hr />
-              <Button type="submit">개설</Button>
+              <Button className="mr-2" type="submit">
+                개설
+              </Button>
+              <Button
+                variant="info"
+                onClick={() => {
+                  alert(JSON.stringify(values));
+                  console.log(values);
+                }}
+              >
+                값 미리보기
+              </Button>
             </Form>
           )}
         </Formik>

@@ -9,6 +9,13 @@ const competitionSchema = new mongoose.Schema(
     date: { type: Date },
     regDateStart: { type: Date },
     regDateEnd: { type: Date },
+    place: { type: String },
+    googleMap: { type: String },
+    organizer: { type: String },
+    sponser: { type: String },
+    prize: { type: String },
+    rule: { type: String },
+    moreInfo: { type: String },
   },
   { timestamps: true },
 );
