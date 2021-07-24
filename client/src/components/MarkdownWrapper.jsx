@@ -27,7 +27,9 @@ class MarkdownWrapper extends React.Component {
 
           if (Array.isArray(children)) {
             children.forEach((child) => {
-              preview += md.render(child.props.value);
+              if (child.props.value) {
+                preview += md.render(child.props.value);
+              }
             });
           } else {
             preview = md.render(children.props.value);
