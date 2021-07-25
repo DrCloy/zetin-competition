@@ -10,7 +10,7 @@ class CompetitionCard extends React.Component {
     super(props);
 
     this.state = {
-      src: `/files/posters/${props.data._id}`,
+      src: `/files/posters/thumbnail/${props.data._id}`,
       errored: false,
     };
 
