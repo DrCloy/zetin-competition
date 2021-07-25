@@ -10,6 +10,8 @@ import CompMakingForm from './forms/CompMakingForm/CompMakingForm';
 import ParticipantsTable from './components/ParticipantsTable';
 
 import Home from './pages/Home';
+import Competition from './pages/Competition';
+import Rule from './pages/Rule';
 
 function App() {
   return (
@@ -28,6 +30,9 @@ function App() {
               <Link className="nav-link" to="/makecomp">
                 대회 페이지 개설
               </Link>
+              <Link className="nav-link" to="/makerule">
+                대회 규정 만들기
+              </Link>
               <Link className="nav-link" to="/participants">
                 참가자
               </Link>
@@ -39,6 +44,7 @@ function App() {
         </Navbar>
 
         <Switch>
+          <Route path="/competitions/:id" component={Competition} />
           <Route path="/entry">
             <LinetracerCompEntryForm />
           </Route>
@@ -49,6 +55,7 @@ function App() {
             <h2 className="my-4 text-center">대회 페이지 개설</h2>
             <CompMakingForm />
           </Route>
+          <Route path="/makerule" component={Rule}></Route>
           <Route path="/">
             <Home title="Competitions" />
           </Route>
