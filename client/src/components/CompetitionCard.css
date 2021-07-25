@@ -1,0 +1,10 @@
+.card-competition {
+  transition: all 0.25s;
+  text-decoration: none !important;
+}
+
+.card-competition:hover {
+  transform: scale(1.02);
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  -webkit-box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
