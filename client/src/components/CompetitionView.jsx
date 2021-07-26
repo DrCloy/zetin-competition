@@ -45,27 +45,8 @@ class CompetitionView extends React.Component {
     }
   };
 
-  handleCloseRuleModal = () => {
+  handleCloseModal = () => {
     this.setState({ showRuleModal: false });
-  };
-
-  handleClickDelete = () => {
-    const { _id } = this.props.data;
-    axios
-      .delete(`/api/competitions/${_id}`)
-      .then(() => {
-        axios
-          .delete(`/files/posters/${_id}`)
-          .then(() => {
-            alert('Deleted!');
-          })
-          .catch((err) => {
-            alert(err);
-          });
-      })
-      .catch((err) => {
-        alert(err);
-      });
   };
 
   isFieldValid(field) {
@@ -189,17 +170,10 @@ class CompetitionView extends React.Component {
                 ></div>
               </>
             ) : null}
-            <hr />
-            <Button variant="danger" onClick={this.handleClickDelete}>
-              삭제
-            </Button>
           </Col>
         </Row>
-        <Modal
-          size="lg"
-          show={showRuleModal}
-          onHide={this.handleCloseRuleModal}
-        >
+        {/* Modal for Competition Rule */}
+        <Modal size="lg" show={showRuleModal} onHide={this.handleCloseModal}>
           <Modal.Header closeButton>
             <Modal.Title>{ruleTitle}</Modal.Title>
           </Modal.Header>
@@ -207,7 +181,7 @@ class CompetitionView extends React.Component {
             <div dangerouslySetInnerHTML={{ __html: ruleHTMLContent }}></div>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.handleCloseRuleModal}>
+            <Button variant="secondary" onClick={this.handleCloseModal}>
               닫기
             </Button>
           </Modal.Footer>
