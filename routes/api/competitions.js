@@ -14,7 +14,13 @@ router.get('/', (req, res) => {
 // Find one by _id
 router.get('/:id', (req, res) => {
   Competition.findById(req.params.id)
-    .then((comp) => res.json(comp))
+    .then((comp) => {
+      if (comp) res.json(comp);
+      else
+        res
+          .status(404)
+          .send('Competition information does not exist for that id.');
+    })
     .catch((err) => res.status(500).send(err));
 });
 
