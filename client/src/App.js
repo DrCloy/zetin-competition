@@ -6,7 +6,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 
 import LinetracerCompEntryForm from './forms/entry/LinetracerCompEntryForm';
-import CompMakingForm from './forms/CompMakingForm/CompMakingForm';
+import CompetitionForm from './forms/CompetitionForm/CompetitionForm';
 import ParticipantsTable from './components/ParticipantsTable';
 
 import Home from './pages/Home';
@@ -53,15 +53,13 @@ function App() {
           </Route>
           <Route path="/makecomp">
             <h2 className="my-4 text-center">대회 페이지 개설</h2>
-            <CompMakingForm />
+            <CompetitionForm />
           </Route>
           <Route path="/makerule" component={Rule}></Route>
           <Route path="/">
             <Home title="Competitions" />
           </Route>
         </Switch>
-
-        <footer className="mt-5"></footer>
       </Container>
     </Router>
   );
