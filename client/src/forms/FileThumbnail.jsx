@@ -4,7 +4,7 @@ import Image from 'react-bootstrap/Image';
 import Spinner from 'react-bootstrap/Spinner';
 
 // https://codesandbox.io/s/lkkjpr5r7
-class Thumb extends React.Component {
+class FileThumbnail extends React.Component {
   state = {
     loading: false,
     thumb: undefined,
@@ -45,4 +45,4 @@ class Thumb extends React.Component {
   }
 }
 
-export default Thumb;
+export default FileThumbnail;

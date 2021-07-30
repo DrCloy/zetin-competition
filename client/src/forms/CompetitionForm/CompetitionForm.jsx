@@ -5,7 +5,7 @@ import * as yup from 'yup';
 
 // Custom UIs
 import EventField from './EventField';
-import Thumb from '../Thumb';
+import FileThumbnail from '../FileThumbnail';
 import MarkdownWrapper from '../../components/MarkdownWrapper';
 import { DateField, DateTimeField } from './DateFields';
 
@@ -305,8 +305,7 @@ class CompetitionForm extends React.Component {
                   }}
                 />
                 <div>
-                  <Thumb file={this.state.poster} width={400} />
-                  {/* TODO: ButtonGroup으로 묶어버리기 */}
+                  <FileThumbnail file={this.state.poster} width={400} />
                   <Button
                     variant="secondary"
                     onClick={() => {
