@@ -12,7 +12,11 @@ const MONGO_URI =
 
 /* Connect to mongodb server */
 mongoose
-  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+  })
   .then(() => {
     console.log(`successfully connected to ${MONGO_URI}`);
   })
