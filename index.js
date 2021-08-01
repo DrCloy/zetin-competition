@@ -35,9 +35,6 @@ app.get(['/api', '/api/*'], (req, res) => {
   res.status(400).send('Invalid access');
 });
 
-/* File server routes */
-app.use('/files/posters', require('./routes/files/poster'));
-
 /* Static server for react */
 app.use('/', express.static(path.join(__dirname, 'client/build')));
 
