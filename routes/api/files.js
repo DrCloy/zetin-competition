@@ -1,6 +1,8 @@
 /* Dependencies */
 const router = require('express').Router();
 const multer = require('multer');
+const sharp = require('sharp');
+const mime = require('mime-types');
 const path = require('path');
 const fs = require('fs');
 const createError = require('http-errors');
@@ -12,6 +14,9 @@ const File = require('../../models/file');
 const PATH = process.env.PATH_FILES;
 const LIMIT_FILESIZE = process.env.LIMIT_FILESIZE || 16 * 1024 * 1024;
 const FILE_FIELD_NAME = 'file';
+const THUMB_PATH = path.join(PATH, 'thumbnails');
+const THUMB_EXTENSION = 'jpg';
+const THUMB_WIDTH = 720;
 
 /* Create multer middleware */
 const upload = multer({
@@ -59,6 +64,34 @@ const uploader = (req, res, next) => {
   });
 };
 
+/* Thumbnail generator */
+const generateThumbnail = (imageFilePath) => {
+  return new Promise((resolve, reject) => {
+    // check the thumbnail folder exists
+    if (!fs.existsSync(THUMB_PATH)) {
+      fs.mkdirSync(THUMB_PATH, { recursive: true });
+    }
+    const thumbnailPath = path.join(THUMB_PATH, path.basename(imageFilePath));
+
+    // check that the thumbnail file exists and it is the latest file.
+    if (
+      fs.existsSync(thumbnailPath) &&
+      fs.statSync(imageFilePath).mtimeMs < fs.statSync(thumbnailPath).mtimeMs
+    ) {
+      resolve(thumbnailPath);
+    } else {
+      // resize and convert image
+      sharp(imageFilePath)
+        .resize({ width: THUMB_WIDTH })
+        .toFormat(THUMB_EXTENSION)
+        .toFile(thumbnailPath, function (err) {
+          if (err) reject(err);
+          resolve(thumbnailPath);
+        });
+    }
+  });
+};
+
 // get list of files
 router.get('/', async (req, res) => {
   const files = await File.find({});
@@ -98,25 +131,34 @@ router.post('/', uploader, async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
-    const file = await File.findOne({ _id: id });
+    const { thumbnail } = req.query;
+    const file = await File.findById(id);
 
     if (!file) {
       return next(createError(404, 'There is no such file document.'));
     }
 
-    const { name, mimetype, originalName, category, description, size } = file;
-    const filePath = path.join(PATH, name);
+    const { name, mimetype } = file;
+    let filePath = path.join(PATH, name);
 
-    fs.access(filePath, fs.constants.R_OK, (err) => {
-      if (err) {
-        return next(createError(404, 'Cannot read such file.'));
+    if (!fs.existsSync(filePath)) {
+      return next(createError(404, 'Cannot read such file.'));
+    }
+
+    // get thumbnail image
+    if (thumbnail && thumbnail.toLowerCase() === 'true') {
+      const regex = new RegExp(`^(image\\/)`, 'gi');
+      if (mimetype.match(regex)) {
+        // allow only image file
+        filePath = await generateThumbnail(filePath);
+      } else {
+        return next(
+          createError(403, `Cannot get thumbnail of ${mimetype} mime type`),
+        );
       }
+    }
 
-      // set header
-      res.header('Content-Type', mimetype);
-      // send file
-      res.sendFile(filePath);
-    });
+    res.header('Content-Type', mimetype).sendFile(filePath);
   } catch (err) {
     next(createError(500, err));
   }
