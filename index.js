@@ -30,6 +30,7 @@ app.use(express.json());
 /* API server routes */
 app.use('/api/competitions', require('./routes/api/competitions'));
 app.use('/api/rules', require('./routes/api/rules'));
+app.use('/api/files', require('./routes/api/files'));
 app.get(['/api', '/api/*'], (req, res) => {
   res.status(400).send('Invalid access');
 });
@@ -43,6 +44,14 @@ app.use('/', express.static(path.join(__dirname, 'client/build')));
 /* The other paths are routed to index.html built by react */
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname + '/client/build/index.html'));
+});
+
+/* Error handling */
+app.use(function (err, req, res, next) {
+  if (err) {
+    // console.error(err);
+    res.status(err.statusCode).send(err.message);
+  }
 });
 
 /* Start server */
