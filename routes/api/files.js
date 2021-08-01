@@ -113,12 +113,7 @@ router.get('/:id', async (req, res, next) => {
       }
 
       // set header
-      res.header({
-        'Content-Type': mimetype,
-        'File-Category': category,
-        'File-Description': description,
-        'File-Size': size,
-      });
+      res.header('Content-Type', mimetype);
       // send file
       res.sendFile(filePath);
     });
@@ -167,7 +162,9 @@ router.patch('/:id', uploader, async (req, res, next) => {
     }
 
     // update the file document
-    const oldFile = await File.findByIdAndUpdate(id, document);
+    const oldFile = await File.findByIdAndUpdate(id, document, {
+      omitUndefined: true,
+    });
     const newFile = await File.findById(id);
 
     if (oldFile.name !== newFile.name) {
