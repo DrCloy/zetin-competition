@@ -16,6 +16,7 @@ const competitionSchema = new mongoose.Schema(
     prize: { type: String },
     rule: { type: String },
     moreInfo: { type: String },
+    posterId: { type: String },
   },
   { timestamps: true },
 );
