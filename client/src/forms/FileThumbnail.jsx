@@ -26,8 +26,20 @@ class FileThumbnail extends React.Component {
   }
 
   render() {
-    const { file, width } = this.props;
+    const { file, defaultSrc, width } = this.props;
     const { loading, thumb } = this.state;
+
+    const Thumbnail = (src) => (
+      <div className="d-block">
+        <Image src={src} thumbnail style={{ width }} />
+      </div>
+    );
+    const Default = (
+      <div
+        className="d-block border border-grey rounded"
+        style={{ width: 100, height: 100 }}
+      ></div>
+    );
 
     if (file) {
       if (loading) {
@@ -37,11 +49,15 @@ class FileThumbnail extends React.Component {
           </Spinner>
         );
       } else {
-        return <Image src={thumb} thumbnail style={{ width }} />;
+        return Thumbnail(thumb);
+      }
+    } else {
+      if (defaultSrc) {
+        return Thumbnail(defaultSrc);
       }
     }
 
-    return null;
+    return Default;
   }
 }
 
