@@ -70,53 +70,116 @@ class CompetitionForm extends React.Component {
       prize: yup.string().default(''),
       rule: yup.string().default(''),
       moreInfo: yup.string().default(''),
+      posterId: yup.string().default(''),
     });
-
-    // initial values (set default value of schema and overwrite data from props)
-    this.initialValues = { ...this.schema.getDefaultFromShape() };
-    if (typeof props.competition === 'object') {
-      this.initialValues = { ...this.initialValues, ...props.competition };
-    }
 
     this.posterFileInput = React.createRef();
   }
 
-  componentDidMount() {
-    axios
-      .get('/api/rules')
-      .then((res) => {
-        this.setState({ rules: res.data.slice() });
-      })
-      .catch(console.error);
+  getInitialValues() {
+    const { competition } = this.props;
+
+    // initial values (set default value of schema and overwrite data from props)
+    let initialValues = { ...this.schema.getDefaultFromShape() };
+    if (typeof competition === 'object') {
+      initialValues = { ...initialValues, ...competition };
+    }
+
+    return initialValues;
+  }
+
+  getPosterBlob(posterId) {
+    return new Promise((resolve, reject) => {
+      axios
+        .get(`/api/files/${posterId}`, { responseType: 'blob' })
+        .then((res) => resolve(res.data))
+        .catch((err) => reject(err));
+    });
+  }
+
+  async componentDidMount() {
+    try {
+      const { competition } = this.props;
+
+      let ruleResponse = await axios.get(`/api/rules`);
+      let posterFile = null;
+      if (typeof competition === 'object' && competition.posterId) {
+        posterFile = await this.getPosterBlob(competition.posterId);
+      }
+
+      this.setState({ rules: ruleResponse.data.slice(), poster: posterFile });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async componentDidUpdate(prevProps) {
+    try {
+      const { competition } = this.props;
+
+      if (competition !== prevProps.competition) {
+        let posterFile = null;
+        if (typeof competition === 'object' && competition.posterId) {
+          posterFile = await this.getPosterBlob(competition.posterId);
+        }
+        this.setState({ poster: posterFile });
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   render() {
+    const { competition, onSubmitFinished } = this.props;
+    const isNew = !competition;
+    const posterId = competition ? competition.posterId : undefined;
+
     return (
       <>
         <Formik
-          initialValues={this.initialValues}
+          initialValues={this.getInitialValues()}
           validationSchema={this.schema}
-          onSubmit={(data) => {
-            axios // Post new competition form
-              .post('/api/competitions', data)
-              .then((res) => {
-                if (this.state.poster) {
-                  const id = res.data._id;
-                  const formData = new FormData();
-                  formData.set('poster', this.state.poster);
-                  axios // Post poster image
-                    .post(`/files/posters/${id}`, formData)
-                    .then(() => {
-                      alert('성공!');
-                    })
-                    .catch((err) => {
-                      alert(err);
-                    });
+          onSubmit={async (data) => {
+            try {
+              // upload poster image file
+              if (this.state.poster) {
+                const fileForm = new FormData();
+                let file;
+
+                fileForm.set('file', this.state.poster);
+                if (!data.posterId) {
+                  fileForm.set('category', 'poster');
+                  fileForm.set('description', `${data.name}`);
+                  file = await axios.post(`/api/files`, fileForm);
                 } else {
-                  alert('성공!');
+                  file = await axios.patch(`/api/files/${posterId}`, fileForm);
                 }
-              })
-              .catch((err) => alert(err));
+
+                data.posterId = file.data._id;
+              } else {
+                if (!isNew) {
+                  await axios.delete(`/api/files/${posterId}`);
+                }
+                data.posterId = '';
+              }
+
+              // post data
+              let comp;
+              if (isNew) {
+                comp = await axios.post(`/api/competitions`, data);
+              } else {
+                comp = await axios.patch(
+                  `/api/competitions/${competition._id}`,
+                  data,
+                );
+              }
+
+              if (typeof onSubmitFinished === 'function') {
+                onSubmitFinished(comp);
+              }
+            } catch (err) {
+              console.error(err);
+            }
           }}
         >
           {({
@@ -311,21 +374,20 @@ class CompetitionForm extends React.Component {
                     onClick={() => {
                       this.posterFileInput.current.click();
                     }}
-                    className={
-                      'align-bottom mt-2' + (this.state.poster ? ' ml-2' : '')
-                    }
+                    className={'mt-2'}
+                    size="sm"
                   >
                     파일 선택
                   </Button>
                   <Button
                     variant="danger"
                     className={
-                      'align-bottom mt-2 ml-2' +
-                      (this.state.poster ? '' : ' d-none')
+                      'mt-2 ml-2' + (this.state.poster ? '' : ' d-none')
                     }
                     onClick={() => {
                       this.setState({ poster: null });
                     }}
+                    size="sm"
                   >
                     파일 삭제
                   </Button>
@@ -333,7 +395,7 @@ class CompetitionForm extends React.Component {
               </Form.Group>
               <hr />
               <Button className="mr-2" type="submit">
-                개설
+                {isNew ? '개설' : '수정'}
               </Button>
               <Button
                 variant="info"
