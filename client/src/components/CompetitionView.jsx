@@ -56,7 +56,6 @@ class CompetitionView extends React.Component {
   render() {
     const { showMap, showRuleModal, ruleTitle, ruleHTMLContent } = this.state;
     const {
-      _id,
       name,
       desc,
       date,
@@ -67,6 +66,7 @@ class CompetitionView extends React.Component {
       prize,
       rule,
       moreInfo,
+      posterId,
     } = this.props.data;
 
     return (
@@ -75,7 +75,7 @@ class CompetitionView extends React.Component {
           <Col md={6}>
             <Image
               className="w-100 pb-4"
-              src={`/files/posters/${_id}`}
+              src={`/api/files/${posterId}`}
               rounded
             />
           </Col>
