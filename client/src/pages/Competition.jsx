@@ -2,8 +2,10 @@ import React from 'react';
 import axios from 'axios';
 
 import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 import CompetitionView from '../components/CompetitionView';
+import CompetitionForm from '../forms/CompetitionForm/CompetitionForm';
 import PageNotFound from '../components/PageNotFound';
 
 class Competition extends React.Component {
@@ -13,6 +15,7 @@ class Competition extends React.Component {
     this.state = {
       data: null,
       isDataLoaded: false,
+      showEditingModal: false,
     };
   }
 
@@ -48,8 +51,12 @@ class Competition extends React.Component {
       .catch(console.error);
   };
 
+  handleCloseModal = () => {
+    this.setState({ showEditingModal: false });
+  };
+
   render() {
-    const { data, isDataLoaded } = this.state;
+    const { data, isDataLoaded, showEditingModal } = this.state;
 
     return (
       <>
@@ -61,6 +68,14 @@ class Competition extends React.Component {
                 <div className="container p-3">
                   <div className="text-right">
                     <Button
+                      variant="primary"
+                      onClick={() => {
+                        this.setState({ showEditingModal: true });
+                      }}
+                    >
+                      수정
+                    </Button>{' '}
+                    <Button
                       variant="danger"
                       onClick={this.handleDeleteCompetition}
                     >
@@ -69,6 +84,20 @@ class Competition extends React.Component {
                   </div>
                 </div>
               </div>
+              <Modal
+                size="lg"
+                show={showEditingModal}
+                onHide={this.handleCloseModal}
+                backdrop="static"
+                keyboard={false}
+              >
+                <Modal.Header closeButton>
+                  <Modal.Title>경연 대회 페이지 수정</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <CompetitionForm competition={data} />
+                </Modal.Body>
+              </Modal>
             </>
           ) : (
             <PageNotFound />
