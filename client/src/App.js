@@ -6,7 +6,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 
 import LinetracerCompEntryForm from './forms/entry/LinetracerCompEntryForm';
-import CompetitionForm from './forms/CompetitionForm/CompetitionForm';
+import CompetitionEdit from './pages/CompetitionEdit';
 import ParticipantsTable from './components/ParticipantsTable';
 
 import Home from './pages/Home';
@@ -27,7 +27,7 @@ function App() {
               <Link className="nav-link" to="/">
                 홈
               </Link>
-              <Link className="nav-link" to="/makecomp">
+              <Link className="nav-link" to="/competitions/edit">
                 대회 페이지 개설
               </Link>
               <Link className="nav-link" to="/makerule">
@@ -44,6 +44,10 @@ function App() {
         </Navbar>
 
         <Switch>
+          <Route
+            path={['/competitions/edit/:id', '/competitions/edit']}
+            component={CompetitionEdit}
+          />
           <Route path="/competitions/:id" component={Competition} />
           <Route path="/entry">
             <LinetracerCompEntryForm />
@@ -51,15 +55,13 @@ function App() {
           <Route path="/participants">
             <ParticipantsTable />
           </Route>
-          <Route path="/makecomp">
-            <h2 className="my-4 text-center">대회 페이지 개설</h2>
-            <CompetitionForm />
-          </Route>
           <Route path="/makerule" component={Rule}></Route>
           <Route path="/">
             <Home title="Competitions" />
           </Route>
         </Switch>
+
+        <footer className="mt-5" />
       </Container>
     </Router>
   );
