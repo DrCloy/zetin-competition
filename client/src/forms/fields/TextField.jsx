@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 import { useField } from 'formik';
 
 const TextField = (props) => {
-  const { label, controlId, multiLine, rows } = props;
+  const { label, controlId, multiLine, rows, advice } = props;
 
   const [field, meta] = useField(props.name);
   const { touched, error } = meta;
@@ -19,7 +19,7 @@ const TextField = (props) => {
         <Form.Control type="text" {...field} />
       )}
       <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
-      {props.children}
+      <Form.Text className="text-muted">{advice}</Form.Text>
     </Form.Group>
   );
 };
