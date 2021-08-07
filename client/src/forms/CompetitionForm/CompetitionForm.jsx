@@ -4,10 +4,12 @@ import axios from 'axios';
 import * as yup from 'yup';
 
 // Custom UIs
+import TextField from '../fields/TextField';
+import MarkdownField from '../fields/MarkdownField';
+import SelectField from '../fields/SelectField';
+import DateField from '../fields/DateField';
 import EventField from './EventField';
 import FileThumbnail from '../FileThumbnail';
-import MarkdownWrapper from '../../components/MarkdownWrapper';
-import { DateField, DateTimeField } from './DateFields';
 
 // Bootstrap Components
 import Form from 'react-bootstrap/Form';
@@ -193,27 +195,8 @@ class CompetitionForm extends React.Component {
             getFieldProps,
           }) => (
             <Form noValidate onSubmit={handleSubmit}>
-              <Form.Group controlId="compName">
-                <Form.Label>이름</Form.Label>
-                <Form.Control
-                  type="text"
-                  isInvalid={touched.name && errors.name}
-                  {...getFieldProps('name')}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.name}
-                </Form.Control.Feedback>
-              </Form.Group>
-              <Form.Group controlId="compDesc">
-                <Form.Label>설명</Form.Label>
-                <MarkdownWrapper>
-                  <Form.Control
-                    as="textarea"
-                    rows="4"
-                    {...getFieldProps('desc')}
-                  />
-                </MarkdownWrapper>
-              </Form.Group>
+              <TextField label="이름" name="name" controlId="compName" />
+              <MarkdownField label="설명" name="desc" controlId="compDesc" />
               <Form.Group controlId="compEvents" className="clearfix">
                 <Form.Label>경연 부문</Form.Label>
                 <EventField
@@ -240,72 +223,38 @@ class CompetitionForm extends React.Component {
                   msgForInvalid={errors.events}
                 />
               </Form.Group>
-
-              <div>
-                <Row>
-                  <Col lg>
-                    <Form.Group controlId="compRegDateStart">
-                      <Form.Label>참가 신청 접수 시작일</Form.Label>
-                      <DateField
-                        value={values.regDateStart}
-                        onChange={(date) => setFieldValue('regDateStart', date)}
-                        onBlur={() => setFieldTouched('regDateStart', true)}
-                        isInvalid={touched.regDateStart && errors.regDateStart}
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        {errors.regDateStart}
-                      </Form.Control.Feedback>
-                      <Form.Text className="text-muted">
-                        대회 참가 신청 페이지가 입력한 날짜에 자동으로 열립니다.
-                      </Form.Text>
-                    </Form.Group>
-                  </Col>
-                  <Col lg>
-                    <Form.Group controlId="compRegDateEnd">
-                      <Form.Label>참가 신청 접수 종료일</Form.Label>
-                      <DateField
-                        value={values.regDateEnd}
-                        onChange={(date) => setFieldValue('regDateEnd', date)}
-                        onBlur={() => setFieldTouched('regDateEnd', true)}
-                        isInvalid={touched.regDateEnd && errors.regDateEnd}
-                        disabled={!values.regDateStart}
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        {errors.regDateEnd}
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </Col>
-                  <Col lg>
-                    <Form.Group controlId="compDate">
-                      <Form.Label>대회 개최일</Form.Label>
-                      <DateTimeField
-                        value={values.date}
-                        onChange={(date) => setFieldValue('date', date)}
-                        onBlur={() => setFieldTouched('date', true)}
-                        isInvalid={touched.date && errors.date}
-                        disabled={!values.regDateEnd}
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        {errors.date}
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </Col>
-                </Row>
-              </div>
-              <Form.Group controlId="compPlace">
-                <Form.Label>장소</Form.Label>
-                <Form.Control type="text" {...getFieldProps('place')} />
-              </Form.Group>
-              <Form.Group controlId="compGoogleMap">
-                <Form.Label>구글 지도</Form.Label>
-                <Form.Control
-                  type="text"
-                  isInvalid={touched.googleMap && errors.googleMap}
-                  {...getFieldProps('googleMap')}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.googleMap}
-                </Form.Control.Feedback>
+              <Row>
+                <Col lg>
+                  <DateField
+                    label="참가 신청 접수 시작일"
+                    name="regDateStart"
+                    controlId="compRegDateStart"
+                  />
+                </Col>
+                <Col lg>
+                  <DateField
+                    label="참가 신청 접수 종료일"
+                    name="regDateEnd"
+                    controlId="compRegDateEnd"
+                    disabled={!values.regDateStart}
+                  />
+                </Col>
+                <Col lg>
+                  <DateField
+                    label="대회 개최일"
+                    name="date"
+                    controlId="compDate"
+                    disabled={!values.regDateEnd}
+                    enableTime
+                  />
+                </Col>
+              </Row>
+              <TextField label="장소" name="place" controlId="compPlace" />
+              <TextField
+                label="구글 지도"
+                name="googleMap"
+                controlId="compGoogleMap"
+              >
                 <Form.Text className="text-muted">
                   <a
                     href="https://www.google.com/maps/"
@@ -317,46 +266,33 @@ class CompetitionForm extends React.Component {
                   의 "공유 &gt; 지도 퍼가기"에서 iframe의 src 속성을
                   입력해주세요.
                 </Form.Text>
-              </Form.Group>
-              <Form.Group controlId="compOrganizer">
-                <Form.Label>주최 및 주관</Form.Label>
-                <Form.Control type="text" {...getFieldProps('organizer')} />
-              </Form.Group>
-              <Form.Group controlId="compSponser">
-                <Form.Label>후원</Form.Label>
-                <Form.Control type="text" {...getFieldProps('sponser')} />
-              </Form.Group>
-              <Form.Group controlId="compPrize">
-                <Form.Label>시상 내역</Form.Label>
-                <MarkdownWrapper>
-                  <Form.Control
-                    as="textarea"
-                    rows="4"
-                    {...getFieldProps('prize')}
-                  />
-                </MarkdownWrapper>
-              </Form.Group>
-              <Form.Group controlId="compRule">
-                <Form.Label>대회 규정</Form.Label>
-                <Form.Control as="select" {...getFieldProps('rule')}>
-                  <option value="">대회 규정 선택</option>
-                  {this.state.rules.map((value) => (
-                    <option key={value._id} value={value._id}>
-                      {value.name} ({value.version})
-                    </option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
-              <Form.Group controlId="compMoreInfo">
-                <Form.Label>추가 정보</Form.Label>
-                <MarkdownWrapper>
-                  <Form.Control
-                    as="textarea"
-                    rows="8"
-                    {...getFieldProps('moreInfo')}
-                  />
-                </MarkdownWrapper>
-              </Form.Group>
+              </TextField>
+              <TextField
+                label="주최 및 주관"
+                name="organizer"
+                controlId="compOrganizer"
+              />
+              <TextField label="후원" name="sponser" controlId="compSponser" />
+              <MarkdownField
+                label="시상 내역"
+                name="prize"
+                controlId="compPrize"
+                rows="4"
+              />
+              <SelectField
+                label="대회 규정"
+                name="rule"
+                options={this.state.rules.map((value) => [
+                  value._id,
+                  `${value.name} (${value.version})`,
+                ])}
+                controlId="compRule"
+              />
+              <MarkdownField
+                label="추가 정보"
+                name="moreInfo"
+                controlId="compMoreInfo"
+              />
               <Form.Group controlId="compPoster">
                 <Form.Label>대회 포스터</Form.Label>
                 <Form.Control
