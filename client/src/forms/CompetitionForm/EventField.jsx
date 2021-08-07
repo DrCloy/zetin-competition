@@ -1,173 +1,145 @@
-import React from 'react';
-import { Formik } from 'formik';
+import React, { useState, useRef } from 'react';
+import { Formik, Form as FormikForm, useField } from 'formik';
+import * as yup from 'yup';
 
-// Bootstrap Components
+/* Custom UIs */
+import TextField from '../fields/TextField';
+import NumberField from '../fields/NumberField';
+
+/* Bootstrap Components */
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Modal from 'react-bootstrap/Modal';
 
-class EventField extends React.Component {
-  constructor(props) {
-    super(props);
+const EventField = (props) => {
+  // properties
+  const { label, controlId } = props;
 
-    // State
-    this.state = {
-      targEvent: null,
-      targIndex: -1,
-      showModModal: false,
-      showDelModal: false,
-    };
+  // formik hook
+  const [field, meta, helpers] = useField(props.name);
+  const { value } = field;
+  const { touched, error } = meta;
+  const { setTouched, setValue } = helpers;
 
-    // Event handlers
-    this.handleEventModSubmit = this.handleEventModSubmit.bind(this);
-    this.handleEventDelSubmit = this.handleEventDelSubmit.bind(this);
-    this.handleEventModHide = this.handleEventModHide.bind(this);
-    this.handleEventDelHide = this.handleEventDelHide.bind(this);
-  }
+  // states
+  const [targetIndex, setTargetIndex] = useState(-1);
+  const [showModModal, setShowModModal] = useState(false);
+  const [showDelModal, setShowDelModal] = useState(false);
 
-  handleEventModSubmit(e) {
-    const value = {
-      event: e,
-      index: this.state.targIndex,
-    };
-
-    this.setState({ showModModal: false }, () => {
-      this.props.onChange(value);
-    });
-  }
-
-  handleEventDelSubmit() {
-    const value = {
-      event: null, // null value means deletion
-      index: this.state.targIndex,
-    };
-
-    this.setState({ showDelModal: false }, () => {
-      this.props.onChange(value);
-    });
-  }
-
-  handleEventModHide() {
-    this.setState({ showModModal: false });
-  }
-
-  handleEventDelHide() {
-    this.setState({ showDelModal: false });
-  }
-
-  // Validation function for modal form of event modification
-  validateEvent = (event) => {
-    const events = this.props.events;
-    const errors = {};
-
-    // Check name field
-    if (event.name === '') {
-      errors.name = '대회 이름을 입력해주세요.';
+  // handlers
+  const handleModSubmit = (event) => {
+    const events = value.slice();
+    if (targetIndex < 0) {
+      events.push({ ...event }); // add
     } else {
-      // Search for duplicate names
-      for (let i = 0; i < events.length; i++) {
-        if (i === this.state.targIndex) continue; // don't check itself.
-
-        if (events[i].name === event.name) {
-          errors.name = '중복된 경연 부문 이름이 존재합니다.';
-          break;
-        }
-      }
+      events.splice(targetIndex, 1, { ...event }); // modify
     }
-
-    // Check numb field
-    if (event.numb <= 0) {
-      errors.numb = '참가 인원은 1명 이상이어야 합니다.';
-    }
-
-    return errors;
+    setTouched(true);
+    setValue(events);
+    setShowModModal(false);
+  };
+  const handleDelSubmit = () => {
+    const events = value.slice();
+    events.splice(targetIndex, 1); // delete
+    setTouched(true);
+    setValue(events);
+    setShowDelModal(false);
+  };
+  const getClickHandler = (index, cbSetShowModalState) => {
+    return () => {
+      setTargetIndex(index);
+      cbSetShowModalState(true);
+    };
   };
 
-  render() {
-    const events = this.props.events.map((item, index) => (
-      <ListGroup.Item key={item.name} className="pb-2">
-        <div>
-          {item.name} ({item.numb})
-        </div>
-        <div className="text-muted small">{item.desc}</div>
-        <div className="float-right">
-          <Button
-            variant="outline-secondary"
-            size="sm"
-            className="border-0 mr-2"
-            onClick={() => {
-              this.setState({
-                targEvent: item,
-                targIndex: index,
-                showModModal: true,
-              });
-            }}
-          >
-            수정
-          </Button>
-          <Button
-            variant="outline-danger"
-            size="sm"
-            className="border-0"
-            onClick={() => {
-              this.setState({
-                targEvent: item,
-                targIndex: index,
-                showDelModal: true,
-              });
-            }}
-          >
-            삭제
-          </Button>
-        </div>
-      </ListGroup.Item>
-    ));
+  // event validation schema
+  const eventSchema = yup.object().shape({
+    name: yup
+      .string()
+      .default('')
+      .test(
+        'is-unique-name',
+        '중복된 경연 부문 이름이 존재합니다.',
+        (input) => {
+          // search for duplicate names
+          for (let i = 0; i < value.length; i++) {
+            if (i === targetIndex) continue; // don't check itself.
+            if (input === value[i].name) return false;
+          }
+          return true;
+        },
+      )
+      .required('대회 이름을 입력해주세요.'),
+    desc: yup.string().default(''),
+    numb: yup
+      .number()
+      .min(1, '참가 인원은 1명 이상이어야 합니다.')
+      .required('참가 인원을 입력해주세요.'),
+  });
 
-    return (
-      <>
-        <ListGroup className={this.props.isInvalid ? 'is-invalid' : ''}>
-          {events.length ? (
-            events
-          ) : (
-            <ListGroup.Item
-              className={this.props.isInvalid ? 'border-danger' : ''}
-            >
-              없음
+  return (
+    <Form.Group controlId={controlId} className="clearfix">
+      <Form.Label>{label}</Form.Label>
+      <ListGroup className={touched && error ? 'is-invalid' : ''}>
+        {value.length ? (
+          value.map((item, index) => (
+            <ListGroup.Item key={item.name}>
+              <div>
+                {item.name} ({item.numb})
+              </div>
+              <div className="text-muted small">{item.desc}</div>
+              <div className="float-right">
+                <Button
+                  variant="outline-secondary"
+                  size="sm"
+                  className="border-0"
+                  onClick={getClickHandler(index, setShowModModal)}
+                >
+                  수정
+                </Button>
+                <Button
+                  variant="outline-danger"
+                  size="sm"
+                  className="border-0 ml-2"
+                  onClick={getClickHandler(index, setShowDelModal)}
+                >
+                  삭제
+                </Button>
+              </div>
             </ListGroup.Item>
-          )}
-        </ListGroup>
-        <div className="invalid-feedback">{this.props.msgForInvalid}</div>
-        <Button
-          variant="secondary"
-          className="float-right mt-2"
-          onClick={() => {
-            this.setState({
-              targEvent: null, // null value means new event (used in modal form)
-              targIndex: -1, // number of -1 means new event (used in handler)
-              showModModal: true,
-            });
-          }}
-        >
-          추가
-        </Button>
-        <EventModModal
-          event={this.state.targEvent}
-          show={this.state.showModModal}
-          onSubmit={this.handleEventModSubmit}
-          onHide={this.handleEventModHide}
-          fnValidation={this.validateEvent}
-        />
-        <EventDelModal
-          event={this.state.targEvent}
-          show={this.state.showDelModal}
-          onSubmit={this.handleEventDelSubmit}
-          onHide={this.handleEventDelHide}
-        />
-      </>
-    );
-  }
-}
+          ))
+        ) : (
+          <ListGroup.Item className={touched && error ? 'border-danger' : ''}>
+            없음
+          </ListGroup.Item>
+        )}
+      </ListGroup>
+      <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
+      <Button
+        variant="secondary"
+        size="sm"
+        className="float-right mt-2"
+        onClick={getClickHandler(-1, setShowModModal)}
+      >
+        추가
+      </Button>
+      <EventModModal
+        value={targetIndex < 0 ? null : value[targetIndex]}
+        validationSchema={eventSchema}
+        show={showModModal}
+        onSubmit={handleModSubmit}
+        onHide={() => setShowModModal(false)}
+      />
+      <EventDelModal
+        value={value[targetIndex]}
+        show={showDelModal}
+        onSubmit={handleDelSubmit}
+        onHide={() => setShowDelModal(false)}
+      />
+    </Form.Group>
+  );
+};
 
 /*
 < Issues >
@@ -175,122 +147,74 @@ class EventField extends React.Component {
   'findDOMNode is deprecated in StrictMode' warning is occured.
   (https://github.com/react-bootstrap/react-bootstrap/issues/5075)
 */
+const EventModModal = (props) => {
+  const { value, validationSchema, show, onSubmit, onHide } = props;
 
-class EventModModal extends React.Component {
-  render() {
-    return (
-      <Formik
-        initialValues={{ name: '', desc: '', numb: 0 }}
-        validate={(values) => this.props.fnValidation(values)}
-        onSubmit={this.props.onSubmit}
-      >
-        {({
-          handleSubmit,
-          handleChange,
-          values,
-          touched,
-          errors,
-          setValues,
-          resetForm,
-        }) => (
-          <Modal
-            show={this.props.show}
-            onShow={() => {
-              const event = this.props.event;
-              if (event) setValues({ ...event });
-              else resetForm();
-            }}
-            onHide={this.props.onHide}
-            backdrop="static"
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>
-                {this.props.event ? '경연 부문 수정' : '새 경연 부문'}
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Form onSubmit={handleSubmit}>
-                <Form.Group controlId="eventName">
-                  <Form.Label>이름</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="name"
-                    value={values.name}
-                    onChange={handleChange}
-                    isInvalid={touched.name && errors.name}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.name}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group controlId="eventDesc">
-                  <Form.Label>설명</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={4}
-                    name="desc"
-                    value={values.desc}
-                    onChange={handleChange}
-                  />
-                </Form.Group>
-                <Form.Group controlId="eventNumb">
-                  <Form.Label>참가 인원</Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="numb"
-                    value={values.numb}
-                    onChange={handleChange}
-                    isInvalid={touched.numb && errors.numb}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.numb}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Form>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={this.props.onHide}>
-                취소
-              </Button>
-              <Button variant="primary" onClick={handleSubmit}>
-                {this.props.event ? '수정' : '추가'}
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        )}
-      </Formik>
-    );
-  }
-}
+  const submitInput = useRef();
 
-class EventDelModal extends React.Component {
-  render() {
-    const event = this.props.event;
-    const name = event ? event.name : '';
+  return (
+    <Modal show={show} onHide={onHide} backdrop="static">
+      <Modal.Header closeButton>
+        <Modal.Title>{value ? '경연 부문 수정' : '새 경연 부문'}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Formik
+          initialValues={value || { name: '', desc: '', numb: 0 }}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
+        >
+          <FormikForm noValidate>
+            <TextField label="이름" name="name" controlId="eventName" />
+            <TextField
+              label="설명"
+              name="desc"
+              controlId="eventDesc"
+              multiLine
+            />
+            <NumberField
+              label="참가 인원"
+              name="numb"
+              min="0"
+              controlId="eventNumb"
+            />
+            <input type="submit" className="d-none" ref={submitInput} />
+          </FormikForm>
+        </Formik>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onHide}>
+          취소
+        </Button>
+        <Button variant="primary" onClick={() => submitInput.current.click()}>
+          {value ? '수정' : '추가'}
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+};
 
-    return (
-      <Modal
-        show={this.props.show}
-        onHide={this.props.onHide}
-        backdrop="static"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>경연 부문 삭제</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>정말로 {name} 경연 부문을 삭제하시겠습니까?</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={this.props.onHide}>
-            취소
-          </Button>
-          <Button variant="danger" onClick={this.props.onSubmit}>
-            삭제
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
-}
+const EventDelModal = (props) => {
+  const { value, show, onSubmit, onHide } = props;
+  const name = value && value.name;
+
+  return (
+    <Modal show={show} onHide={onHide} backdrop="static">
+      <Modal.Header closeButton>
+        <Modal.Title>경연 부문 삭제</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <p>정말로 '{name}' 경연 부문을 삭제하시겠습니까?</p>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onHide}>
+          취소
+        </Button>
+        <Button variant="danger" onClick={onSubmit}>
+          삭제
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+};
 
 export default EventField;

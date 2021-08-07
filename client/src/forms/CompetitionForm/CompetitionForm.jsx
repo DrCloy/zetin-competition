@@ -197,32 +197,11 @@ class CompetitionForm extends React.Component {
             <Form noValidate onSubmit={handleSubmit}>
               <TextField label="이름" name="name" controlId="compName" />
               <MarkdownField label="설명" name="desc" controlId="compDesc" />
-              <Form.Group controlId="compEvents" className="clearfix">
-                <Form.Label>경연 부문</Form.Label>
-                <EventField
-                  events={values.events}
-                  onChange={(e) => {
-                    const idx = e.index;
-                    const evt = e.event;
-                    const events = values.events.slice();
-
-                    if (evt === null) {
-                      events.splice(idx, 1); // delete
-                    } else {
-                      if (idx === -1) {
-                        events.push({ ...evt }); // add
-                      } else {
-                        events.splice(idx, 1, { ...evt }); // edit
-                      }
-                    }
-
-                    setFieldTouched('events', true);
-                    setFieldValue('events', events);
-                  }}
-                  isInvalid={touched.events && errors.events}
-                  msgForInvalid={errors.events}
-                />
-              </Form.Group>
+              <EventField
+                label="경연 부문"
+                name="events"
+                controlId="compEvents"
+              />
               <Row>
                 <Col lg>
                   <DateField
@@ -256,15 +235,15 @@ class CompetitionForm extends React.Component {
                 controlId="compGoogleMap"
                 advice={
                   <>
-                  <a
-                    href="https://www.google.com/maps/"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    구글 지도
-                  </a>
-                  의 "공유 &gt; 지도 퍼가기"에서 iframe의 src 속성을
-                  입력해주세요.
+                    <a
+                      href="https://www.google.com/maps/"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      구글 지도
+                    </a>
+                    의 "공유 &gt; 지도 퍼가기"에서 iframe의 src 속성을
+                    입력해주세요.
                   </>
                 }
               />
