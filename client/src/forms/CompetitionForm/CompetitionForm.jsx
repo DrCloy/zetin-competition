@@ -254,8 +254,8 @@ class CompetitionForm extends React.Component {
                 label="구글 지도"
                 name="googleMap"
                 controlId="compGoogleMap"
-              >
-                <Form.Text className="text-muted">
+                advice={
+                  <>
                   <a
                     href="https://www.google.com/maps/"
                     target="_blank"
@@ -265,8 +265,9 @@ class CompetitionForm extends React.Component {
                   </a>
                   의 "공유 &gt; 지도 퍼가기"에서 iframe의 src 속성을
                   입력해주세요.
-                </Form.Text>
-              </TextField>
+                  </>
+                }
+              />
               <TextField
                 label="주최 및 주관"
                 name="organizer"
