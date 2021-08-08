@@ -8,8 +8,8 @@ import TextField from '../fields/TextField';
 import MarkdownField from '../fields/MarkdownField';
 import SelectField from '../fields/SelectField';
 import DateField from '../fields/DateField';
+import ImageInput from '../../components/ImageInput';
 import EventField from './EventField';
-import FileThumbnail from '../FileThumbnail';
 
 // Bootstrap Components
 import Form from 'react-bootstrap/Form';
@@ -273,42 +273,12 @@ class CompetitionForm extends React.Component {
                 name="moreInfo"
                 controlId="compMoreInfo"
               />
-              <Form.Group controlId="compPoster">
-                <Form.Label>대회 포스터</Form.Label>
-                <Form.Control
-                  type="file"
-                  ref={this.posterFileInput}
-                  style={{ display: 'none' }}
-                  onChange={(e) => {
-                    this.setState({ poster: e.target.files[0] });
-                  }}
-                />
-                <div>
-                  <FileThumbnail file={this.state.poster} width={400} />
-                  <Button
-                    variant="secondary"
-                    onClick={() => {
-                      this.posterFileInput.current.click();
-                    }}
-                    className={'mt-2'}
-                    size="sm"
-                  >
-                    파일 선택
-                  </Button>
-                  <Button
-                    variant="danger"
-                    className={
-                      'mt-2 ml-2' + (this.state.poster ? '' : ' d-none')
-                    }
-                    onClick={() => {
-                      this.setState({ poster: null });
-                    }}
-                    size="sm"
-                  >
-                    파일 삭제
-                  </Button>
-                </div>
-              </Form.Group>
+              <ImageInput
+                label="대회 포스터"
+                value={this.state.poster}
+                onChange={(e) => this.setState({ poster: e })}
+                controlId="compPoster"
+              />
               <hr />
               <Button className="mr-2" type="submit">
                 {isNew ? '개설' : '수정'}
