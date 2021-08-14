@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import PageWrapper from './PageWrapper';
-import CompetitionForm from '../forms/CompetitionForm/CompetitionForm';
+import CompetitionForm from '../forms/CompetitionForm';
 import PageNotFound from '../components/PageNotFound';
 
 function CompetitionEdit() {
@@ -36,7 +36,7 @@ function CompetitionEdit() {
     return (
       <PageWrapper
         title="대회 페이지 수정"
-        page={<CompetitionForm competition={competition} />}
+        page={<CompetitionForm data={competition} />}
       />
     );
 
