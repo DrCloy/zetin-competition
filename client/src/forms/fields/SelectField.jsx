@@ -9,11 +9,13 @@ const SelectField = (props) => {
 
   // options := [[value, label], [value, label], ... , [value, label]]
   //            (value: is sent to the server, label: is shown to user)
-  const optionElements = options.map((option) => (
-    <option key={option[0]} value={option[0]}>
-      {option[1]}
-    </option>
-  ));
+  const optionElements =
+    options &&
+    options.map((option) => (
+      <option key={option[0]} value={option[0]}>
+        {option[1]}
+      </option>
+    ));
 
   return (
     <Form.Group controlId={controlId}>
@@ -23,6 +25,9 @@ const SelectField = (props) => {
         isInvalid={meta.touched && meta.error}
         {...field}
       >
+        <option key="" value="">
+          선택
+        </option>
         {optionElements}
       </Form.Control>
       <Form.Control.Feedback type="invalid">{meta.error}</Form.Control.Feedback>
