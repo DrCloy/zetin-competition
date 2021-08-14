@@ -9,7 +9,7 @@ import MarkdownField from '../fields/MarkdownField';
 import SelectField from '../fields/SelectField';
 import DateField from '../fields/DateField';
 import ImageInput from '../../components/ImageInput';
-import EventField from './EventField';
+import EventField from '../fields/EventField';
 
 // Bootstrap Components
 import Form from 'react-bootstrap/Form';
