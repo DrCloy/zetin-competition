@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 
-import RuleMakingForm from '../forms/RuleMakingForm/RuleMakingForm';
+import RuleMakingForm from '../forms/RuleMakingForm';
 
 class Rule extends React.Component {
   constructor(props) {

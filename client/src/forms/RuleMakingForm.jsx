@@ -3,7 +3,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 
-import MarkdownWrapper from '../../components/MarkdownWrapper';
+import MarkdownWrapper from '../components/MarkdownWrapper';
 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
