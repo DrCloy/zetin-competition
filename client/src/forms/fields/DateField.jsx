@@ -17,6 +17,7 @@ const DateField = (props) => {
     enableTime: false,
     allowInput: true,
     dateFormat: 'Y-m-d',
+    disableMobile: true,
   };
   if (enableTime)
     options = { ...options, enableTime: true, dateFormat: 'Y-m-d\\TH:i' };
