@@ -7,19 +7,19 @@ import * as yup from 'yup';
 import moment from 'moment';
 
 /* Bootstrap Components */
-import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 
 /* Field & Input Components */
 import DateField from './fields/DateField';
+import EventField from './fields/EventField';
+import ImageInput from '../components/ImageInput';
 import MarkdownField from './fields/MarkdownField';
 import SelectField from './fields/SelectField';
 import TextField from './fields/TextField';
-import EventField from './fields/EventField';
-import ImageInput from '../components/ImageInput';
 
-// initial form values Form Values
+// initial form values
 const initialValues = {
   name: '',
   desc: '',
@@ -99,6 +99,7 @@ const CompetitionForm = (props) => {
         console.error(err);
       } finally {
         setPoster(posterBlob);
+        setPosterChanged(false);
         setRules(ruleResponse.data);
       }
     })();
