@@ -5,7 +5,15 @@ const competitionSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, unique: true },
     desc: { type: String },
-    events: { type: Array },
+    events: [
+      {
+        _id: { type: mongoose.Schema.ObjectId, auto: true },
+        _participants: [{ type: String }],
+        name: { type: String, required: true, unique: true },
+        desc: { type: String },
+        numb: { type: Number },
+      },
+    ],
     date: { type: Date },
     regDateStart: { type: Date },
     regDateEnd: { type: Date },
