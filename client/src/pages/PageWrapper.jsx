@@ -1,10 +1,15 @@
 import React from 'react';
 
 function PageWrapper(props) {
+  const { title, subTitle, page } = props;
+
   return (
     <div className="page">
-      <h2 className="text-center my-4">{props.title}</h2>
-      {props.page}
+      <div className="my-4">
+        {title && <h2 className="text-center">{title}</h2>}
+        {subTitle && <h5 className="text-center text-muted">{subTitle}</h5>}
+      </div>
+      {page}
     </div>
   );
 }
