@@ -3,14 +3,10 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-
-import LinetracerCompEntryForm from './forms/entry/LinetracerCompEntryForm';
-import CompetitionEdit from './pages/CompetitionEdit';
-import ParticipantsTable from './components/ParticipantsTable';
 
 import Home from './pages/Home';
 import Competition from './pages/Competition';
+import CompetitionEdit from './pages/CompetitionEdit';
 import Rule from './pages/Rule';
 
 function App() {
@@ -21,26 +17,6 @@ function App() {
           <Navbar.Brand as={Link} to="/">
             ZETIN Competition
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto">
-              <Link className="nav-link" to="/">
-                홈
-              </Link>
-              <Link className="nav-link" to="/competitions/edit">
-                대회 페이지 개설
-              </Link>
-              <Link className="nav-link" to="/makerule">
-                대회 규정 만들기
-              </Link>
-              <Link className="nav-link" to="/participants">
-                참가자
-              </Link>
-              <Link className="nav-link" to="/entry">
-                참가
-              </Link>
-            </Nav>
-          </Navbar.Collapse>
         </Navbar>
 
         <Switch>
@@ -49,19 +25,19 @@ function App() {
             component={CompetitionEdit}
           />
           <Route path="/competitions/:id" component={Competition} />
-          <Route path="/entry">
-            <LinetracerCompEntryForm />
-          </Route>
-          <Route path="/participants">
-            <ParticipantsTable />
-          </Route>
           <Route path="/makerule" component={Rule}></Route>
           <Route path="/">
-            <Home title="Competitions" />
+            <Home />
+            <footer className="mt-5">
+              <Link className="nav-link" to="/competitions/edit">
+                대회 페이지 개설
+              </Link>
+              <Link className="nav-link" to="/makerule">
+                대회 규정 만들기
+              </Link>
+            </footer>
           </Route>
         </Switch>
-
-        <footer className="mt-5" />
       </Container>
     </Router>
   );
