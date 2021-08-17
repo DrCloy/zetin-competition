@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { updateIfCurrentPlugin } = require('mongoose-update-if-current');
 
 // Define Schemes
 const competitionSchema = new mongoose.Schema(
@@ -29,35 +30,13 @@ const competitionSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-// Create new todo document
-competitionSchema.statics.create = function (payload) {
-  // this === Model
-  const todo = new this(payload);
-  // return Promise
-  return todo.save();
-};
-
-// Find All
-competitionSchema.statics.findAll = function () {
-  // return Promise
-  return this.find({});
-};
-
-// Find One by _id
-competitionSchema.statics.findById = function (_id) {
-  return this.findOne({ _id });
-};
-
-// Update by _id
-competitionSchema.statics.updateById = function (_id, payload) {
-  // { new: true }: return the modified document rather than the original, defaults to false
-  return this.findOneAndUpdate({ _id }, payload, { new: true });
-};
-
-// Delete by _id
-competitionSchema.statics.deleteById = function (_id) {
-  return this.deleteOne({ _id });
-};
+// Optimistic concurrency (OCC) plugin for mongoose.
+/*
+  The plugin will hook into the save() function on schema documents
+  to increment the version and check that it matches the version
+  in the database before persisting it.
+*/
+competitionSchema.plugin(updateIfCurrentPlugin);
 
 // Create Model & Export
 module.exports = mongoose.model('Competition', competitionSchema);

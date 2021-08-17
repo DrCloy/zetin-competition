@@ -1,48 +1,100 @@
+/* Dependencies */
 const router = require('express').Router();
 const Competition = require('../../models/competition');
+const createError = require('http-errors');
 
-// Find all
-router.get('/', (req, res) => {
-  Competition.findAll()
-    .sort({ date: 'desc' })
-    .then((comps) => {
-      res.json(comps);
-    })
-    .catch((err) => res.status(500).send(err));
+/* IMPORTANT
+ * Competition schema uses mongoose-update-if-current package(plugin)
+ * that is Optimistic concurrency (OCC) plugin for mongoose.
+ * It will hook into the save() function on competition schema documents
+ * to increment the version(__v) and check that it matches the version
+ * in the database before persisting it.
+ */
+
+// Response competition collection
+// (with createdAt, updatedAt, date, regDateEnd, regDateStart, name, posterId)
+router.get('/', async (req, res, next) => {
+  try {
+    let collection = await Competition.find(
+      {},
+      {
+        name: 1,
+        date: 1,
+        regDateStart: 1,
+        regDateEnd: 1,
+        posterId: 1,
+        createAt: 1,
+        updatedAt: 1,
+      },
+    ).sort({ date: 'desc' });
+
+    res.status(200).json(collection);
+  } catch (err) {
+    next(createError(500, err));
+  }
 });
 
-// Find one by _id
-router.get('/:id', (req, res) => {
-  Competition.findById(req.params.id)
-    .then((comp) => {
-      if (comp) res.json(comp);
-      else
-        res
-          .status(404)
-          .send('Competition information does not exist for that id.');
-    })
-    .catch((err) => res.status(500).send(err));
+// Response the competition document by id
+router.get('/:id', async (req, res, next) => {
+  try {
+    let document = await Competition.findById(req.params.id);
+
+    if (document) {
+      res.status(200).json(document);
+    } else {
+      return next(
+        createError(404, 'Competition document does not exist for that id.'),
+      );
+    }
+  } catch (err) {
+    next(createError(500, err));
+  }
 });
 
 // Create new competition document
-router.post('/', (req, res) => {
-  Competition.create(req.body)
-    .then((comp) => res.status(200).json(comp))
-    .catch((err) => res.status(500).send(err));
+router.post('/', async (req, res, next) => {
+  try {
+    let document = new Competition(req.body);
+
+    // fill out the participants array of events with null
+    document.events.forEach((event) => {
+      event._participants = new Array(event.numb).fill(null);
+    });
+
+    document = await document.save(); // save
+    res.status(200).json(document);
+  } catch (err) {
+    next(createError(500, err));
+  }
 });
 
-// Update by _id
-router.patch('/:id', (req, res) => {
-  Competition.updateById(req.params.id, req.body)
-    .then((comp) => res.status(200).json(comp))
-    .catch((err) => res.status(500).send(err));
+// Update competition document to request data
+router.patch('/:id', async (req, res, next) => {
+  try {
+    let document = await Competition.findById(req.params.id);
+
+    // replace current fields with requested fields
+    Object.keys(req.body).forEach((field) => {
+      document[field] = req.body[field];
+    });
+
+    document = await document.save(); // save
+    res.status(200).json(document);
+  } catch (err) {
+    next(createError(500, err));
+  }
 });
 
-// Delete by _id
-router.delete('/:id', (req, res) => {
-  Competition.deleteById(req.params.id)
-    .then((comp) => res.status(200).json(comp))
-    .catch((err) => res.status(500).send(err));
+// Delete competition document by id
+router.delete('/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    let document = await Competition.findByIdAndDelete(id);
+
+    res.status(200).json(document);
+  } catch (err) {
+    next(createError(500, err));
+  }
 });
 
 module.exports = router;
