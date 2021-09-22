@@ -3,14 +3,6 @@ const router = require('express').Router();
 const Competition = require('../../models/competition');
 const createError = require('http-errors');
 
-/* IMPORTANT
- * Competition schema uses mongoose-update-if-current package(plugin)
- * that is Optimistic concurrency (OCC) plugin for mongoose.
- * It will hook into the save() function on competition schema documents
- * to increment the version(__v) and check that it matches the version
- * in the database before persisting it.
- */
-
 // Response competition collection
 // (with createdAt, updatedAt, date, regDateEnd, regDateStart, name, posterId)
 router.get('/', async (req, res, next) => {

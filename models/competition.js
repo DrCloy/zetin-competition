@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { updateIfCurrentPlugin } = require('mongoose-update-if-current');
 
 // Define Schemes
 const competitionSchema = new mongoose.Schema(
@@ -29,14 +28,6 @@ const competitionSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
-
-// Optimistic concurrency (OCC) plugin for mongoose.
-/*
-  The plugin will hook into the save() function on schema documents
-  to increment the version and check that it matches the version
-  in the database before persisting it.
-*/
-competitionSchema.plugin(updateIfCurrentPlugin);
 
 // Create Model & Export
 module.exports = mongoose.model('Competition', competitionSchema);
