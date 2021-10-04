@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Participant = require('./participant');
 
 // Define Schemes
 const competitionSchema = new mongoose.Schema(
@@ -29,33 +30,64 @@ const competitionSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-competitionSchema.methods.participate = async function (participant) {
-  const { _id, eventId, entryOrder } = participant;
+// Method: Find event by id
+competitionSchema.methods.findEventById = function (eventId) {
+  let ret = null;
 
-  // find event
-  let event = null;
   for (let i = 0; i < this.events.length; i++) {
-    if (this.events[i]._id.toString() === eventId) {
-      event = this.events[i];
+    let event = this.events[i];
+
+    if (event._id.toString() === eventId) {
+      ret = event;
       break;
     }
   }
 
-  // Error: Not found
+  return ret;
+};
+
+// Method: Remove the exsiting order
+competitionSchema.methods.removeExistingOrderById = function (id) {
+  this.events.forEach((event) => {
+    const { _participants } = event;
+
+    let existingEntryOrder = _participants.indexOf(id);
+    if (existingEntryOrder != -1) {
+      _participants[existingEntryOrder] = null;
+    }
+  });
+};
+
+competitionSchema.methods.participate = async function (participant) {
+  if (!(participant instanceof Participant)) {
+    throw new Error('The argument is not Participant model');
+  }
+
+  const { _id, eventId, entryOrder } = participant;
+  const id = _id.toString();
+
+  // find the event
+  let event = this.findEventById(eventId);
+  const { _participants, numb } = event;
+
+  // Error: Not Found (eventId is not valid)
   if (!event) {
     return `해당 경연 부문이 존재하지 않습니다.`;
   }
   // Error: Over the limit
-  if (entryOrder >= event.numb) {
-    return `정원을 ${event.numb}명을 초과했습니다.`;
+  if (entryOrder >= numb) {
+    return `정원 ${numb}명을 초과했습니다`;
   }
   // Error: Already exist
-  if (event._participants[entryOrder]) {
-    return `해당 순번은 이미 사용중입니다.`;
+  if (_participants[entryOrder] && _participants[entryOrder] !== id) {
+    return `이미 해당 순번 ${entryOrder}이(가) 점유됐습니다.`;
   }
 
-  // save
-  event._participants[entryOrder] = _id;
+  // remove the existing order
+  this.removeExistingOrderById(id);
+
+  // participate
+  event._participants[entryOrder] = id;
   this.markModified('events');
   await this.save();
 
