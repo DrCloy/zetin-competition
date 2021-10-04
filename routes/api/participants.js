@@ -15,29 +15,55 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.post('/:competitionId', async (req, res, next) => {
+router.post('/', async (req, res, next) => {
   try {
-    const { competitionId } = req.params;
-
     // create new document
     let participant = new Participant(req.body);
-    participant._competitionId = competitionId;
 
     // find competition document by id
-    let competition = await Competition.findById(competitionId);
+    let competition = await Competition.findById(participant._competitionId);
     if (!competition) {
-      return next(
-        createError(
-          404,
-          `There isn't a competition document about ${competitionId}.`,
-        ),
-      );
+      return next(createError(404, 'Competition document not found'));
     }
 
     // participate
     let retParticipate = await competition.participate(participant);
     if (retParticipate) {
-      return next(createError(403, retParticipate));
+      return next(createError(412, retParticipate));
+    }
+
+    await participant.save();
+    res.send(participant);
+  } catch (err) {
+    next(createError(500, err));
+  }
+});
+
+router.patch('/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // find existing document
+    let participant = await Participant.findById(id);
+    if (!participant) {
+      next(createError(404, 'Participant document not found'));
+    }
+
+    // replace current fields with requested fields
+    Object.keys(req.body).forEach((field) => {
+      participant[field] = req.body[field];
+    });
+
+    // find competition document
+    let competition = await Competition.findById(participant._competitionId);
+    if (!competition) {
+      next(createError(404, 'Competition document not found'));
+    }
+
+    // participate
+    let retParticipate = await competition.participate(participant);
+    if (retParticipate) {
+      return next(createError(412, retParticipate));
     }
 
     await participant.save();
