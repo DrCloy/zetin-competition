@@ -51,9 +51,10 @@ competitionSchema.methods.removeExistingOrderById = function (id) {
   this.events.forEach((event) => {
     const { _participants } = event;
 
-    let existingEntryOrder = _participants.indexOf(id);
-    if (existingEntryOrder != -1) {
-      _participants[existingEntryOrder] = null;
+    for (let i = 0; i < _participants.length; i++) {
+      if (_participants[i] === id) {
+        _participants[i] = null;
+      }
     }
   });
 };
@@ -88,6 +89,18 @@ competitionSchema.methods.participate = async function (participant) {
 
   // participate
   event._participants[entryOrder] = id;
+  this.markModified('events');
+  await this.save();
+
+  return 0;
+};
+
+competitionSchema.methods.unparticipate = async function (participant) {
+  if (!(participant instanceof Participant)) {
+    throw new Error('The argument is not Participant model');
+  }
+
+  this.removeExistingOrderById(participant._id.toString());
   this.markModified('events');
   await this.save();
 
