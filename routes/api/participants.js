@@ -73,4 +73,22 @@ router.patch('/:id', async (req, res, next) => {
   }
 });
 
+router.delete('/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    let participant = await Participant.findByIdAndDelete(id);
+    if (participant) {
+      let competition = await Competition.findById(participant._competitionId);
+      if (competition) {
+        competition.unparticipate(participant);
+      }
+    }
+
+    res.status(200).json(participant);
+  } catch (err) {
+    next(createError(500, err));
+  }
+});
+
 module.exports = router;
