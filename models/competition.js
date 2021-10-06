@@ -9,7 +9,7 @@ const competitionSchema = new mongoose.Schema(
     events: [
       {
         _id: { type: mongoose.Schema.ObjectId, auto: true },
-        _participants: [{ type: String }],
+        participants: [{ type: String }],
         name: { type: String, required: true, unique: true },
         desc: { type: String },
         numb: { type: Number },
@@ -49,11 +49,11 @@ competitionSchema.methods.findEventById = function (eventId) {
 // Method: Remove the exsiting order
 competitionSchema.methods.removeExistingOrderById = function (id) {
   this.events.forEach((event) => {
-    const { _participants } = event;
+    const { participants } = event;
 
-    for (let i = 0; i < _participants.length; i++) {
-      if (_participants[i] === id) {
-        _participants[i] = null;
+    for (let i = 0; i < participants.length; i++) {
+      if (participants[i] === id) {
+        participants[i] = null;
       }
     }
   });
@@ -64,12 +64,12 @@ competitionSchema.methods.participate = async function (participant) {
     throw new Error('The argument is not Participant model');
   }
 
-  const { _id, eventId, entryOrder } = participant;
+  const { _id, _eventId, entryOrder } = participant;
   const id = _id.toString();
 
   // find the event
-  let event = this.findEventById(eventId);
-  const { _participants, numb } = event;
+  let event = this.findEventById(_eventId);
+  const { participants, numb } = event;
 
   // Error: Not Found (eventId is not valid)
   if (!event) {
@@ -80,7 +80,7 @@ competitionSchema.methods.participate = async function (participant) {
     return `정원 ${numb}명을 초과했습니다`;
   }
   // Error: Already exist
-  if (_participants[entryOrder] && _participants[entryOrder] !== id) {
+  if (participants[entryOrder] && participants[entryOrder] !== id) {
     return `이미 해당 순번 ${entryOrder}이(가) 점유됐습니다.`;
   }
 
@@ -88,7 +88,7 @@ competitionSchema.methods.participate = async function (participant) {
   this.removeExistingOrderById(id);
 
   // participate
-  event._participants[entryOrder] = id;
+  event.participants[entryOrder] = id;
   this.markModified('events');
   await this.save();
 

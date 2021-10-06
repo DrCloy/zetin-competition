@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const participantSchema = new mongoose.Schema(
   {
     _competitionId: { type: String, required: true },
-    eventId: { type: String, required: true },
+    _eventId: { type: String, required: true },
     name: { type: String, required: true },
     email: { type: String, required: true },
     team: String,
