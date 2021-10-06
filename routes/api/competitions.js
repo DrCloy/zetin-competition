@@ -48,11 +48,6 @@ router.post('/', async (req, res, next) => {
   try {
     let document = new Competition(req.body);
 
-    // fill out the participants array of events with null
-    document.events.forEach((event) => {
-      event._participants = new Array(event.numb).fill(null);
-    });
-
     document = await document.save(); // save
     res.status(200).json(document);
   } catch (err) {
