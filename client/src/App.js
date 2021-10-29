@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import Competition from './pages/Competition';
 import CompetitionEdit from './pages/CompetitionEdit';
 import Rule from './pages/Rule';
+import Entry from './pages/Entry';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             component={CompetitionEdit}
           />
           <Route path="/competitions/:id" component={Competition} />
+          <Route path={['/entry/:competitionId']} component={Entry} />
           <Route path="/makerule" component={Rule}></Route>
           <Route path="/">
             <Home />
