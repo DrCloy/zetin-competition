@@ -51,7 +51,22 @@ function Competition() {
         <CompetitionView data={competition} />
         <div className="fixed-bottom w-100 bg-light border-top">
           <div className="container p-3 text-right">
-            <Button onClick={() => history.push(`/competitions/edit/${id}`)}>
+            <Button
+              variant="primary"
+              onClick={() => history.push(`/entry/${id}`)}
+            >
+              참가
+            </Button>{' '}
+            <Button
+              variant="secondary"
+              onClick={() => history.push(`/participants/${id}`)}
+            >
+              참가자 목록
+            </Button>{' '}
+            <Button
+              variant="secondary"
+              onClick={() => history.push(`/competitions/edit/${id}`)}
+            >
               수정
             </Button>{' '}
             <Button variant="danger" onClick={handleDeleteCompetition}>
