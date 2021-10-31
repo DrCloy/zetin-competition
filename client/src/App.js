@@ -9,6 +9,7 @@ import Competition from './pages/Competition';
 import CompetitionEdit from './pages/CompetitionEdit';
 import Rule from './pages/Rule';
 import Entry from './pages/Entry';
+import Participant from './pages/Participant';
 
 function App() {
   return (
@@ -27,7 +28,8 @@ function App() {
           />
           <Route path="/competitions/:id" component={Competition} />
           <Route path={['/entry/:competitionId']} component={Entry} />
-          <Route path="/makerule" component={Rule}></Route>
+          <Route path="/participants/:competitionId" component={Participant} />
+          <Route path="/makerule" component={Rule} />
           <Route path="/">
             <Home />
             <footer className="mt-5">
