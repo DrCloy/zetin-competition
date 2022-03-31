@@ -8,7 +8,7 @@ module.exports = function (app) {
   app.use(
     ['/api', '/files'],
     createProxyMiddleware({
-      target: 'https://linetracer-comp.run.goorm.io',
+      target: 'http://localhost:8000',
       changeOrigin: true,
     }),
   );
