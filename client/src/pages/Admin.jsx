@@ -7,16 +7,16 @@ import AdminLoginForm from '../forms/AdminLoginForm';
 function Admin() {
   const sidebarPages = [
     {
-      name: '대회 페이지 목록',
-      component: <div>Competition Page List</div>,
+      name: '페이지1',
+      component: <div>페이지1 컴포넌트</div>,
     },
     {
-      name: '대회 규정 목록',
-      component: <div>Competition Rule List</div>,
+      name: '페이지2',
+      component: <div>페이지2 컴포넌트</div>,
     },
     {
-      name: '참가자 목록',
-      component: <div>Participant List</div>,
+      name: '페이지3',
+      component: <div>페이지3 컴포넌트</div>,
     },
   ];
 
@@ -26,8 +26,6 @@ function Admin() {
   const sidebarHandleClick = (clickedPage) => {
     setPageName(clickedPage.name);
     setPage(clickedPage.component);
-
-    console.log(pageName, page);
   };
 
   return (
@@ -43,6 +41,7 @@ function Admin() {
               key={page.name}
               onClick={() => sidebarHandleClick(page)}
               action
+              className={pageName === page.name ? 'active' : ''}
             >
               {page.name}
             </ListGroup.Item>
