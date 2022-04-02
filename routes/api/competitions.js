@@ -2,6 +2,7 @@
 const router = require('express').Router();
 const Competition = require('../../models/competition');
 const createError = require('http-errors');
+const admin = require('../../middlewares/admin')();
 
 // Response competition collection
 // (with createdAt, updatedAt, date, regDateEnd, regDateStart, name, posterId)
@@ -73,15 +74,18 @@ router.patch('/:id', async (req, res, next) => {
 });
 
 // Delete competition document by id
-router.delete('/:id', async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    let document = await Competition.findByIdAndDelete(id);
+router.delete('/:id', [
+  admin,
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      let document = await Competition.findByIdAndDelete(id);
 
-    res.status(200).json(document);
-  } catch (err) {
-    next(createError(500, err));
-  }
-});
+      res.status(200).json(document);
+    } catch (err) {
+      next(createError(500, err));
+    }
+  },
+]);
 
 module.exports = router;
