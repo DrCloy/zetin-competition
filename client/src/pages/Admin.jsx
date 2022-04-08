@@ -1,54 +1,73 @@
 import './Admin.css';
 import React, { useState } from 'react';
 
-import ListGroup from 'react-bootstrap/ListGroup';
 import AdminLoginForm from '../forms/AdminLoginForm';
 
+import CompetitionEdit from './CompetitionEdit';
+import Rule from './Rule';
+
+/* Bootstrap Components */
+import Container from 'react-bootstrap/Container';
+import Button from 'react-bootstrap/Button';
+import ListGroup from 'react-bootstrap/ListGroup';
+
+/* Admin Page */
 function Admin() {
-  const sidebarPages = [
+  const [pageIndex, setPageIndex] = useState(0);
+  const [token, setToken] = useState(null);
+
+  const pages = [
+    { name: '대시보드', component: <div>Home</div> },
     {
-      name: '페이지1',
-      component: <div>페이지1 컴포넌트</div>,
+      name: '라인트레이서 대회 페이지 개설',
+      component: <CompetitionEdit token={token} />,
     },
     {
-      name: '페이지2',
-      component: <div>페이지2 컴포넌트</div>,
-    },
-    {
-      name: '페이지3',
-      component: <div>페이지3 컴포넌트</div>,
+      name: '대회 규정 만들기',
+      component: <Rule token={token} />,
     },
   ];
 
-  const [pageName, setPageName] = useState('');
-  const [page, setPage] = useState(<div></div>);
-
-  const sidebarHandleClick = (clickedPage) => {
-    setPageName(clickedPage.name);
-    setPage(clickedPage.component);
-  };
-
   return (
     <>
-      <div className="sidebar bg-light">
+      {/* sidebar section */}
+      <div className="sidebar bg-light border-right">
         <h3>ZETIN Competition Admin Page</h3>
+        {/* admin login component */}
         <hr />
-        <AdminLoginForm />
+        {token ? (
+          <div>
+            Welcome, administrator.{' '}
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setToken(null)}
+            >
+              Sign out
+            </Button>
+          </div>
+        ) : (
+          <AdminLoginForm onAdminLogin={(t) => setToken(t)} />
+        )}
+        {/* admin service components */}
         <hr />
         <ListGroup>
-          {sidebarPages.map((page) => (
+          {pages.map((page, index) => (
             <ListGroup.Item
               key={page.name}
-              onClick={() => sidebarHandleClick(page)}
+              onClick={() => setPageIndex(index)}
               action
-              className={pageName === page.name ? 'active' : ''}
+              className={pageIndex === index ? 'active' : ''}
             >
               {page.name}
             </ListGroup.Item>
           ))}
         </ListGroup>
       </div>
-      <div className="page">{page}</div>
+      {/* page section */}
+      <div className="container-page">
+        <Container>{pages[pageIndex].component}</Container>
+      </div>
     </>
   );
 }

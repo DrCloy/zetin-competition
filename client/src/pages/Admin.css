@@ -9,10 +9,9 @@
   height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
-  border-right: 1px solid #eee;
 }
 
-.page {
+.container-page {
   margin-left: 320px;
   padding: 24px;
 }
