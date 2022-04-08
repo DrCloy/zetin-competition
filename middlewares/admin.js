@@ -46,6 +46,8 @@ function admin() {
         // verify whether the user of given token is one of the valid administrators.
         if (ADMINS.indexOf(username) > -1) {
           next();
+        } else {
+          next(createError(401, 'You are not administrator.'));
         }
       } catch (err) {
         // If verification is failed, throw an error.
