@@ -1,5 +1,5 @@
 /* Packages */
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 /* Bootstrap */
@@ -8,57 +8,60 @@ import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 
 function AdminLoginForm(props) {
-  const { register, handleSubmit, formState } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm();
 
-  // Component: Login Button
-  const LoginButton = () => {
-    const { isSubmitting, isValid } = formState;
+  // for storing and printing error message
+  const [errorMessage, setErrorMessage] = useState('');
 
-    // login function with zetin auth api
-    const login = async (user) => {
-      const token = await getZetinJwt(user);
+  // form submit handler
+  const handleAuth = handleSubmit(async (user) => {
+    try {
+      const resToken = await axios.post('/api/auth/admin', user);
+      const token = resToken.data;
 
-      console.log(token);
-    };
-
-    return (
-      <>
-        {}
-        <Button variant="primary" onClick={handleSubmit(login)}>
-          로그인
-        </Button>
-      </>
-    );
-  };
+      props.onAdminLogin && props.onAdminLogin(token); // lifting up token information
+      setErrorMessage('');
+    } catch (err) {
+      setErrorMessage(err.response.data);
+    }
+  });
 
   return (
-    <Form>
-      {/* ID Input */}
+    <Form onSubmit={handleAuth}>
       <Form.Group controlId="userID">
-        <Form.Label>ID</Form.Label>
-        <Form.Control type="id" {...register('id', { required: true })} />
+        <Form.Label>Username</Form.Label>
+        <Form.Control
+          type="id"
+          {...register('id', { required: true })}
+          isInvalid={errors.id}
+        />
+        <Form.Control.Feedback type="invalid">
+          Please enter your username of ZETIN service.
+        </Form.Control.Feedback>
       </Form.Group>
 
-      {/* Password Input */}
       <Form.Group controlId="userPW">
-        <Form.Label>PW</Form.Label>
-        <Form.Control type="password" {...register('pw', { required: true })} />
+        <Form.Label>Password</Form.Label>
+        <Form.Control
+          type="password"
+          {...register('pw', { required: true })}
+          isInvalid={errors.pw}
+        />
+        <Form.Control.Feedback type="invalid">
+          Please enter the password.
+        </Form.Control.Feedback>
       </Form.Group>
 
-      <LoginButton />
+      <Button variant="primary" type="submit" disabled={isSubmitting}>
+        {isSubmitting ? 'Signing in ...' : 'Sign in'}
+      </Button>
+      <small className="d-block text-danger mt-2">{errorMessage}</small>
     </Form>
   );
-}
-
-async function getZetinJwt(user) {
-  const resToken = await axios.post('https://auth.zetin.uos.ac.kr/auth', user);
-  const { status, token } = resToken.data;
-
-  if (status === 'success') {
-    return token;
-  } else {
-    throw new Error('로그인에 실패했습니다. ID 및 PW를 확인해주세요.');
-  }
 }
 
 export default AdminLoginForm;
