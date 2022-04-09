@@ -2,9 +2,10 @@ import './Admin.css';
 import React, { useState } from 'react';
 
 import AdminLoginForm from '../forms/AdminLoginForm';
+import CompetitionForm from '../forms/CompetitionForm';
 
-import CompetitionEdit from './CompetitionEdit';
 import Rule from './Rule';
+import Home from './Home';
 
 /* Bootstrap Components */
 import Container from 'react-bootstrap/Container';
@@ -17,10 +18,18 @@ function Admin() {
   const [token, setToken] = useState(null);
 
   const pages = [
-    { name: '대시보드', component: <div>Home</div> },
+    { name: '대시보드', component: <Home /> },
     {
       name: '라인트레이서 대회 페이지 개설',
-      component: <CompetitionEdit token={token} />,
+      component: (
+        <CompetitionForm
+          token={token}
+          onSubmitSuccess={(id) => {
+            alert(`대회 페이지를 성공적으로 개설하였습니다. ID: ${id}`);
+            setPageIndex(0);
+          }}
+        />
+      ),
     },
     {
       name: '대회 규정 만들기',
@@ -66,7 +75,14 @@ function Admin() {
       </div>
       {/* page section */}
       <div className="container-page">
-        <Container>{pages[pageIndex].component}</Container>
+        {token ? (
+          <Container>{pages[pageIndex].component}</Container>
+        ) : (
+          <div>
+            <h1>Blocked!</h1>
+            <p>관리자 로그인이 필요합니다.</p>
+          </div>
+        )}
       </div>
     </>
   );

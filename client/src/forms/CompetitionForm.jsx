@@ -1,7 +1,6 @@
 /* Dependencies */
 import React, { useState, useEffect } from 'react';
 import { Formik, Form as FormikForm, useFormikContext } from 'formik';
-import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import * as yup from 'yup';
 import moment from 'moment';
@@ -68,12 +67,11 @@ const yupSchema = yup.object({
 
 // CompetitionForm component
 const CompetitionForm = (props) => {
-  const { data } = props;
+  const { data, token, onSubmitSuccess } = props;
 
   const [poster, setPoster] = useState(null);
   const [posterChanged, setPosterChanged] = useState(false);
   const [rules, setRules] = useState([]);
-  const history = useHistory();
 
   useEffect(() => {
     const getPosterBlob = (posterId) => {
@@ -144,16 +142,21 @@ const CompetitionForm = (props) => {
       // post competition values
       if (!data) {
         // create new competition document
-        competitionDoc = await axios.post(`/api/competitions`, competition);
+        competitionDoc = await axios.post(`/api/competitions`, competition, {
+          headers: { authorization: `${token}` },
+        });
       } else {
         // modify competition document
         competitionDoc = await axios.patch(
           `/api/competitions/${data._id}`,
           competition,
+          {
+            headers: { authorization: `${token}` },
+          },
         );
       }
 
-      history.push(`/competitions/${competitionDoc.data._id}`);
+      onSubmitSuccess(competitionDoc.data._id);
       formikBag.setStatus(undefined);
     } catch (err) {
       console.error(err);

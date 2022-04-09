@@ -45,33 +45,39 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // Create new competition document
-router.post('/', async (req, res, next) => {
-  try {
-    let document = new Competition(req.body);
+router.post('/', [
+  admin,
+  async (req, res, next) => {
+    try {
+      let document = new Competition(req.body);
 
-    document = await document.save(); // save
-    res.status(200).json(document);
-  } catch (err) {
-    next(createError(500, err));
-  }
-});
+      document = await document.save(); // save
+      res.status(200).json(document);
+    } catch (err) {
+      next(createError(500, err));
+    }
+  },
+]);
 
 // Update competition document to request data
-router.patch('/:id', async (req, res, next) => {
-  try {
-    let document = await Competition.findById(req.params.id);
+router.patch('/:id', [
+  admin,
+  async (req, res, next) => {
+    try {
+      let document = await Competition.findById(req.params.id);
 
-    // replace current fields with requested fields
-    Object.keys(req.body).forEach((field) => {
-      document[field] = req.body[field];
-    });
+      // replace current fields with requested fields
+      Object.keys(req.body).forEach((field) => {
+        document[field] = req.body[field];
+      });
 
-    document = await document.save(); // save
-    res.status(200).json(document);
-  } catch (err) {
-    next(createError(500, err));
-  }
-});
+      document = await document.save(); // save
+      res.status(200).json(document);
+    } catch (err) {
+      next(createError(500, err));
+    }
+  },
+]);
 
 // Delete competition document by id
 router.delete('/:id', [
