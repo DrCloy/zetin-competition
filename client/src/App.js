@@ -7,6 +7,7 @@ import Competition from './pages/Competition';
 import Rule from './pages/Rule';
 import Entry from './pages/Entry';
 import Participant from './pages/Participant';
+import Home from './pages/Home';
 
 function App() {
   return (
@@ -16,7 +17,8 @@ function App() {
         <Route path={['/entry/:competitionId']} component={Entry} />
         <Route path="/participants/:competitionId" component={Participant} />
         <Route path="/makerule" component={Rule} />
-        <Route path="/admin" component={Admin}></Route>
+        <Route path="/admin" component={Admin} />
+        <Route path="/" component={Home} />
       </Switch>
     </Router>
   );

@@ -1,41 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import CompetitionCardView from '../components/CompetitionCardView';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
-class Home extends React.Component {
-  constructor(props) {
-    super(props);
+import CompetitionCard from '../components/CompetitionCard';
 
-    this.state = {
-      competitions: [],
-      loaded: false,
-      error: '',
-    };
-  }
+function Home() {
+  const [competitions, setCompetitions] = useState([]);
 
-  componentDidMount() {
-    axios
-      .get('/api/competitions')
-      .then((res) => {
-        const competitions = res.data.slice();
-        this.setState({ competitions, loaded: true });
-      })
-      .catch((err) => {
-        this.setState({ error: 'Failed to get competitions' });
-      });
-  }
+  useEffect(() => {
+    axios.get('/api/competitions').then((res) => {
+      setCompetitions(res.data);
+    });
+  }, []);
 
-  render() {
-    return (
-      <>
-        <h2 className="my-4 text-center">{this.props.title}</h2>
-        {this.state.loaded ? (
-          <CompetitionCardView data={this.state.competitions} />
-        ) : null}
-      </>
-    );
-  }
+  return (
+    <Container className="px-4 py-2" fluid="xl">
+      <Row xs={1} sm={3} lg={4}>
+        {competitions.map((comp) => (
+          <Col className="p-2" key={comp._id}>
+            <CompetitionCard data={comp} />
+          </Col>
+        ))}
+      </Row>
+    </Container>
+  );
 }
 
 export default Home;
