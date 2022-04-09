@@ -156,11 +156,10 @@ const CompetitionForm = (props) => {
         );
       }
 
-      onSubmitSuccess(competitionDoc.data._id);
+      onSubmitSuccess && onSubmitSuccess(competitionDoc.data._id);
       formikBag.setStatus(undefined);
     } catch (err) {
-      console.error(err);
-      formikBag.setStatus(new Error('제출 중 오류가 발생했습니다.'));
+      formikBag.setStatus(err);
     }
   };
 
@@ -297,7 +296,9 @@ const SubmitButton = (props) => {
   if (!isValid && !!submitCount) {
     error = '대회 페이지 입력이 유효하지 않습니다.';
   } else if (status instanceof Error) {
-    error = status.message;
+    error = status.response
+      ? status.response.data
+      : '알 수 없는 오류가 발생했습니다.';
   }
 
   return (
