@@ -1,44 +1,35 @@
-import React from 'react';
+import './CompetitionCard.css';
+
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import Card from 'react-bootstrap/Card';
 
-import './CompetitionCard.css';
+function CompetitionCard(props) {
+  const {
+    data: { _id, name, posterId },
+  } = props;
 
-class CompetitionCard extends React.Component {
-  constructor(props) {
-    super(props);
+  const [source, setSource] = useState(`/api/files/${posterId}?thumbnail=true`);
+  const [error, setError] = useState(null);
 
-    this.state = {
-      src: `/api/files/${props.data.posterId}?thumbnail=true`,
-      errored: false,
-    };
-
-    this.handleError = this.handleError.bind(this);
-  }
-
-  handleError() {
-    if (!this.state.errored) {
-      this.setState({
-        src: 'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==',
-        errored: true,
-      });
+  const handleError = () => {
+    if (!error) {
+      setSource(
+        'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==',
+      );
+      setError(new Error('Image not found.'));
     }
-  }
+  };
 
-  render() {
-    const { _id, name } = this.props.data;
-    const { src } = this.state;
-
-    return (
-      <Card className="card-competition" as={Link} to={`/competitions/${_id}`}>
-        <Card.Img variant="top" src={src} onError={this.handleError} />
-        <Card.Body className="text-dark">
-          <Card.Title>{name}</Card.Title>
-        </Card.Body>
-      </Card>
-    );
-  }
+  return (
+    <Card className="card-competition" as={Link} to={`/competitions/${_id}`}>
+      <Card.Img variant="top" src={source} onError={handleError} />
+      <Card.Body className="text-dark">
+        <Card.Title>{name}</Card.Title>
+      </Card.Body>
+    </Card>
+  );
 }
 
 export default CompetitionCard;
