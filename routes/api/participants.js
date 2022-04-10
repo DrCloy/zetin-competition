@@ -1,10 +1,14 @@
 /* Dependencies */
 const router = require('express').Router();
 const createError = require('http-errors');
+const bcrypt = require('bcrypt');
 
 /* Models */
 const Competition = require('../../models/competition');
 const Participant = require('../../models/participant');
+const Password = require('../../models/password');
+
+const BCRYPT_SALT = 12;
 
 router.get('/', async (req, res, next) => {
   try {
@@ -51,6 +55,12 @@ router.get('/:id', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
+    // check existance of password
+    const plain = req.body.password;
+    if (!plain) {
+      return next(createError(400, 'Password information not found'));
+    }
+
     // create new document
     let participant = new Participant(req.body);
 
@@ -67,6 +77,18 @@ router.post('/', async (req, res, next) => {
     }
 
     await participant.save();
+
+    // create Password document
+    const hash = await bcrypt.hash(plain, BCRYPT_SALT); // hash password
+
+    let password = new Password({
+      targetId: participant._id,
+      digest: 'bcrypt',
+      hash,
+    });
+
+    await password.save();
+
     res.send(participant);
   } catch (err) {
     next(createError(500, err));
@@ -81,6 +103,12 @@ router.patch('/:id', async (req, res, next) => {
     let participant = await Participant.findById(id);
     if (!participant) {
       next(createError(404, 'Participant document not found'));
+    }
+
+    // password verification
+    const password = await Password.verify(id, req.headers['authorization']);
+    if (!password) {
+      return next(createError(401, 'Authentication failed')); // verification fail
     }
 
     // replace current fields with requested fields
@@ -111,7 +139,21 @@ router.delete('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    let participant = await Participant.findByIdAndDelete(id);
+    let participant = await Participant.findById(id);
+    if (!participant) {
+      return next(createError(404, 'Participant document not found'));
+    }
+
+    // password verification
+    const password = await Password.verify(id, req.headers['authorization']);
+    if (password) {
+      await Password.findByIdAndDelete(password._id); // password deletion
+    } else {
+      return next(createError(401, 'Authentication failed')); // verification fail
+    }
+
+    // document deletion
+    participant = await Participant.findByIdAndDelete(id);
     if (participant) {
       let competition = await Competition.findById(participant._competitionId);
       if (competition) {
