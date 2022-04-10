@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
-import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Image from 'react-bootstrap/Image';
 
 import CompetitionView from '../components/CompetitionView';
-import PageNotFound from '../components/PageNotFound';
 
 function Competition() {
   const [competition, setCompetition] = useState(null);
-  const [isError, setIsError] = useState(false);
-
   const { id } = useParams();
-  const history = useHistory();
 
   // get the competition document correspond to the id
   useEffect(() => {
@@ -20,62 +19,35 @@ function Competition() {
       .get(`/api/competitions/${id}`)
       .then((res) => {
         setCompetition(res.data);
-        setIsError(false);
       })
       .catch((err) => {
         setCompetition(null);
-        setIsError(err);
       });
   }, [id]);
 
-  // delete the competition document
-  const handleDeleteCompetition = () => {
-    (async () => {
-      try {
-        const { data } = await axios.delete(`/api/competitions/${id}`);
-        if (data.posterId) {
-          await axios.delete(`/api/files/${data.posterId}`);
-        }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        history.push('/');
-      }
-    })();
-  };
+  if (competition) {
+    const { posterId } = competition;
 
-  if (isError) return <PageNotFound />;
-  if (competition)
     return (
-      <>
-        <CompetitionView data={competition} />
-        <div className="fixed-bottom w-100 bg-light border-top">
-          <div className="container p-3 text-right">
-            <Button
-              variant="primary"
-              onClick={() => history.push(`/entry/${id}`)}
-            >
-              참가
-            </Button>{' '}
-            <Button
-              variant="secondary"
-              onClick={() => history.push(`/participants/${id}`)}
-            >
-              참가자 목록
-            </Button>{' '}
-            <Button
-              variant="secondary"
-              onClick={() => history.push(`/competitions/edit/${id}`)}
-            >
-              수정
-            </Button>{' '}
-            <Button variant="danger" onClick={handleDeleteCompetition}>
-              삭제
-            </Button>
-          </div>
-        </div>
-      </>
+      <Container>
+        <Row xs={1} sm={2}>
+          <Col sm={5}>
+            <a href={`/api/files/${posterId}`} target="_blank" rel="noreferrer">
+              <Image
+                className="w-100 mb-2"
+                src={`/api/files/${posterId}?thumbnail=true`}
+                rounded
+              />
+            </a>
+          </Col>
+          <Col sm={7}>
+            <CompetitionView data={competition} />
+          </Col>
+        </Row>
+      </Container>
     );
+  }
+
   return null;
 }
 
