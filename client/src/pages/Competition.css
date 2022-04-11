@@ -1,0 +1,20 @@
+.competition-nav {
+  border-radius: 0.25rem;
+}
+
+.competition-nav .nav-link {
+  color: #343a40;
+  padding: 0.4rem 0.8rem;
+  margin-right: 0.1rem;
+}
+
+.competition-nav .nav-link:hover {
+  color: #000;
+  text-decoration: underline;
+}
+
+.competition-nav .nav-link.active {
+  text-decoration: none;
+  background-color: #343a40;
+  color: #fff;
+}
