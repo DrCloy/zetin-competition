@@ -9,7 +9,7 @@ import Modal from 'react-bootstrap/Modal';
 const md = new MarkdownIt();
 
 function CompetitionView(props) {
-  const { data } = props;
+  const { data, hideTitle } = props;
   const [ruleData, setRuleData] = useState(null);
   const [showMap, setShowMap] = useState(false);
 
@@ -40,7 +40,11 @@ function CompetitionView(props) {
 
   return (
     <div>
-      <h2 className="font-weight-bold">{name}</h2>
+      {hideTitle ? null : (
+        <h2 className="font-weight-bold" style={{ wordBreak: 'keep-all' }}>
+          {name}
+        </h2>
+      )}
       {fieldWrapper(
         desc,
         <div dangerouslySetInnerHTML={{ __html: md.render(desc) }}></div>,
