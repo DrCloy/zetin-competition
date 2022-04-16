@@ -36,6 +36,7 @@ const initialValues = {
   comment: '',
 };
 
+let newForm = true;
 const yupSchema = yup.object({
   name: yup.string().required('이름을 입력해주세요.'),
   email: yup
@@ -45,6 +46,20 @@ const yupSchema = yup.object({
   robotName: yup.string().required('로봇의 이름을 입력해주세요.'),
   eventId: yup.string().required('참가 부문을 선택해주세요.'),
   entryOrder: yup.number().required('참가 순번을 입력해주세요.'),
+  newPassword: yup
+    .string()
+    .test(
+      'isRequiredField',
+      '비밀번호를 입력해주세요.',
+      (value, context) => newForm && value,
+    ),
+  newPasswordCheck: yup
+    .string()
+    .test(
+      'isEqualToNewPassword',
+      '입력한 비밀번호가 서로 일치하지 않습니다.',
+      (value, context) => value === context.parent.newPassword,
+    ),
 });
 
 // EntryForm component
@@ -60,13 +75,24 @@ const EntryForm = (props) => {
       // for backend spec
       values._eventId = values.eventId;
       delete values.eventId;
+      if (values.newPassword) {
+        values.password = values.newPassword;
+      }
+      delete values.newPassword;
+      delete values.newPasswordCheck;
+      const password = values.currentPassword;
+      delete values.currentPassword;
+
+      console.log(values);
 
       if (competition) {
         values._competitionId = competition._id;
       }
 
       if (data) {
-        response = await axios.patch(`/api/participants/${data._id}`, values);
+        response = await axios.patch(`/api/participants/${data._id}`, values, {
+          headers: { authorization: `${password}` },
+        });
       } else {
         response = await axios.post(`/api/participants`, values);
       }
@@ -89,13 +115,15 @@ const EntryForm = (props) => {
         {/* <FormikEffect competition={competition} /> */}
         <h3>인적 사항</h3>
         <p className="text-muted">참가자의 정보를 입력해주세요.</p>
-        <Row xs={1} md={3}>
+        <Row xs={1} md={2}>
           <Col>
             <TextField label="이름" name="name" controlId="entryName" />
           </Col>
           <Col>
             <TextField label="이메일" name="email" controlId="entryEmail" />
           </Col>
+        </Row>
+        <Row xs={1}>
           <Col>
             <TextField label="소속" name="team" controlId="entryTeam" />
           </Col>
@@ -179,6 +207,40 @@ const EntryForm = (props) => {
           controlId="entryComment"
         />
         <hr />
+        <h3>참가자 인증 수단</h3>
+        <p className="text-muted">
+          참가자 본인을 식별할 비밀번호를 입력해주세요.
+        </p>
+        {data ? (
+          <Row xs={1}>
+            <Col>
+              <TextField
+                label="현재 비밀번호"
+                name="currentPassword"
+                controlId="entryCurrentPassword"
+                password
+              />
+            </Col>
+          </Row>
+        ) : null}
+        <Row xs={1} md={2}>
+          <Col>
+            <TextField
+              label="새 비밀번호"
+              name="newPassword"
+              controlId="entryNewPassword"
+              password
+            />
+          </Col>
+          <Col>
+            <TextField
+              label="새 비밀번호 확인"
+              name="newPasswordCheck"
+              controlId="entryNewPasswordCheck"
+              password
+            />
+          </Col>
+        </Row>
         <SubmitButton /> <FormikPreviewButton />
       </Form>
     </Formik>
