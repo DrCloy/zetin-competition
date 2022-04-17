@@ -8,7 +8,6 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
-import Tab from 'react-bootstrap/Tab';
 import Nav from 'react-bootstrap/Nav';
 
 import CompetitionView from '../components/CompetitionView';
@@ -16,8 +15,24 @@ import EntryForm from '../forms/EntryForm';
 import ParticipantTable from '../components/ParticipantTable';
 
 function Competition() {
+  const [contentIndex, setContentIndex] = useState(0);
   const [competition, setCompetition] = useState(null);
   const { id } = useParams();
+
+  const contents = [
+    {
+      name: '대회 정보',
+      component: <CompetitionView data={competition} hideTitle />,
+    },
+    {
+      name: '참가 신청',
+      component: <EntryForm competition={competition} />,
+    },
+    {
+      name: '참가자 목록',
+      component: <ParticipantTable competition={competition} />,
+    },
+  ];
 
   // get the competition document correspond to the id
   useEffect(() => {
@@ -35,62 +50,43 @@ function Competition() {
     const { name, posterId } = competition;
 
     return (
-      <Tab.Container defaultActiveKey="view">
-        <Container className="my-3" fluid="xl">
-          <Row xs={1} sm={2}>
-            <Col sm={5}>
-              <a
-                href={`/api/files/${posterId}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Image
-                  className="w-100 mb-2"
-                  src={`/api/files/${posterId}?thumbnail=true`}
-                  rounded
-                />
-              </a>
-            </Col>
-            <Col sm={7}>
-              <h2
-                className="font-weight-bold mb-3"
-                style={{ wordBreak: 'keep-all' }}
-              >
-                {name}
-              </h2>
-              <Nav
-                variant="pills"
-                className="competition-nav mb-3 rounded bg-light p-2"
-              >
+      <Container className="my-3" fluid="xl">
+        <Row xs={1} sm={2}>
+          <Col sm={5}>
+            <a href={`/api/files/${posterId}`} target="_blank" rel="noreferrer">
+              <Image
+                className="w-100 mb-2"
+                src={`/api/files/${posterId}?thumbnail=true`}
+                rounded
+              />
+            </a>
+          </Col>
+          <Col sm={7}>
+            <h2
+              className="font-weight-bold mb-3"
+              style={{ wordBreak: 'keep-all' }}
+            >
+              {name}
+            </h2>
+            <Nav
+              variant="pills"
+              className="competition-nav mb-3 rounded bg-light p-2"
+            >
+              {contents.map((value, index) => (
                 <Nav.Item>
-                  <Nav.Link eventKey="view">대회 정보</Nav.Link>
+                  <Nav.Link
+                    className={index === contentIndex ? 'active' : ''}
+                    onClick={() => setContentIndex(index)}
+                  >
+                    {value.name}
+                  </Nav.Link>
                 </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link eventKey="entry">참가 신청</Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link eventKey="list">참가자 목록</Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link eventKey="result">경연 결과</Nav.Link>
-                </Nav.Item>
-              </Nav>
-              <Tab.Content>
-                <Tab.Pane eventKey="view">
-                  <CompetitionView data={competition} hideTitle />
-                </Tab.Pane>
-                <Tab.Pane eventKey="entry">
-                  <EntryForm competition={competition} />
-                </Tab.Pane>
-                <Tab.Pane eventKey="list">
-                  <ParticipantTable competition={competition} />
-                </Tab.Pane>
-                <Tab.Pane eventKey="result">경연 결과</Tab.Pane>
-              </Tab.Content>
-            </Col>
-          </Row>
-        </Container>
-      </Tab.Container>
+              ))}
+            </Nav>
+            {contents[contentIndex].component}
+          </Col>
+        </Row>
+      </Container>
     );
   }
 
