@@ -54,9 +54,10 @@ const ParticipantTable = (props) => {
           <td>
             <a
               href={`#${robotName}`}
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.preventDefault();
-                onParticipantClick && onParticipantClick(value);
+                const res = await axios.get(`/api/participants/${_id}`);
+                onParticipantClick && onParticipantClick(res.data);
               }}
             >
               {robotName}
