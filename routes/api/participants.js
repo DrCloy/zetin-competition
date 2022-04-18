@@ -41,9 +41,16 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
   try {
-    let participant = await Participant.findById(req.params.id);
+    const { id } = req.params;
+    let participant = await Participant.findById(id);
 
     if (participant) {
+      // password verification
+      const password = await Password.verify(id, req.headers['authorization']);
+      if (!password) {
+        // verification fail, remove sensitive information from response
+        participant['email'] = null;
+      }
       res.json(participant);
     } else {
       return next(createError(404, 'Participant not found'));
