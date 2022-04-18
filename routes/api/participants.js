@@ -174,4 +174,23 @@ router.delete('/:id', async (req, res, next) => {
   }
 });
 
+router.options('/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // password verification
+    const password = await Password.verify(id, req.headers['authorization']);
+    if (password) {
+      // https://developer.mozilla.org/ko/docs/Web/HTTP/Methods/OPTIONS
+      res.header('Allow', 'OPTIONS, GET, PATCH, DELETE');
+    } else {
+      res.header('Allow', 'OPTIONS, GET');
+    }
+
+    res.sendStatus(200);
+  } catch (err) {
+    next(createError(500, err));
+  }
+});
+
 module.exports = router;
