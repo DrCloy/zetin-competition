@@ -9,10 +9,38 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import Nav from 'react-bootstrap/Nav';
+import Button from 'react-bootstrap/Button';
 
 import CompetitionView from '../components/CompetitionView';
 import EntryForm from '../forms/EntryForm';
 import ParticipantTable from '../components/ParticipantTable';
+import ParticipantView from '../components/ParticipantView';
+
+function ParticipantContent(props) {
+  const { competition } = props;
+  const [participant, setParticipant] = useState(null);
+
+  return participant ? (
+    <div className="">
+      <div className="text-right">
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => setParticipant(null)}
+        >
+          목록으로
+        </Button>
+      </div>
+      <ParticipantView participant={participant} />
+    </div>
+  ) : (
+    <ParticipantTable
+      competition={competition}
+      countPerPage={10}
+      onParticipantClick={(data) => setParticipant(data)}
+    />
+  );
+}
 
 function Competition() {
   const [contentIndex, setContentIndex] = useState(0);
@@ -30,7 +58,7 @@ function Competition() {
     },
     {
       name: '참가자 목록',
-      component: <ParticipantTable competition={competition} />,
+      component: <ParticipantContent competition={competition} />,
     },
   ];
 
@@ -53,7 +81,12 @@ function Competition() {
       <Container className="my-3" fluid="xl">
         <Row xs={1} sm={2}>
           <Col sm={5}>
-            <a href={`/api/files/${posterId}`} target="_blank" rel="noreferrer">
+            <a
+              href={`/api/files/${posterId}`}
+              target="_blank"
+              rel="noreferrer"
+              title="새 창에서 포스터 보기"
+            >
               <Image
                 className="w-100 mb-2"
                 src={`/api/files/${posterId}?thumbnail=true`}
