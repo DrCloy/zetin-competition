@@ -36,7 +36,6 @@ const initialValues = {
   comment: '',
 };
 
-let newForm = true;
 const yupSchema = yup.object({
   name: yup.string().required('이름을 입력해주세요.'),
   email: yup
@@ -46,13 +45,6 @@ const yupSchema = yup.object({
   robotName: yup.string().required('로봇의 이름을 입력해주세요.'),
   eventId: yup.string().required('참가 부문을 선택해주세요.'),
   entryOrder: yup.number().required('참가 순번을 입력해주세요.'),
-  newPassword: yup
-    .string()
-    .test(
-      'isRequiredField',
-      '비밀번호를 입력해주세요.',
-      (value, context) => newForm && value,
-    ),
   newPasswordCheck: yup
     .string()
     .test(
@@ -64,7 +56,7 @@ const yupSchema = yup.object({
 
 // EntryForm component
 const EntryForm = (props) => {
-  const { competition, data } = props;
+  const { competition, data, password } = props;
 
   const history = useHistory();
 
@@ -80,10 +72,6 @@ const EntryForm = (props) => {
       }
       delete values.newPassword;
       delete values.newPasswordCheck;
-      const password = values.currentPassword;
-      delete values.currentPassword;
-
-      console.log(values);
 
       if (competition) {
         values._competitionId = competition._id;
@@ -112,7 +100,7 @@ const EntryForm = (props) => {
       onSubmit={handleSubmit}
     >
       <Form noValidate>
-        {/* <FormikEffect competition={competition} /> */}
+        <FormikEffect data={data} />
         <h3>인적 사항</h3>
         <p className="text-muted">참가자의 정보를 입력해주세요.</p>
         <Row xs={1} md={2}>
@@ -211,18 +199,6 @@ const EntryForm = (props) => {
         <p className="text-muted">
           참가자 본인을 식별할 비밀번호를 입력해주세요.
         </p>
-        {data ? (
-          <Row xs={1}>
-            <Col>
-              <TextField
-                label="현재 비밀번호"
-                name="currentPassword"
-                controlId="entryCurrentPassword"
-                password
-              />
-            </Col>
-          </Row>
-        ) : null}
         <Row xs={1} md={2}>
           <Col>
             <TextField
@@ -245,6 +221,23 @@ const EntryForm = (props) => {
       </Form>
     </Formik>
   );
+};
+
+// side effect processing component
+const FormikEffect = (props) => {
+  const { data } = props;
+  const { resetForm } = useFormikContext();
+
+  // side effect for changing competition data
+  useEffect(() => {
+    const values = { ...initialValues, ...data };
+    if (data && data._eventId) {
+      values.eventId = data._eventId;
+    }
+    resetForm({ values });
+  }, [data, resetForm]);
+
+  return null;
 };
 
 // submit button component (CompetitionForm.jsx에 공통적으로 있는 컴포넌트임.)
