@@ -118,6 +118,14 @@ router.patch('/:id', async (req, res, next) => {
       return next(createError(401, 'Authentication failed')); // verification fail
     }
 
+    // password update
+    const newPassword = req.body.password;
+    if (newPassword) {
+      password.digest = 'bcrypt';
+      password.hash = await bcrypt.hash(newPassword, BCRYPT_SALT);
+      await password.save();
+    }
+
     // replace current fields with requested fields
     Object.keys(req.body).forEach((field) => {
       participant[field] = req.body[field];
