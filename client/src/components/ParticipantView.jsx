@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import MarkdownIt from 'markdown-it';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -48,7 +48,7 @@ function ParticipantView(props) {
   const [modification, setModification] = useState(null);
   // react-router-dom 쓰면 더 편할 텐데..
   const [formData, setFormData] = useState(null);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return modification ? (
     formData ? (
@@ -136,7 +136,7 @@ function ParticipantView(props) {
                 await axios.delete(`/api/participants/${_id}`, {
                   headers: { Authorization: password },
                 });
-                history.push(`/`);
+                navigate(`/`);
               },
             })
           }

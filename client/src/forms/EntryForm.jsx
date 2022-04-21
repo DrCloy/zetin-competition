@@ -1,7 +1,7 @@
 /* Dependencies */
 import React, { useState, useEffect } from 'react';
 import { Formik, Form, useFormikContext } from 'formik';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import axios from 'axios';
 
@@ -58,7 +58,7 @@ const yupSchema = yup.object({
 const EntryForm = (props) => {
   const { competition, data, password } = props;
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleSubmit = async (values, formikBag) => {
     let response = null;
@@ -85,7 +85,7 @@ const EntryForm = (props) => {
         response = await axios.post(`/api/participants`, values);
       }
 
-      history.push(`/participants/${response.data._id}`);
+      navigate(`/participants/${response.data._id}`);
       formikBag.setStatus(undefined);
     } catch (err) {
       console.error(err);
