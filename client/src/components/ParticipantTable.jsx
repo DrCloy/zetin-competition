@@ -4,8 +4,14 @@ import axios from 'axios';
 import Table from 'react-bootstrap/Table';
 import Pagination from 'react-bootstrap/Pagination';
 
+/*
+ < Properties >
+ * competition: a competition document
+ * onParticipantClick: participant click handler
+ * searchParamName: set name of query parameter, default is 'pid' 
+ */
 const ParticipantTable = (props) => {
-  const { competition, onParticipantClick } = props;
+  const { competition, onParticipantClick, searchParamName } = props;
   const [participants, setParticipants] = useState([]);
   const [activePage, setActivePage] = useState(0);
 
@@ -53,11 +59,10 @@ const ParticipantTable = (props) => {
           <td>{team}</td>
           <td>
             <a
-              href={`#${robotName}`}
-              onClick={async (e) => {
+              href={'?' + (searchParamName || 'pid') + '=' + _id}
+              onClick={(e) => {
                 e.preventDefault();
-                const res = await axios.get(`/api/participants/${_id}`);
-                onParticipantClick && onParticipantClick(res.data);
+                onParticipantClick && onParticipantClick(_id);
               }}
             >
               {robotName}
