@@ -4,12 +4,22 @@ import axios from 'axios';
 import Table from 'react-bootstrap/Table';
 import Pagination from 'react-bootstrap/Pagination';
 
+/*
+ < Properties >
+ * competition: a competition document
+ * onParticipantClick: participant click handler
+ * searchParamName: set name of query parameter, default is 'pid' 
+ */
 const ParticipantTable = (props) => {
-  const { competition, onParticipantClick } = props;
+  const {
+    competition,
+    onParticipantClick,
+    searchParamName,
+    countPerPage,
+    ...restProps
+  } = props;
   const [participants, setParticipants] = useState([]);
   const [activePage, setActivePage] = useState(0);
-
-  const countPerPage = props.countPerPage || 5;
 
   useEffect(() => {
     async function getParticipants() {
@@ -41,9 +51,10 @@ const ParticipantTable = (props) => {
     );
   }
 
-  const offset = activePage * countPerPage;
+  const count = props.countPerPage || 5;
+  const offset = activePage * count;
   const tableRows = participants
-    .slice(offset, offset + countPerPage)
+    .slice(offset, offset + count)
     .map((value, index) => {
       const { _id, name, team, robotName } = value;
       return (
@@ -53,11 +64,10 @@ const ParticipantTable = (props) => {
           <td>{team}</td>
           <td>
             <a
-              href={`#${robotName}`}
-              onClick={async (e) => {
+              href={'?' + (searchParamName || 'pid') + '=' + _id}
+              onClick={(e) => {
                 e.preventDefault();
-                const res = await axios.get(`/api/participants/${_id}`);
-                onParticipantClick && onParticipantClick(res.data);
+                onParticipantClick && onParticipantClick(_id);
               }}
             >
               {robotName}
@@ -68,7 +78,7 @@ const ParticipantTable = (props) => {
     });
 
   return (
-    <div>
+    <div {...restProps}>
       <Table striped bordered hover size="sm" className="text-center">
         <thead>
           <tr>

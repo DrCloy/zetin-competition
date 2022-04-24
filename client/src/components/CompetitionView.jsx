@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import axios from 'axios';
 import MarkdownIt from 'markdown-it';
 import moment from 'moment';
@@ -7,23 +8,30 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
 const md = new MarkdownIt();
+function Field({ field, title, transform, markdown, children }) {
+  if (!field) return null;
+  if (transform) field = transform(field);
+  return (
+    <div>
+      {title && <h4 className="font-weight-bold">{title}</h4>}
+      {markdown ? (
+        <div dangerouslySetInnerHTML={{ __html: md.render(field) }}></div>
+      ) : (
+        <p>{field}</p>
+      )}
+      {children}
+    </div>
+  );
+}
 
-function CompetitionView(props) {
-  const { data, hideTitle } = props;
+export default function CompetitionView(props) {
   const [ruleData, setRuleData] = useState(null);
   const [showMap, setShowMap] = useState(false);
+  const outletContext = useOutletContext(); // get competition data from Outlet of parent element
 
-  const fieldWrapper = (field, component, title) => {
-    if (field !== undefined && field !== '') {
-      return (
-        <>
-          {title && <h4 className="font-weight-bold">{title}</h4>}
-          {component}
-        </>
-      );
-    }
-    return null;
-  };
+  const data =
+    props.data || (outletContext && outletContext.competition) || null;
+  if (!data) return null;
 
   const {
     name,
@@ -40,75 +48,68 @@ function CompetitionView(props) {
 
   return (
     <div>
-      {hideTitle ? null : (
+      {props.hideTitle ? null : (
         <h2 className="font-weight-bold" style={{ wordBreak: 'keep-all' }}>
           {name}
         </h2>
       )}
-      {fieldWrapper(
-        desc,
-        <div dangerouslySetInnerHTML={{ __html: md.render(desc) }}></div>,
-      )}
-      {fieldWrapper(
-        date,
-        <p>{moment(date).format('YYYY년 MM월 DD일, A hh시 mm분')}</p>,
-        '📅 일시',
-      )}
-      {fieldWrapper(
-        place,
-        <p>
-          {place + ' '}
-          {fieldWrapper(
-            googleMap,
-            <>
-              <Button
-                variant="link"
-                size="sm"
-                onClick={() => setShowMap(!showMap)}
-              >
-                {showMap ? '지도 가리기' : '지도 보기'}
-              </Button>
-              {showMap ? (
-                <iframe
-                  title="place"
-                  className="mb-2 rounded w-100 border-0"
-                  src={googleMap}
-                  style={{ height: '450px' }}
-                  loading="lazy"
-                ></iframe>
-              ) : null}
-            </>,
-          )}
-        </p>,
-        '🗺️ 장소',
-      )}
-      {fieldWrapper(organizer, <p>{organizer}</p>, '🎈 주최 및 주관')}
-      {fieldWrapper(sponser, <p>{sponser}</p>, '💎 후원')}
-      {fieldWrapper(
-        prize,
-        <div dangerouslySetInnerHTML={{ __html: md.render(prize) }}></div>,
-        '🏆 시상 내역',
-      )}
-      {fieldWrapper(
-        rule,
-        <p>
+      <Field field={desc} markdown />
+      <Field
+        title="📅 일시"
+        field={date}
+        transform={(field) =>
+          moment(field).format('YYYY년 MM월 DD일, A hh시 mm분')
+        }
+      />
+      <Field
+        title="🗺️ 장소"
+        field={place}
+        transform={(field) => (
+          <>
+            {field}
+            {googleMap && (
+              <>
+                <Button
+                  variant="link"
+                  size="sm"
+                  onClick={() => setShowMap(!showMap)}
+                >
+                  {showMap ? '지도 가리기' : '지도 보기'}
+                </Button>
+                {showMap ? (
+                  <iframe
+                    title="place"
+                    className="mb-2 rounded w-100 border-0"
+                    src={googleMap}
+                    style={{ height: '450px' }}
+                    loading="lazy"
+                  ></iframe>
+                ) : null}
+              </>
+            )}
+          </>
+        )}
+      />
+      <Field title="🎈 주최 및 주관" field={organizer} />
+      <Field title="💎 후원" field={sponser} />
+      <Field title="🏆 시상 내역" field={prize} markdown />
+      <Field
+        title="⚖️ 대회 규정"
+        field={rule}
+        transform={(field) => (
           <Button
             variant="link"
             onClick={async () => {
-              const res = await axios.get(`/api/rules/${rule}`);
+              const res = await axios.get(`/api/rules/${field}`);
               setRuleData(res.data);
             }}
           >
             자세히 보기
           </Button>
-        </p>,
-        '⚖️ 대회 규정',
-      )}
-      {fieldWrapper(
-        moreInfo,
-        <div dangerouslySetInnerHTML={{ __html: md.render(moreInfo) }}></div>,
-        '📜 추가 정보',
-      )}
+        )}
+      />
+      <Field title="📜 추가 정보" field={moreInfo} markdown />
+
       {/* Modal for Competition Rule */}
       <Modal
         size="lg"
@@ -138,5 +139,3 @@ function CompetitionView(props) {
     </div>
   );
 }
-
-export default CompetitionView;

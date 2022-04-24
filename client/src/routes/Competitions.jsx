@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import Container from 'react-bootstrap/Container';
@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col';
 
 import CompetitionCard from '../components/CompetitionCard';
 
-function Home() {
+export default function Competitions() {
   const [competitions, setCompetitions] = useState([]);
 
   useEffect(() => {
@@ -28,5 +28,3 @@ function Home() {
     </Container>
   );
 }
-
-export default Home;

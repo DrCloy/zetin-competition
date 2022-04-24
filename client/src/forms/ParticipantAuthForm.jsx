@@ -23,7 +23,7 @@ function ParticipantAuthForm(props) {
 
     const { allow } = res.headers;
     if (allow) {
-      const match = allow.search(new RegExp(method, 'g'));
+      const match = allow.search(new RegExp(method, 'gi'));
       if (match > -1) {
         onSucceed && onSucceed(data);
         setErrorMessage(null);
