@@ -78,6 +78,7 @@ export default function Participants() {
                       setParticipant(res.data);
                       setModification(null);
                       setEntryFormData(null);
+                      alert('참가 신청 내용이 수정되었습니다.');
                     },
                   });
                 },
@@ -98,7 +99,9 @@ export default function Participants() {
                   await axios.delete(`/api/participants/${participantId}`, {
                     headers: { Authorization: password },
                   });
+                  setSearchParams({});
                   setModification(null);
+                  alert('참가 신청이 취소되었습니다.');
                 },
               })
             }
