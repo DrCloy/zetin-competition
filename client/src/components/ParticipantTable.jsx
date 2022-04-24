@@ -18,7 +18,7 @@ const ParticipantTable = (props) => {
     countPerPage,
     ...restProps
   } = props;
-  const [participants, setParticipants] = useState([]);
+  const [participants, setParticipants] = useState(null);
   const [activePage, setActivePage] = useState(0);
 
   useEffect(() => {
@@ -38,44 +38,63 @@ const ParticipantTable = (props) => {
     }
   }, [competition]);
 
-  const paginationItems = [];
-  for (let i = 0; i < participants.length / countPerPage; i++) {
-    paginationItems.push(
-      <Pagination.Item
-        key={i}
-        active={i === activePage}
-        onClick={() => setActivePage(i)}
-      >
-        {i + 1}
-      </Pagination.Item>,
-    );
-  }
-
+  let tableRows;
+  let paginationItems;
   const count = props.countPerPage || 5;
   const offset = activePage * count;
-  const tableRows = participants
-    .slice(offset, offset + count)
-    .map((value, index) => {
-      const { _id, name, team, robotName } = value;
-      return (
-        <tr key={_id}>
-          <td>{participants.length - index - offset}</td>
-          <td>{name}</td>
-          <td>{team}</td>
-          <td>
-            <a
-              href={'?' + (searchParamName || 'pid') + '=' + _id}
-              onClick={(e) => {
-                e.preventDefault();
-                onParticipantClick && onParticipantClick(_id);
-              }}
-            >
-              {robotName}
-            </a>
-          </td>
-        </tr>
+
+  if (participants) {
+    // for pagination
+    paginationItems = [];
+    for (let i = 0; i < participants.length / countPerPage; i++) {
+      paginationItems.push(
+        <Pagination.Item
+          key={i}
+          active={i === activePage}
+          onClick={() => setActivePage(i)}
+        >
+          {i + 1}
+        </Pagination.Item>,
       );
-    });
+    }
+
+    // for table rows
+    tableRows = participants
+      .slice(offset, offset + count)
+      .map((value, index) => {
+        const { _id, name, team, robotName } = value;
+        return (
+          <tr key={_id}>
+            <td>{participants.length - index - offset}</td>
+            <td>{name}</td>
+            <td>{team}</td>
+            <td>
+              <a
+                href={'?' + (searchParamName || 'pid') + '=' + _id}
+                onClick={(e) => {
+                  e.preventDefault();
+                  onParticipantClick && onParticipantClick(_id);
+                }}
+              >
+                {robotName}
+              </a>
+            </td>
+          </tr>
+        );
+      });
+  } else {
+    tableRows = [];
+    for (let i = 0; i < count; i++) {
+      tableRows.push(
+        <tr key={i}>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+        </tr>,
+      );
+    }
+  }
 
   return (
     <div {...restProps}>
