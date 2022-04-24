@@ -1,14 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import MarkdownIt from 'markdown-it';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import Button from 'react-bootstrap/Button';
-
-import ParticipantAuthForm from '../forms/ParticipantAuthForm';
-import EntryForm from '../forms/EntryForm';
 
 function Field(props) {
   const { name, value } = props;
@@ -28,8 +22,6 @@ const md = new MarkdownIt();
 function ParticipantView(props) {
   const { participant } = props;
   const {
-    _id,
-    _competitionId,
     name,
     email,
     team,
@@ -45,30 +37,7 @@ function ParticipantView(props) {
     comment,
   } = participant;
 
-  const [modification, setModification] = useState(null);
-  // react-router-dom 쓰면 더 편할 텐데..
-  const [formData, setFormData] = useState(null);
-  const navigate = useNavigate();
-
-  return modification ? (
-    formData ? (
-      <EntryForm
-        competition={formData.competition}
-        data={formData.data}
-        password={formData.password}
-      />
-    ) : (
-      <div>
-        <p>{modification.message}</p>
-        <ParticipantAuthForm
-          participant={participant}
-          method={modification.method}
-          onSucceed={modification.callback}
-          onCancelled={() => setModification(null)}
-        />
-      </div>
-    )
-  ) : (
+  return (
     <div>
       <h4>인적 사항</h4>
       <Field name="이름" value={name} />
@@ -96,54 +65,6 @@ function ParticipantView(props) {
           )
         }
       />
-      <div className="text-right">
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={() =>
-            setModification({
-              method: 'PATCH',
-              message: '참가 내용을 수정하려면 비밀번호를 입력해주세요.',
-              callback: async (data) => {
-                const { password } = data;
-                const resCompetition = await axios.get(
-                  `/api/competitions/${_competitionId}`,
-                );
-                const resParticipant = await axios.get(
-                  `/api/participants/${_id}`,
-                  { headers: { Authorization: password } },
-                );
-                setFormData({
-                  competition: resCompetition.data,
-                  data: resParticipant.data,
-                  password: password,
-                });
-              },
-            })
-          }
-        >
-          수정
-        </Button>{' '}
-        <Button
-          variant="danger"
-          size="sm"
-          onClick={() =>
-            setModification({
-              method: 'DELETE',
-              message: '참가를 취소하려면 비밀번호를 입력해주세요.',
-              callback: async (data) => {
-                const { password } = data;
-                await axios.delete(`/api/participants/${_id}`, {
-                  headers: { Authorization: password },
-                });
-                navigate(`/`);
-              },
-            })
-          }
-        >
-          참가 취소
-        </Button>
-      </div>
     </div>
   );
 }
