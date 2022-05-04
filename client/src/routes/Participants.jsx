@@ -73,7 +73,7 @@ export default function Participants() {
                   setEntryFormData({
                     competition,
                     data: resParticipant.data,
-                    password,
+                    auth: password,
                     onSubmitted: (res) => {
                       setParticipant(res.data);
                       setModification(null);

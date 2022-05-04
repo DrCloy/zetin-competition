@@ -1,49 +1,48 @@
-/* Dependencies */
-import React, { useState, useEffect } from 'react';
-import { Formik, Form, useFormikContext } from 'formik';
+import { useState, useEffect } from 'react';
+import { useForm, FormProvider, useFormContext } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import axios from 'axios';
 
-/* Field & Input Components */
-import MarkdownField from './fields/MarkdownField';
-import NumberField from './fields/NumberField';
-import SelectField from './fields/SelectField';
-import TextField from './fields/TextField';
-
-/* Bootstrap Components */
+import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 
-import FormikPreviewButton from './utils/FormikPreviewButton';
+/*
+ * Input component using react-hook-form and react-bootstrap
+ * Required Props: id: string, name: string
+ */
+function Input(props) {
+  const { id, label, name, advice, children, ...restProps } = props;
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
 
-// initial form values
-const initialValues = {
-  eventId: '',
-  name: '',
-  email: '',
-  team: '',
-  robotName: '',
-  robotCPU: '',
-  robotROM: '',
-  robotRAM: '',
-  robotMotorDriver: '',
-  robotMotor: '',
-  robotADC: '',
-  robotSensor: '',
-  entryOrder: '',
-  comment: '',
-};
+  const error = errors[name]?.message;
 
-const yupSchema = yup.object({
+  return (
+    <Form.Group controlId={id}>
+      {label && <Form.Label>{label}</Form.Label>}
+      <Form.Control {...restProps} {...register(name)} isInvalid={error}>
+        {children}
+      </Form.Control>
+      <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
+      {advice && <Form.Text className="text-muted">{advice}</Form.Text>}
+    </Form.Group>
+  );
+}
+
+const schema = yup.object({
+  _eventId: yup.string().required('참가 부문을 선택해주세요.'),
   name: yup.string().required('이름을 입력해주세요.'),
   email: yup
     .string()
     .required('이메일을 입력해주세요.')
     .email('이메일 형식이 올바르지 않습니다.'),
   robotName: yup.string().required('로봇의 이름을 입력해주세요.'),
-  eventId: yup.string().required('참가 부문을 선택해주세요.'),
-  entryOrder: yup.number().required('참가 순번을 입력해주세요.'),
+  entryOrder: yup.string().required('참가 순번을 입력해주세요.'),
   newPasswordCheck: yup
     .string()
     .test(
@@ -53,110 +52,113 @@ const yupSchema = yup.object({
     ),
 });
 
-// EntryForm component
-const EntryForm = (props) => {
-  const { competition, data, password, onSubmitted } = props;
+export default function EntryRHF(props) {
+  const { competition, data, auth, onSubmitted } = props;
+  const form = useForm({ mode: 'onBlur', resolver: yupResolver(schema) });
+  const {
+    reset,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = form;
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  const handleSubmit = async (values, formikBag) => {
+  const onSubmit = async (values) => {
     let response = null;
 
     try {
-      // for backend spec
-      values._eventId = values.eventId;
-      delete values.eventId;
-      if (values.newPassword) {
-        values.password = values.newPassword;
-      }
-      delete values.newPassword;
-      delete values.newPasswordCheck;
-
-      if (competition) {
-        values._competitionId = competition._id;
-      }
+      // restruct to fit the backend server
+      values._competitionId = competition._id;
+      if (!values.password) delete values.password;
 
       if (data) {
         response = await axios.patch(`/api/participants/${data._id}`, values, {
-          headers: { authorization: `${password}` },
+          headers: { authorization: auth },
         });
       } else {
         response = await axios.post(`/api/participants`, values);
       }
 
-      formikBag.setStatus(undefined);
+      setErrorMessage(null);
       onSubmitted(response);
     } catch (err) {
-      console.error(err);
-      formikBag.setStatus(err);
+      setErrorMessage(err.response.data);
     }
   };
 
+  useEffect(() => {
+    reset(data);
+  }, [data, reset]);
+
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={yupSchema}
-      onSubmit={handleSubmit}
-    >
-      <Form noValidate>
-        <FormikEffect data={data} />
+    <FormProvider {...form}>
+      <Form noValidate onSubmit={handleSubmit(onSubmit)}>
         <h3>인적 사항</h3>
         <p className="text-muted">참가자의 정보를 입력해주세요.</p>
         <Row xs={1} md={2}>
           <Col>
-            <TextField label="이름" name="name" controlId="entryName" />
+            <Input type="text" label="이름" name="name" id="entryName" />
           </Col>
           <Col>
-            <TextField label="이메일" name="email" controlId="entryEmail" />
+            <Input type="email" label="이메일" name="email" id="entryEmail" />
           </Col>
         </Row>
         <Row xs={1}>
           <Col>
-            <TextField label="소속" name="team" controlId="entryTeam" />
+            <Input type="text" label="소속" name="team" id="entryTeam" />
           </Col>
         </Row>
         <hr />
         <h3>로봇 정보</h3>
         <p className="text-muted">로봇에 대한 정보를 입력해주세요.</p>
-        <TextField
-          label="로봇 이름"
-          name="robotName"
-          controlId="entryRobotName"
-        />
+        <Row xs={1}>
+          <Col>
+            <Input
+              type="text"
+              label="로봇 이름"
+              name="robotName"
+              id="entryRobotName"
+            />
+          </Col>
+        </Row>
         <Row xs={1} md={3}>
           <Col>
-            <TextField label="CPU" name="robotCPU" controlId="entryRobotCPU" />
+            <Input type="text" label="CPU" name="robotCPU" id="entryRobotCPU" />
           </Col>
           <Col>
-            <TextField label="ROM" name="robotROM" controlId="entryRobotROM" />
+            <Input type="text" label="ROM" name="robotROM" id="entryRobotROM" />
           </Col>
           <Col>
-            <TextField label="RAM" name="robotRAM" controlId="entryRobotRAM" />
+            <Input type="text" label="RAM" name="robotRAM" id="entryRobotRAM" />
           </Col>
         </Row>
         <Row xs={1} md={2}>
           <Col>
-            <TextField
+            <Input
+              type="text"
               label="Motor Driver"
               name="robotMotorDriver"
-              controlId="entryRobotMotorDriver"
+              id="entryRobotMotorDriver"
             />
           </Col>
           <Col>
-            <TextField
+            <Input
+              type="text"
               label="Motor"
               name="robotMotor"
-              controlId="entryRobotMotor"
+              id="entryRobotMotor"
             />
           </Col>
         </Row>
         <Row xs={1} md={2}>
           <Col>
-            <TextField label="ADC" name="robotADC" controlId="entryRobotADC" />
+            <Input type="text" label="ADC" name="robotADC" id="entryRobotADC" />
           </Col>
           <Col>
-            <TextField
+            <Input
+              type="text"
               label="Sensor"
               name="robotSensor"
-              controlId="entryRobotSensor"
+              id="entryRobotSensor"
             />
           </Col>
         </Row>
@@ -165,32 +167,44 @@ const EntryForm = (props) => {
         <p className="text-muted">대회에 참가할 방식을 선택해주세요.</p>
         <Row xs={1} md={2}>
           <Col>
-            <SelectField
+            <Input
+              as="select"
               label="참가 부문"
-              name="eventId"
-              options={
-                competition &&
-                competition.events.map((value) => [
-                  value._id,
-                  `${value.name} (${value.numb})`,
-                ])
-              }
-              controlId="entryEventId"
-            />
+              name="_eventId"
+              id="entryEventId"
+            >
+              <option key="" value="">
+                선택
+              </option>
+              {competition &&
+                competition.events.map((event) => (
+                  <option
+                    key={event._id}
+                    value={event._id}
+                  >{`${event.name} (${event.numb})`}</option>
+                ))}
+            </Input>
           </Col>
           <Col>
-            <NumberField
+            <Input
+              type="number"
               label="참가 순번"
+              min={1}
               name="entryOrder"
-              controlId="entryEntryOrder"
+              id="entryEntryOrder"
             />
           </Col>
         </Row>
-        <MarkdownField
-          label="하고 싶은 말"
-          name="comment"
-          controlId="entryComment"
-        />
+        <Row xs={1}>
+          <Col>
+            <Input
+              as="textarea"
+              label="하고 싶은 말"
+              name="comment"
+              id="entryComment"
+            />
+          </Col>
+        </Row>
         <hr />
         <h3>참가자 인증 수단</h3>
         <p className="text-muted">
@@ -198,74 +212,27 @@ const EntryForm = (props) => {
         </p>
         <Row xs={1} md={2}>
           <Col>
-            <TextField
+            <Input
+              type="password"
               label="새 비밀번호"
-              name="newPassword"
-              controlId="entryNewPassword"
-              password
+              name="password"
+              id="entryPassword"
             />
           </Col>
           <Col>
-            <TextField
+            <Input
+              type="password"
               label="새 비밀번호 확인"
-              name="newPasswordCheck"
-              controlId="entryNewPasswordCheck"
-              password
+              name="passwordCheck"
+              id="entryPasswordCheck"
             />
           </Col>
         </Row>
-        <SubmitButton /> <FormikPreviewButton />
+        <Button type="submit" disabled={isSubmitting}>
+          참가 신청
+        </Button>
+        <div className="d-inline text-danger ml-2">{errorMessage}</div>
       </Form>
-    </Formik>
+    </FormProvider>
   );
-};
-
-// side effect processing component
-const FormikEffect = (props) => {
-  const { data } = props;
-  const { resetForm } = useFormikContext();
-
-  // side effect for changing competition data
-  useEffect(() => {
-    const values = { ...initialValues, ...data };
-    if (data && data._eventId) {
-      values.eventId = data._eventId;
-    }
-    resetForm({ values });
-  }, [data, resetForm]);
-
-  return null;
-};
-
-// submit button component (CompetitionForm.jsx에 공통적으로 있는 컴포넌트임.)
-const SubmitButton = () => {
-  const { submitForm, isSubmitting, isValid, submitCount, status } =
-    useFormikContext();
-  const [errorMessage, setErrorMessage] = useState(null);
-
-  useEffect(() => {
-    if (!!submitCount) {
-      if (!isValid) {
-        setErrorMessage('입력이 유효하지 않습니다.');
-      } else if (status instanceof Error) {
-        setErrorMessage(status.message);
-      }
-    }
-  }, [submitCount, isValid, status]);
-
-  return (
-    <>
-      <Button
-        disabled={isSubmitting}
-        onClick={!isSubmitting ? submitForm : null}
-      >
-        {isSubmitting ? '제출 중...' : '제출'}
-      </Button>
-      {errorMessage ? (
-        <p className="text-danger d-inline align-middle">{errorMessage}</p>
-      ) : null}
-    </>
-  );
-};
-
-export default EntryForm;
+}
