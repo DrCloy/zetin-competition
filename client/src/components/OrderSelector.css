@@ -1,0 +1,35 @@
+.cell-container {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin: 2px;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  font-size: 0.75em;
+}
+
+.cell:hover {
+  background-color: #e2e6ea;
+}
+
+.cell.active {
+  background-color: #23272b;
+  border-color: #1d2124;
+  color: white;
+  cursor: auto;
+}
+
+.cell.selected {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
