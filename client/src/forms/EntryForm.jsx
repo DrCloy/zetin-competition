@@ -9,6 +9,7 @@ import Button from 'react-bootstrap/Button';
 
 import FieldStack from './components/FieldStack';
 import Input from './components/Input';
+import MarkdownTextArea from './components/MarkdownTextArea';
 
 const schema = yup.object({
   _eventId: yup.string().required('참가 부문을 선택해주세요.'),
@@ -141,11 +142,11 @@ export default function EntryRHF(props) {
             id="entryEntryOrder"
           />
         </FieldStack>
-        <Input
-          as="textarea"
+        <MarkdownTextArea
           label="하고 싶은 말"
           name="comment"
           id="entryComment"
+          rows={5}
         />
         <hr />
         <h3>참가자 인증 수단</h3>
