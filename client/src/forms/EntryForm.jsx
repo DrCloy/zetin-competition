@@ -9,6 +9,7 @@ import Button from 'react-bootstrap/Button';
 
 import FieldStack from './components/FieldStack';
 import Input from './components/Input';
+import OrderSelector from './components/OrderSelector';
 import MarkdownTextArea from './components/MarkdownTextArea';
 
 const schema = yup.object({
@@ -29,12 +30,14 @@ const schema = yup.object({
     ),
 });
 
-export default function EntryRHF(props) {
+export default function EntryForm(props) {
   const { competition, data, auth, onSubmitted } = props;
   const form = useForm({ mode: 'onBlur', resolver: yupResolver(schema) });
   const {
     reset,
     handleSubmit,
+    watch,
+    setValue,
     formState: { isSubmitting },
   } = form;
   const [errorMessage, setErrorMessage] = useState(null);
@@ -65,6 +68,23 @@ export default function EntryRHF(props) {
   useEffect(() => {
     reset(data);
   }, [data, reset]);
+
+  const watchEventId = watch('_eventId');
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  useEffect(() => {
+    // update selectedEvent
+    setSelectedEvent(
+      competition.events.find((event) => event._id === watchEventId),
+    );
+
+    // change entryOrder field
+    setValue('entryOrder', '');
+    if (data && watchEventId === data._eventId) {
+      setValue('entryOrder', data.entryOrder);
+    }
+  }, [watchEventId, competition, data, setValue]);
+
+  const watchEntryOrder = watch('entryOrder');
 
   return (
     <FormProvider {...form}>
@@ -134,13 +154,44 @@ export default function EntryRHF(props) {
                 >{`${event.name} (${event.numb})`}</option>
               ))}
           </Input>
-          <Input
-            type="number"
-            label="참가 순번"
-            min={1}
-            name="entryOrder"
-            id="entryEntryOrder"
-          />
+          <div className="mb-4">
+            <Input
+              type="number"
+              label="참가 순번"
+              name="entryOrder"
+              id="entryEntryOrder"
+              disabled={!selectedEvent}
+            />
+            {selectedEvent && (
+              <div className="clearfix">
+                <Form.Text className="text-muted mb-2">
+                  아래에서 참가 순번을 선택할 수 있습니다.
+                </Form.Text>
+                <OrderSelector
+                  style={{ height: '16rem' }}
+                  count={selectedEvent.numb}
+                  occupiedOrders={selectedEvent.participants.slice()}
+                  value={watchEntryOrder}
+                  onClick={(value) =>
+                    setValue('entryOrder', value, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                      shouldTouch: true,
+                    })
+                  }
+                />
+                <div className="float-right mt-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => alert('기능 준비 중입니다.')}
+                  >
+                    새로고침
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
         </FieldStack>
         <MarkdownTextArea
           label="하고 싶은 말"
