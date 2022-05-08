@@ -154,45 +154,43 @@ export default function EntryForm(props) {
                 >{`${event.name} (${event.numb})`}</option>
               ))}
           </Input>
-          <div className="mb-4">
-            <Input
-              type="number"
-              label="참가 순번"
-              name="entryOrder"
-              id="entryEntryOrder"
-              disabled={!selectedEvent}
-            />
-            {selectedEvent && (
-              <div className="clearfix">
-                <Form.Text className="text-muted mb-2">
-                  아래에서 참가 순번을 선택할 수 있습니다.
-                </Form.Text>
-                <OrderSelector
-                  style={{ height: '16rem' }}
-                  count={selectedEvent.numb}
-                  occupiedOrders={selectedEvent.participants.slice()}
-                  value={watchEntryOrder}
-                  onClick={(value) =>
-                    setValue('entryOrder', value, {
-                      shouldValidate: true,
-                      shouldDirty: true,
-                      shouldTouch: true,
-                    })
-                  }
-                />
-                <div className="float-right mt-2">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => alert('기능 준비 중입니다.')}
-                  >
-                    새로고침
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
+          <Input
+            type="number"
+            label="참가 순번"
+            name="entryOrder"
+            id="entryEntryOrder"
+            disabled={!selectedEvent}
+          />
         </FieldStack>
+        {selectedEvent && (
+          <div className="clearfix mb-4">
+            <Form.Text className="text-muted mb-2">
+              아래에서 참가 순번을 선택할 수 있습니다.
+            </Form.Text>
+            <OrderSelector
+              style={{ height: '16rem' }}
+              count={selectedEvent.numb}
+              occupiedOrders={selectedEvent.participants.slice()}
+              value={watchEntryOrder}
+              onClick={(value) =>
+                setValue('entryOrder', value, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                  shouldTouch: true,
+                })
+              }
+            />
+            <div className="float-right mt-2">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => alert('기능 준비 중입니다.')}
+              >
+                새로고침
+              </Button>
+            </div>
+          </div>
+        )}
         <MarkdownTextArea
           label="하고 싶은 말"
           name="comment"
