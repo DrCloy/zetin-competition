@@ -25,6 +25,8 @@ export default function Participants() {
         .catch((err) => setParticipant(null));
     } else {
       setParticipant(null);
+      setModification(null);
+      setEntryFormData(null);
     }
   }, [participantId]);
 
