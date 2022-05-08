@@ -18,16 +18,16 @@ export default function OrderSelector(props) {
       return () => onClick(e);
     };
 
-    for (let i = 0; i < count; i++) {
+    for (let i = 1; i <= count; i++) {
       arrRef[i] = createRef();
       arrElem[i] = (
         <div
           className={'order' + (occupiedOrders?.[i] ? ' occupied' : '')}
           key={i}
           ref={arrRef[i]}
-          onClick={handleClick(i + 1)}
+          onClick={handleClick(i)}
         >
-          {i + 1}
+          {i}
         </div>
       );
     }
@@ -38,8 +38,8 @@ export default function OrderSelector(props) {
     // PREFORMANCE OPTIMIZATION
     // remember previous value and remove 'selected' class
     // and add 'selected' class to current value
-    const curr = value - 1;
-    const prev = previousValue.current - 1;
+    const curr = value;
+    const prev = previousValue.current;
     if (curr === prev) return;
 
     const currentRef = refs[curr];
