@@ -45,8 +45,8 @@ export default function OrderSelector(props) {
     const currentRef = refs[curr];
     const previousRef = refs[prev];
 
-    currentRef && currentRef.current.classList.add('selected');
     previousRef && previousRef.current.classList.remove('selected');
+    currentRef && currentRef.current.classList.add('selected');
 
     previousValue.current = value;
   }, [value, refs]);
