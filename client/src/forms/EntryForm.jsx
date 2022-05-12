@@ -21,12 +21,12 @@ const schema = yup.object({
     .email('이메일 형식이 올바르지 않습니다.'),
   robotName: yup.string().required('로봇의 이름을 입력해주세요.'),
   entryOrder: yup.string().required('참가 순번을 입력해주세요.'),
-  newPasswordCheck: yup
+  passwordCheck: yup
     .string()
     .test(
-      'isEqualToNewPassword',
+      'isEqualToPassword',
       '입력한 비밀번호가 서로 일치하지 않습니다.',
-      (value, context) => value === context.parent.newPassword,
+      (value, context) => value === context.parent.password,
     ),
 });
 
@@ -200,13 +200,13 @@ export default function EntryForm(props) {
         <FieldStack>
           <Input
             type="password"
-            label="새 비밀번호"
+            label={data ? '새 비밀번호' : '비밀번호'}
             name="password"
             id="entryPassword"
           />
           <Input
             type="password"
-            label="새 비밀번호 확인"
+            label={data ? '새 비밀번호 확인' : '비밀번호 확인'}
             name="passwordCheck"
             id="entryPasswordCheck"
           />
