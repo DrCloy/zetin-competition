@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const createError = require('http-errors');
 const path = require('path');
 const app = express();
 
@@ -47,9 +48,11 @@ app.get('*', (req, res) => {
 
 /* Error handling */
 app.use(function (err, req, res, next) {
-  if (err) {
-    // console.error(err);
+  if (createError.isHttpError(err)) {
     res.status(err.statusCode).send(err.message);
+  } else {
+    console.error(err);
+    res.status(500).send(err.message);
   }
 });
 
