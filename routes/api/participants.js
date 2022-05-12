@@ -65,40 +65,34 @@ router.post('/', async (req, res, next) => {
     // check existance of password
     const plain = req.body.password;
     if (!plain) {
-      return next(createError(400, 'Password information not found'));
+      throw createError(400, '비밀번호 정보를 찾을 수 없습니다.');
     }
 
     // create new document
-    let participant = new Participant(req.body);
+    const participant = new Participant(req.body);
 
     // find competition document by id
-    let competition = await Competition.findById(participant._competitionId);
+    const competition = await Competition.findById(participant._competitionId);
     if (!competition) {
-      return next(createError(404, 'Competition document not found'));
+      throw createError(404, '참가하는 대회가 존재하지 않습니다.');
     }
 
     // participate
-    let retParticipate = await competition.participate(participant);
-    if (retParticipate) {
-      return next(createError(412, retParticipate));
-    }
-
+    await competition.participate(participant);
     await participant.save();
 
     // create Password document
     const hash = await bcrypt.hash(plain, BCRYPT_SALT); // hash password
-
-    let password = new Password({
+    const password = new Password({
       targetId: participant._id,
       digest: 'bcrypt',
       hash,
     });
-
     await password.save();
 
     res.send(participant);
   } catch (err) {
-    next(createError(500, err));
+    next(err);
   }
 });
 
