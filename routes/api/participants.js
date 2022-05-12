@@ -16,12 +16,12 @@ router.get('/', async (req, res, next) => {
 
     const filter = {};
     if (competitionId) {
-      filter._competitionId = competitionId;
+      filter.competitionId = competitionId;
     }
 
     const projection = {
-      _competitionId: 1,
-      _eventId: 1,
+      competitionId: 1,
+      eventId: 1,
       name: 1,
       team: 1,
       robotName: 1,
@@ -72,7 +72,7 @@ router.post('/', async (req, res, next) => {
     const participant = new Participant(req.body);
 
     // find competition document by id
-    const competition = await Competition.findById(participant._competitionId);
+    const competition = await Competition.findById(participant.competitionId);
     if (!competition) {
       throw createError(404, '참가하는 대회가 존재하지 않습니다.');
     }
@@ -126,7 +126,7 @@ router.patch('/:id', async (req, res, next) => {
     });
 
     // find competition document
-    let competition = await Competition.findById(participant._competitionId);
+    let competition = await Competition.findById(participant.competitionId);
     if (!competition) {
       next(createError(404, 'Competition document not found'));
     }
@@ -164,7 +164,7 @@ router.delete('/:id', async (req, res, next) => {
     // document deletion
     participant = await Participant.findByIdAndDelete(id);
     if (participant) {
-      let competition = await Competition.findById(participant._competitionId);
+      let competition = await Competition.findById(participant.competitionId);
       if (competition) {
         competition.unparticipate(participant);
       }

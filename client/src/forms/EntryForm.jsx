@@ -13,7 +13,7 @@ import OrderSelector from './components/OrderSelector';
 import MarkdownTextArea from './components/MarkdownTextArea';
 
 const schema = yup.object({
-  _eventId: yup.string().required('참가 부문을 선택해주세요.'),
+  eventId: yup.string().required('참가 부문을 선택해주세요.'),
   name: yup.string().required('이름을 입력해주세요.'),
   email: yup
     .string()
@@ -47,7 +47,7 @@ export default function EntryForm(props) {
 
     try {
       // restruct to fit the backend server
-      values._competitionId = competition._id;
+      values.competitionId = competition._id;
       if (!values.password) delete values.password;
 
       if (data) {
@@ -69,7 +69,7 @@ export default function EntryForm(props) {
     reset(data);
   }, [data, reset]);
 
-  const watchEventId = watch('_eventId');
+  const watchEventId = watch('eventId');
   const [selectedEvent, setSelectedEvent] = useState(null);
   useEffect(() => {
     // update selectedEvent
@@ -79,7 +79,7 @@ export default function EntryForm(props) {
 
     // change entryOrder field
     setValue('entryOrder', '');
-    if (data && watchEventId === data._eventId) {
+    if (data && watchEventId === data.eventId) {
       setValue('entryOrder', data.entryOrder);
     }
   }, [watchEventId, competition, data, setValue]);
@@ -137,12 +137,7 @@ export default function EntryForm(props) {
         <h3>참가 정보</h3>
         <p className="text-muted">대회에 참가할 방식을 선택해주세요.</p>
         <FieldStack>
-          <Input
-            as="select"
-            label="참가 부문"
-            name="_eventId"
-            id="entryEventId"
-          >
+          <Input as="select" label="참가 부문" name="eventId" id="entryEventId">
             <option key="" value="">
               선택
             </option>

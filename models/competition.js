@@ -49,10 +49,10 @@ competitionSchema.methods.participate = async function (participant) {
   if (!(participant instanceof Participant)) {
     throw createError(500, 'The argument is not Participant model');
   }
-  const { _id, _eventId, entryOrder } = participant;
+  const { _id, eventId, entryOrder } = participant;
   const id = _id.toString();
 
-  const event = this.events.find((evt) => evt._id.toString() === _eventId);
+  const event = this.events.find((evt) => evt._id.toString() === eventId);
   if (!event) {
     throw createError(404, '참가자가 선택한 경연 부문이 존재하지 않습니다.');
   }

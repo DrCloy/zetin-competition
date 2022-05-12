@@ -10,8 +10,8 @@ export default function Entry() {
     <EntryForm
       competition={competition}
       onSubmitted={(res) => {
-        const { _competitionId } = res.data;
-        navigate(`/competitions/${_competitionId}/participants`);
+        const { competitionId } = res.data;
+        navigate(`/competitions/${competitionId}/participants`);
       }}
     />
   );
