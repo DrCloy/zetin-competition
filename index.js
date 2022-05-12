@@ -6,19 +6,19 @@ const app = express();
 /* Constants */
 require('dotenv').config();
 const PORT = process.env.PORT || 8000;
-const DB_NAME = process.env.DB_NAME || 'zetin-competition';
-const MONGO_URI =
-  (process.env.MONGO_URI || 'mongodb://localhost:27017/') + DB_NAME;
+const MONGODB_NAME = process.env.MONGODB_NAME || 'zetin-competition';
+const MONGODB_URL =
+  (process.env.MONGODB_HOST || 'mongodb://localhost:27017/') + MONGODB_NAME;
 
 /* Connect to mongodb server */
 mongoose
-  .connect(MONGO_URI, {
+  .connect(MONGODB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
   })
   .then(() => {
-    console.log(`successfully connected to ${MONGO_URI}`);
+    console.log(`successfully connected to ${MONGODB_URL}`);
   })
   .catch((e) => {
     console.error(e);
