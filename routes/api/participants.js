@@ -32,42 +32,38 @@ router.get('/', async (req, res, next) => {
       sort: { createdAt: dateSort || -1 },
     };
 
-    let collection = await Participant.find(filter, projection, options);
+    const collection = await Participant.find(filter, projection, options);
     res.json(collection);
   } catch (err) {
-    next(createError(500, err));
+    next(err);
   }
 });
 
 router.get('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
-    let participant = await Participant.findById(id);
 
-    if (participant) {
-      // password verification
-      const password = await Password.verify(id, req.headers['authorization']);
-      if (!password) {
-        // verification fail, remove sensitive information from response
-        participant['email'] = null;
-      }
-      res.json(participant);
-    } else {
-      return next(createError(404, 'Participant not found'));
+    // find the document and convert to plain javascript object
+    // because only a field of the plain javascript object can be deleted
+    let participant = await Participant.findById(id).lean();
+    if (!participant) {
+      throw createError(404, '해당 참가자를 찾을 수 없습니다.');
     }
+
+    const password = await Password.verify(id, req.headers.authorization);
+    if (!password) {
+      // if verification fail, remove sensitive information from response
+      delete participant.email;
+    }
+
+    res.json(participant);
   } catch (err) {
-    next(createError(500, err));
+    next(err);
   }
 });
 
 router.post('/', async (req, res, next) => {
   try {
-    // check existance of password
-    const plain = req.body.password;
-    if (!plain) {
-      throw createError(400, '비밀번호 정보를 찾을 수 없습니다.');
-    }
-
     // create new document
     const participant = new Participant(req.body);
 
@@ -77,9 +73,11 @@ router.post('/', async (req, res, next) => {
       throw createError(404, '참가하는 대회가 존재하지 않습니다.');
     }
 
-    // participate
-    await competition.participate(participant);
-    await participant.save();
+    // check existance of password
+    const plain = req.body.password;
+    if (!plain) {
+      throw createError(400, '비밀번호 정보를 찾을 수 없습니다.');
+    }
 
     // create Password document
     const hash = await bcrypt.hash(plain, BCRYPT_SALT); // hash password
@@ -88,9 +86,13 @@ router.post('/', async (req, res, next) => {
       digest: 'bcrypt',
       hash,
     });
-    await password.save();
 
-    res.send(participant);
+    // participate
+    await competition.participate(participant);
+
+    await password.save();
+    await participant.save();
+    res.json(participant);
   } catch (err) {
     next(err);
   }
@@ -101,46 +103,43 @@ router.patch('/:id', async (req, res, next) => {
     const { id } = req.params;
 
     // find existing document
-    let participant = await Participant.findById(id);
+    const participant = await Participant.findById(id);
     if (!participant) {
-      next(createError(404, 'Participant document not found'));
+      throw createError(404, '해당 참가자를 찾을 수 없습니다.');
+    }
+
+    // find competition document
+    const competition = await Competition.findById(participant.competitionId);
+    if (!competition) {
+      throw createError(404, '참가하는 대회가 존재하지 않습니다.');
     }
 
     // password verification
-    const password = await Password.verify(id, req.headers['authorization']);
+    const password = await Password.verify(id, req.headers.authorization);
     if (!password) {
-      return next(createError(401, 'Authentication failed')); // verification fail
+      throw createError(401, '비밀번호 인증에 실패했습니다.');
     }
 
-    // password update
+    // update password
     const newPassword = req.body.password;
     if (newPassword) {
-      password.digest = 'bcrypt';
       password.hash = await bcrypt.hash(newPassword, BCRYPT_SALT);
-      await password.save();
+      password.digest = 'bcrypt';
     }
 
-    // replace current fields with requested fields
+    // replace fields of this document with requested fields
     Object.keys(req.body).forEach((field) => {
       participant[field] = req.body[field];
     });
 
-    // find competition document
-    let competition = await Competition.findById(participant.competitionId);
-    if (!competition) {
-      next(createError(404, 'Competition document not found'));
-    }
-
     // participate
-    let retParticipate = await competition.participate(participant);
-    if (retParticipate) {
-      return next(createError(412, retParticipate));
-    }
+    await competition.participate(participant);
 
+    await password.save();
     await participant.save();
-    res.send(participant);
+    res.json(participant);
   } catch (err) {
-    next(createError(500, err));
+    next(err);
   }
 });
 
@@ -148,31 +147,30 @@ router.delete('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
 
+    // find existing document
     let participant = await Participant.findById(id);
     if (!participant) {
-      return next(createError(404, 'Participant document not found'));
+      throw createError(404, '해당 참가자를 찾을 수 없습니다.');
     }
 
     // password verification
-    const password = await Password.verify(id, req.headers['authorization']);
-    if (password) {
-      await Password.findByIdAndDelete(password._id); // password deletion
-    } else {
-      return next(createError(401, 'Authentication failed')); // verification fail
+    const password = await Password.verify(id, req.headers.authorization);
+    if (!password) {
+      throw createError(401, '비밀번호 인증에 실패했습니다.');
     }
+
+    // password deletion
+    await Password.findByIdAndDelete(password._id); // password deletion
+
+    // unparticipate
+    const competition = await Competition.findById(participant.competitionId);
+    competition && competition.unparticipate(participant);
 
     // document deletion
-    participant = await Participant.findByIdAndDelete(id);
-    if (participant) {
-      let competition = await Competition.findById(participant.competitionId);
-      if (competition) {
-        competition.unparticipate(participant);
-      }
-    }
-
-    res.status(200).json(participant);
+    await Participant.findByIdAndDelete(id);
+    res.json(participant);
   } catch (err) {
-    next(createError(500, err));
+    next(err);
   }
 });
 
@@ -181,7 +179,7 @@ router.options('/:id', async (req, res, next) => {
     const { id } = req.params;
 
     // password verification
-    const password = await Password.verify(id, req.headers['authorization']);
+    const password = await Password.verify(id, req.headers.authorization);
     if (password) {
       // https://developer.mozilla.org/ko/docs/Web/HTTP/Methods/OPTIONS
       res.header('Allow', 'OPTIONS, GET, PATCH, DELETE');
@@ -191,7 +189,7 @@ router.options('/:id', async (req, res, next) => {
 
     res.sendStatus(200);
   } catch (err) {
-    next(createError(500, err));
+    next(err);
   }
 });
 
