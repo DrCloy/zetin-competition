@@ -37,7 +37,7 @@
 
 ## 개발 문서
 
-- API 명세: 준비중
+- [API 명세](./routes/api/README.md)
 
 ## 배포
 
