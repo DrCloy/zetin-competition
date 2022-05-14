@@ -22,6 +22,7 @@
 - `PORT`: 서버 포트를 지정합니다. (기본값: `8000`)
 - `MONGODB_NAME`: mongodb 데이터베이스 이름을 지정합니다. (기본값: `zetin-competition`)
 - `MONGODB_HOST`: mongodb 서버 호스트를 지정합니다. (기본값: `mongodb://localhost:27017/`)
+- `ZETIN_AUTH_HOST`: ZETIN 인증 서버 호스트를 지정합니다. (기본값: [여기서 확인](./routes/api/auth.js))
 
 ## 동작 환경
 
