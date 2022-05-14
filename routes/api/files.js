@@ -17,7 +17,9 @@ const THUMB_PATH = path.join(PATH, 'thumbnails');
 const THUMB_EXTENSION = 'jpg';
 const THUMB_WIDTH = 720;
 
-/* Create upload middleware */
+/* Middlewares */
+const admin = require('../../middlewares/admin')();
+const adminCheck = require('../../middlewares/admin')({ adminOnly: false });
 const upload = (req, res, next) =>
   multer({
     storage: multer.diskStorage({
@@ -69,12 +71,12 @@ const generateThumbnail = (imageFilePath) => {
   });
 };
 
-router.get('/', async (req, res) => {
+router.get('/', admin, async (req, res) => {
   const files = await File.find({});
   res.json(files);
 });
 
-router.post('/', upload, async (req, res, next) => {
+router.post('/', admin, upload, async (req, res, next) => {
   try {
     // multer has saved the file and file information can be accessed by req.file
     // REF: https://github.com/expressjs/multer#file-information
@@ -87,14 +89,14 @@ router.post('/', upload, async (req, res, next) => {
     const { filename, originalname, mimetype, size } = req.file;
 
     // create new file document
-    const { name, description, secret } = req.body;
+    const { name, description, private } = req.body;
     const document = new File({
       name: name || originalname,
       description,
       filename,
       mimetype,
       size,
-      secret,
+      private,
     });
 
     // save to mongodb
@@ -112,7 +114,7 @@ router.post('/', upload, async (req, res, next) => {
   }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', adminCheck, async (req, res, next) => {
   try {
     const { id } = req.params;
     const { thumbnail } = req.query;
@@ -121,8 +123,12 @@ router.get('/:id', async (req, res, next) => {
     if (!file) {
       throw createError(404, '해당 파일을 찾을 수 없습니다.');
     }
-    const { filename, mimetype } = file;
+    const { filename, mimetype, private } = file;
     let contentType = mimetype;
+
+    if (private && !req.isAdmin) {
+      throw createError(401, '비밀 문서입니다. 관리자 인증 정보가 필요합니다.');
+    }
 
     let filePath = path.join(PATH, filename);
     if (!fs.existsSync(filePath)) {
@@ -148,7 +154,7 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-router.get('/detail/:id', async (req, res, next) => {
+router.get('/detail/:id', adminCheck, async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -157,13 +163,17 @@ router.get('/detail/:id', async (req, res, next) => {
       throw createError(404, '해당 파일을 찾을 수 없습니다.');
     }
 
+    if (file.private && !req.isAdmin) {
+      throw createError(401, '비밀 문서입니다. 관리자 인증 정보가 필요합니다.');
+    }
+
     res.json(file);
   } catch (err) {
     next(err);
   }
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', admin, async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -181,7 +191,7 @@ router.delete('/:id', async (req, res, next) => {
   }
 });
 
-router.patch('/:id', upload, async (req, res, next) => {
+router.patch('/:id', admin, upload, async (req, res, next) => {
   try {
     const { id } = req.params;
 

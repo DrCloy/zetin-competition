@@ -4,7 +4,7 @@ const fileSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     description: String,
-    secret: Boolean,
+    private: Boolean,
     filename: String,
     mimetype: String,
     size: Number, // in bytes
