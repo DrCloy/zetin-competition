@@ -6,6 +6,61 @@
 
 ## 파일
 
+자체 파일 서버를 운영하여 필요한 파일들을 보관할 수 있도록 도와주는 API입니다. '관리자 인증 필요' 딱지가 붙어있는 API는 요청 `Authorization` 헤더에 관리자 JWT 정보가 필요합니다.
+
+### `GET /api/files` (관리자 인증 필요)
+
+#### 설명
+
+업로드된 파일들의 모든 정보를 가져옵니다.
+
+### `GET /api/files/:id`
+
+#### 설명
+
+`id`에 해당하는 파일을 가져옵니다. 이때 해당 파일의 `private` 속성이 걸려있다면, 요청 `Authorization` 헤더에 관리자 JWT 정보가 있어야만 파일을 가져올 수 있습니다.
+
+#### 쿼리
+
+- `thumbnail`: 이 값이 `true`이고 `id`에 해당하는 파일이 이미지일 경우 작은 이미지 파일로 변환하여 응답합니다.
+
+### `GET /api/files/detail/:id`
+
+#### 응답 본문
+
+파일에 대한 상세 정보를 JSON 형태로 응답합니다. 자세한 내용은 [`File` 모델](../../models/file.js)을 참고해 주시길 바랍니다. 한편, 해당 파일의 `private` 속성이 걸려있다면, 요청 `Authorization` 헤더에 관리자 JWT 정보가 있어야만 파일을 가져올 수 있습니다.
+
+### `POST /api/files` (관리자 인증 필요)
+
+#### 설명
+
+`multipart/form-data` 형식의 본문을 사용하며 다음 필드가 제공돼야 한다.
+
+#### 요청 본문
+
+- `name: String`: 파일의 별명, 이름
+- `description: String`: 파일의 설명
+- `private: Boolean`: 파일의 공개 유무
+- `file: Blob`: 업로드할 파일의 이진 데이터
+
+다음은 서버에서 자동으로 채워지는 값들입니다.
+
+- `filename`: 자동으로 채워지는 값으로 로컬에 저장되는 파일의 이름
+- `mimetype`: 자동으로 채워지는 값으로 파일의 형식
+- `size`: 자동으로 채워지는 값으로 파일의 크기
+
+### `PATCH /api/files/:id` (관리자 인증 필요)
+
+#### 설명
+
+`multipart/form-data` 형식의 본문을 바탕으로 `id`에 해당하는 파일 정보를 수정합니다. 해당 폼의 필드에 대한 정보는 `POST /api/files` 항목을 참고하여 주십시오.
+
+### `DELETE /api/files/:id` (관리자 인증 필요)
+
+#### 설명
+
+`id`에 해당하는 파일을 삭제합니다.
+
 ## 참가자
 
 ### `GET /api/participants`
