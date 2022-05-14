@@ -10,6 +10,8 @@ import Competition from './routes/Competition';
 import CompetitionView from './components/CompetitionView';
 import Entry from './routes/Entry';
 import Participants from './routes/Participants';
+import CreateCompetition from './routes/CreateCompetition';
+import Management from './routes/Management';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -25,7 +27,10 @@ ReactDOM.render(
               <Route path="participants" element={<Participants />} />
             </Route>
           </Route>
-          <Route path="/admin" element={<Admin />} />
+          <Route path="admin" element={<Admin />}>
+            <Route path="create-competition" element={<CreateCompetition />} />
+            <Route path="management" element={<Management />}></Route>
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
