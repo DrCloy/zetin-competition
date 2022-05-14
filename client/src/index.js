@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './App';
-import Admin from './pages/Admin';
+import Admin from './routes/Admin';
 import Competitions from './routes/Competitions';
 import Competition from './routes/Competition';
 import CompetitionView from './components/CompetitionView';
