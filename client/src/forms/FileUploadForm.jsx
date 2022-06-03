@@ -32,6 +32,7 @@ export default function FileUploadForm(props) {
   const form = useForm({ resolver: yupResolver(schema) });
   const {
     register,
+    reset,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = form;
@@ -58,9 +59,13 @@ export default function FileUploadForm(props) {
 
       onSubmitted && onSubmitted(response);
     } catch (err) {
-      err.response && alert(err.response.data);
+      alert(err.response?.data);
     }
   };
+
+  useEffect(() => {
+    reset(data);
+  }, [reset, data]);
 
   useEffect(() => {
     // https://react-bootstrap-v4.netlify.app/components/forms/#forms-custom-file
