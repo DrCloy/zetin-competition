@@ -27,6 +27,9 @@ function Admin() {
           <ListGroup.Item as={NavLink} to="create-competition">
             라인트레이서 대회 페이지 개설
           </ListGroup.Item>
+          <ListGroup.Item as={NavLink} to="file">
+            포스터 및 파일 관리
+          </ListGroup.Item>
         </ListGroup>
       </div>
       {/* page section */}

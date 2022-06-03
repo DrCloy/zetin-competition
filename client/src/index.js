@@ -12,6 +12,7 @@ import Entry from './routes/Entry';
 import Participants from './routes/Participants';
 import CreateCompetition from './routes/CreateCompetition';
 import Management from './routes/Management';
+import File from './routes/File';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -29,7 +30,8 @@ ReactDOM.render(
           </Route>
           <Route path="admin" element={<Admin />}>
             <Route path="create-competition" element={<CreateCompetition />} />
-            <Route path="management" element={<Management />}></Route>
+            <Route path="management" element={<Management />} />
+            <Route path="file" element={<File />} />
           </Route>
         </Route>
       </Routes>
