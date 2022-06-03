@@ -6,7 +6,6 @@ import AdminLoginForm from '../forms/AdminLoginForm';
 
 /* Bootstrap Components */
 import Container from 'react-bootstrap/Container';
-import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 
 /* Admin Page */
@@ -20,20 +19,7 @@ function Admin() {
         <h3>ZETIN Competition Admin Page</h3>
         {/* admin login component */}
         <hr />
-        {token ? (
-          <div>
-            Welcome, administrator.{' '}
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => setToken(null)}
-            >
-              Sign out
-            </Button>
-          </div>
-        ) : (
-          <AdminLoginForm onAdminLogin={(t) => setToken(t)} />
-        )}
+        <AdminLoginForm onAuthed={(t) => setToken(t)} />
         {/* admin service components */}
         <hr />
         <ListGroup>

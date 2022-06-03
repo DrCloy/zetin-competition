@@ -1,67 +1,95 @@
-/* Packages */
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useState, useEffect, useCallback } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import axios from 'axios';
+import moment from 'moment';
 
-/* Bootstrap */
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import axios from 'axios';
 
-function AdminLoginForm(props) {
+import Input from './components/Input';
+
+const schema = yup.object({
+  id: yup.string().required('ZETIN 서비스 아이디를 입력해주세요.'),
+  pw: yup.string().required('비밀번호를 입력해주세요.'),
+});
+
+export default function AdminLoginForm(props) {
+  const { onAuthed } = props;
+  const form = useForm({ resolver: yupResolver(schema) });
   const {
-    register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm();
-
-  // for storing and printing error message
+    formState: { isSubmitting },
+  } = form;
+  const [payload, setPayload] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // form submit handler
-  const handleAuth = handleSubmit(async (user) => {
-    try {
-      const resToken = await axios.post('/api/auth/admin', user);
-      const token = resToken.data;
-
-      props.onAdminLogin && props.onAdminLogin(token); // lifting up token information
+  const onSucceed = useCallback(
+    ({ token, payload }) => {
+      setPayload(payload);
       setErrorMessage('');
+      onAuthed && onAuthed(token);
+    },
+    [onAuthed],
+  );
+
+  const onFailed = useCallback((errorMessage) => {
+    setPayload(null);
+    setErrorMessage(errorMessage);
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await axios.get('/api/admin/status');
+        onSucceed(res.data);
+      } catch (err) {
+        onFailed(err.response.data);
+      }
+    })();
+  }, [onFailed, onSucceed]);
+
+  const signIn = async (values) => {
+    try {
+      const res = await axios.post('/api/admin/signin', values);
+      onSucceed(res.data);
     } catch (err) {
-      setErrorMessage(err.response.data);
+      onFailed(err.response.data);
     }
-  });
+  };
 
-  return (
-    <Form onSubmit={handleAuth}>
-      <Form.Group controlId="userID">
-        <Form.Label>Username</Form.Label>
-        <Form.Control
-          type="id"
-          {...register('id', { required: true })}
-          isInvalid={errors.id}
-        />
-        <Form.Control.Feedback type="invalid">
-          Please enter your username of ZETIN service.
-        </Form.Control.Feedback>
-      </Form.Group>
+  const signOut = async () => {
+    await axios.post('/api/admin/signout');
+    setPayload(null);
+  };
 
-      <Form.Group controlId="userPW">
-        <Form.Label>Password</Form.Label>
-        <Form.Control
-          type="password"
-          {...register('pw', { required: true })}
-          isInvalid={errors.pw}
-        />
-        <Form.Control.Feedback type="invalid">
-          Please enter the password.
-        </Form.Control.Feedback>
-      </Form.Group>
-
-      <Button variant="primary" type="submit" disabled={isSubmitting}>
-        {isSubmitting ? 'Signing in ...' : 'Sign in'}
+  return payload ? (
+    <div>
+      <p>{payload.username}님 환영합니다.</p>
+      <p>
+        발급된 인증 토큰은
+        <br />
+        {moment.unix(payload.exp).format('YYYY년 MM월 DD일 HH시 mm분 ss초')}
+        까지
+        <br />
+        사용할 수 있습니다. 재발급받길 원한다면 인증 해제 후 다시 인증하시길
+        바랍니다.
+      </p>
+      <Button variant="secondary" onClick={() => signOut()}>
+        인증 해제
       </Button>
-      <small className="d-block text-danger mt-2">{errorMessage}</small>
-    </Form>
+    </div>
+  ) : (
+    <FormProvider {...form}>
+      <Form noValidate onSubmit={handleSubmit(signIn)}>
+        <Input type="text" label="아이디" name="id" id="userID" />
+        <Input type="password" label="비밀번호" name="pw" id="userPW" />
+        <Button type="submit" disabled={isSubmitting}>
+          인증
+        </Button>
+        <Form.Text className="text-danger">{errorMessage}</Form.Text>
+      </Form>
+    </FormProvider>
   );
 }
-
-export default AdminLoginForm;

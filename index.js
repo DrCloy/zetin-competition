@@ -29,7 +29,7 @@ mongoose
 app.use(express.json());
 
 /* API server routes */
-app.use('/api/auth', require('./routes/api/auth'));
+app.use('/api/admin', require('./routes/api/admin'));
 app.use('/api/participants', require('./routes/api/participants'));
 app.use('/api/competitions', require('./routes/api/competitions'));
 app.use('/api/rules', require('./routes/api/rules'));
