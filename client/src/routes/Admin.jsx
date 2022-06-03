@@ -2,7 +2,7 @@ import './Admin.css';
 import React, { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 
-import AdminLoginForm from '../forms/AdminLoginForm';
+import AdminAuthForm from '../forms/AdminAuthForm';
 
 /* Bootstrap Components */
 import Container from 'react-bootstrap/Container';
@@ -17,10 +17,8 @@ function Admin() {
       {/* sidebar section */}
       <div className="sidebar bg-light border-right">
         <h3>ZETIN Competition Admin Page</h3>
-        {/* admin login component */}
         <hr />
-        <AdminLoginForm onAuthed={(t) => setToken(t)} />
-        {/* admin service components */}
+        <AdminAuthForm onAuthed={(t) => setToken(t)} />
         <hr />
         <ListGroup>
           <ListGroup.Item as={NavLink} to="management">

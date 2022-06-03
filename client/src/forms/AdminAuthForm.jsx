@@ -15,7 +15,7 @@ const schema = yup.object({
   pw: yup.string().required('비밀번호를 입력해주세요.'),
 });
 
-export default function AdminLoginForm(props) {
+export default function AdminAuthForm(props) {
   const { onAuthed } = props;
   const form = useForm({ resolver: yupResolver(schema) });
   const {
@@ -50,9 +50,9 @@ export default function AdminLoginForm(props) {
     })();
   }, [onFailed, onSucceed]);
 
-  const signIn = async (values) => {
+  const signIn = async ({ id, pw }) => {
     try {
-      const res = await axios.post('/api/admin/signin', values);
+      const res = await axios.post('/api/admin/signin', { id, pw });
       onSucceed(res.data);
     } catch (err) {
       onFailed(err.response.data);
@@ -83,8 +83,8 @@ export default function AdminLoginForm(props) {
   ) : (
     <FormProvider {...form}>
       <Form noValidate onSubmit={handleSubmit(signIn)}>
-        <Input type="text" label="아이디" name="id" id="userID" />
-        <Input type="password" label="비밀번호" name="pw" id="userPW" />
+        <Input type="text" label="아이디" name="id" id="adminID" />
+        <Input type="password" label="비밀번호" name="pw" id="adminPW" />
         <Button type="submit" disabled={isSubmitting}>
           인증
         </Button>
