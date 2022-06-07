@@ -11,11 +11,11 @@ function admin(options) {
   // return admin authentication middleware
   return (req, res, next) => {
     try {
-      let token = req.headers.authorization;
+      let token = req.cookies.adminToken;
+
       if (!token) {
         throw createError(401, '인증 정보가 없습니다.');
       }
-      token = token.replace(/^Bearer\s+/, '');
 
       // verify given token.
       verifyAdmin(token);
