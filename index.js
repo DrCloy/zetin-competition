@@ -1,4 +1,5 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const createError = require('http-errors');
 const path = require('path');
@@ -27,6 +28,7 @@ mongoose
 
 /* Middlewares */
 app.use(express.json());
+app.use(cookieParser());
 
 /* API server routes */
 app.use('/api/admin', require('./routes/api/admin'));

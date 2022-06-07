@@ -2,7 +2,6 @@
 const router = require('express').Router();
 const axios = require('axios');
 const createError = require('http-errors');
-const cookieParser = require('cookie-parser');
 
 /* Modules */
 const verifyAdmin = require('../../modules/verifyAdmin');
@@ -12,8 +11,6 @@ const AUTH_HOST =
   process.env.ZETIN_AUTH_HOST || 'https://auth.zetin.uos.ac.kr/auth';
 const COOKIE_NAME = 'adminToken';
 const COOKIE_PATH = '/api';
-
-router.use(cookieParser());
 
 router.get('/status', (req, res, next) => {
   try {
