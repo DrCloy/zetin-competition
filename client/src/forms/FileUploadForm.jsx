@@ -11,7 +11,7 @@ import bsCustomFileInput from 'bs-custom-file-input';
 import Input from './components/Input';
 
 export default function FileUploadForm(props) {
-  const { data, token, onSubmitted } = props;
+  const { data, onSubmitted } = props;
   const schema = useMemo(
     () =>
       yup.object({
@@ -48,13 +48,9 @@ export default function FileUploadForm(props) {
       if (file instanceof File) formData.set('file', file);
 
       if (!data) {
-        response = await axios.post('/api/files', formData, {
-          headers: { authorization: token },
-        });
+        response = await axios.post('/api/files', formData);
       } else {
-        response = await axios.patch(`/api/files/${data._id}`, formData, {
-          headers: { authorization: token },
-        });
+        response = await axios.patch(`/api/files/${data._id}`, formData);
       }
 
       onSubmitted && onSubmitted(response);
