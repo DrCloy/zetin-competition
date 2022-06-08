@@ -45,12 +45,12 @@ if (error) {
         throw createError(401, '해당 계정은 관리자가 아닙니다.');
       }
     } catch (err) {
-      if (err instanceof jwt.JsonWebTokenError) {
-        throw createError(401, 'JWT 검증에 실패했습니다.');
-      } else if (err instanceof jwt.TokenExpiredError) {
+      if (err instanceof jwt.TokenExpiredError) {
         throw createError(401, 'JWT가 만료됐습니다.');
       } else if (err instanceof jwt.NotBeforeError) {
         throw createError(401, 'JWT가 활성화돼있지 않습니다.');
+      } else if (err instanceof jwt.JsonWebTokenError) {
+        throw createError(401, 'JWT 검증에 실패했습니다.');
       } else {
         throw err;
       }
