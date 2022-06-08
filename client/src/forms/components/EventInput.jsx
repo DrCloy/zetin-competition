@@ -31,7 +31,7 @@ export default function EventInput(props) {
       ref={ref}
       tabIndex={-1} // for focusing by script
       controlId={id}
-      className={`clearfix ${className}`}
+      className={'clearfix' + (className ? ` ${className}` : '')}
       {...restProps}
     >
       {label && <Form.Label>{label}</Form.Label>}
