@@ -17,7 +17,7 @@ router.get('/status', (req, res, next) => {
     const token = req.cookies[COOKIE_NAME];
     const payload = verifyAdmin(token);
 
-    res.send({ token, payload });
+    res.send(payload); // send only payload, not with token
   } catch (err) {
     next(err);
   }
@@ -46,15 +46,19 @@ router.post('/signin', async (req, res, next) => {
     // third, if the member is admin, cookie the jwt.
     res
       .cookie(COOKIE_NAME, token, { httpOnly: true, path: COOKIE_PATH })
-      .send({ token, payload });
+      .send(payload); // send only payload, not with token
   } catch (err) {
     next(err);
   }
 });
 
 router.post('/signout', (req, res) => {
-  res.clearCookie(COOKIE_NAME, { path: COOKIE_PATH });
-  res.send({ success: true });
+  try {
+    res.clearCookie(COOKIE_NAME, { path: COOKIE_PATH });
+    res.send({ status: 'success' });
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;
