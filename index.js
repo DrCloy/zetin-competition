@@ -34,7 +34,6 @@ app.use(cookieParser());
 app.use('/api/admin', require('./routes/api/admin'));
 app.use('/api/participants', require('./routes/api/participants'));
 app.use('/api/competitions', require('./routes/api/competitions'));
-app.use('/api/rules', require('./routes/api/rules'));
 app.use('/api/files', require('./routes/api/files'));
 app.get(['/api', '/api/*'], (req, res) => {
   res.status(400).send('Invalid access');
