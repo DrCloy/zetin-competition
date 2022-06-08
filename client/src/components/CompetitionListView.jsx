@@ -19,8 +19,6 @@ const checkDateTerm = (comp, start, end) => {
 };
 
 function CompetitionListView(props) {
-  const { token } = props;
-
   const [competitions, setCompetitions] = useState([]);
   const [deletion, setDeletion] = useState(null);
   const [modification, setModification] = useState(null);
@@ -69,31 +67,25 @@ function CompetitionListView(props) {
             <Button variant="outline-secondary" size="sm" className="border-0">
               참가자 목록
             </Button>
-            {token ? (
-              <>
-                <Button
-                  variant="outline-secondary"
-                  size="sm"
-                  className="border-0"
-                  onClick={async () => {
-                    const res = await axios.get(
-                      `/api/competitions/${comp._id}`,
-                    );
-                    setModification(res.data);
-                  }}
-                >
-                  수정
-                </Button>
-                <Button
-                  variant="outline-danger"
-                  size="sm"
-                  className="border-0"
-                  onClick={() => setDeletion(comp)}
-                >
-                  삭제
-                </Button>
-              </>
-            ) : null}
+            <Button
+              variant="outline-secondary"
+              size="sm"
+              className="border-0"
+              onClick={async () => {
+                const res = await axios.get(`/api/competitions/${comp._id}`);
+                setModification(res.data);
+              }}
+            >
+              수정
+            </Button>
+            <Button
+              variant="outline-danger"
+              size="sm"
+              className="border-0"
+              onClick={() => setDeletion(comp)}
+            >
+              삭제
+            </Button>
           </div>
         </ListGroup.Item>
       ))}
@@ -110,9 +102,7 @@ function CompetitionListView(props) {
           <Button
             variant="danger"
             onClick={async () => {
-              await axios.delete(`/api/competitions/${deletion._id}`, {
-                headers: { authorization: token },
-              });
+              await axios.delete(`/api/competitions/${deletion._id}`);
               setDeletion(null);
             }}
           >
@@ -132,7 +122,6 @@ function CompetitionListView(props) {
         </Modal.Header>
         <Modal.Body>
           <CompetitionForm
-            token={token}
             data={modification}
             onSubmitted={() => setModification(null)}
           />
