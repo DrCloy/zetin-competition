@@ -16,7 +16,7 @@ const schema = yup.object({
 });
 
 export default function AdminAuthForm(props) {
-  const { onAuthed } = props;
+  const { onAuthChange } = props;
   const form = useForm({ resolver: yupResolver(schema) });
   const {
     handleSubmit,
@@ -26,18 +26,22 @@ export default function AdminAuthForm(props) {
   const [errorMessage, setErrorMessage] = useState('');
 
   const onSucceed = useCallback(
-    ({ token, payload }) => {
+    (payload) => {
       setPayload(payload);
       setErrorMessage('');
-      onAuthed && onAuthed(token);
+      onAuthChange && onAuthChange(payload);
     },
-    [onAuthed],
+    [onAuthChange],
   );
 
-  const onFailed = useCallback((errorMessage) => {
-    setPayload(null);
-    setErrorMessage(errorMessage);
-  }, []);
+  const onFailed = useCallback(
+    (errorMessage) => {
+      setPayload(null);
+      setErrorMessage(errorMessage);
+      onAuthChange && onAuthChange(null);
+    },
+    [onAuthChange],
+  );
 
   useEffect(() => {
     (async () => {
@@ -48,7 +52,7 @@ export default function AdminAuthForm(props) {
         onFailed(err.response.data);
       }
     })();
-  }, [onFailed, onSucceed]);
+  }, [onSucceed, onFailed]);
 
   const signIn = async ({ id, pw }) => {
     try {
@@ -60,8 +64,12 @@ export default function AdminAuthForm(props) {
   };
 
   const signOut = async () => {
-    await axios.post('/api/admin/signout');
-    setPayload(null);
+    try {
+      await axios.post('/api/admin/signout');
+      onSucceed(null);
+    } catch (err) {
+      onFailed(err.response.data);
+    }
   };
 
   return payload ? (

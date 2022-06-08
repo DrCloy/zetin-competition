@@ -1,5 +1,5 @@
 import './Admin.css';
-import React, { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 
 import AdminAuthForm from '../forms/AdminAuthForm';
@@ -9,8 +9,8 @@ import Container from 'react-bootstrap/Container';
 import ListGroup from 'react-bootstrap/ListGroup';
 
 /* Admin Page */
-function Admin() {
-  const [token, setToken] = useState(null);
+export default function Admin() {
+  const [payload, setPayload] = useState(null);
 
   return (
     <>
@@ -18,7 +18,7 @@ function Admin() {
       <div className="sidebar bg-light border-right">
         <h3>ZETIN Competition Admin Page</h3>
         <hr />
-        <AdminAuthForm onAuthed={(t) => setToken(t)} />
+        <AdminAuthForm onAuthChange={useCallback((p) => setPayload(p), [])} />
         <hr />
         <ListGroup>
           <ListGroup.Item as={NavLink} to="management">
@@ -34,9 +34,9 @@ function Admin() {
       </div>
       {/* page section */}
       <div className="container-page">
-        {token ? (
+        {payload ? (
           <Container fluid="sm" className="py-4">
-            <Outlet context={{ token }} />
+            <Outlet />
           </Container>
         ) : (
           <div>
@@ -48,5 +48,3 @@ function Admin() {
     </>
   );
 }
-
-export default Admin;
