@@ -14,11 +14,7 @@ const MONGODB_URL =
 
 /* Connect to mongodb server */
 mongoose
-  .connect(MONGODB_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-  })
+  .connect(MONGODB_URL)
   .then(() => {
     console.log(`successfully connected to ${MONGODB_URL}`);
   })
