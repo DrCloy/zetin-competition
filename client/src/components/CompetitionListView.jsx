@@ -134,7 +134,7 @@ function CompetitionListView(props) {
           <CompetitionForm
             token={token}
             data={modification}
-            onSubmitSuccess={() => setModification(null)}
+            onSubmitted={() => setModification(null)}
           />
         </Modal.Body>
       </Modal>
