@@ -7,7 +7,7 @@
 ## 방향성
 
 - 유지보수 접근성이 쉽도록 많이 사용하고 대중적인 프레임워크 및 라이브러리 활용
-- 기존 ZETIN 홈페이지에 iframe으로 해당 어플리케이션을 보여줄 수 있도록 UI/UX 설계
+- 기존 ZETIN 홈페이지에 iframe으로 해당 어플리케이션을 보여줄 수 있도록 UI/UX 설계 ([iframe 높이 자동 변경 라이브러리](https://github.com/davidjbradshaw/iframe-resizer))
 
 ## 환경 변수
 
