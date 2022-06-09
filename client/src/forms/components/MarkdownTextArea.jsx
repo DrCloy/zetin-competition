@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
-import MarkdownIt from 'markdown-it';
 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
-const md = new MarkdownIt();
+import { markdown as md } from '../../utils';
 
 export default function MarkdownTextArea(props) {
   const { id, label, name, ...restProps } = props;
