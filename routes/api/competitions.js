@@ -16,31 +16,41 @@ router.get('/', async (req, res, next) => {
         regDateStart: 1,
         regDateEnd: 1,
         posterId: 1,
-        createAt: 1,
-        updatedAt: 1,
       },
     ).sort({ date: 'desc' });
 
-    res.status(200).json(collection);
+    res.json(collection);
   } catch (err) {
-    next(createError(500, err));
+    next(err);
   }
 });
 
 // Response the competition document by id
 router.get('/:id', async (req, res, next) => {
   try {
-    let document = await Competition.findById(req.params.id);
-
-    if (document) {
-      res.status(200).json(document);
-    } else {
-      return next(
-        createError(404, 'Competition document does not exist for that id.'),
-      );
+    // for projection query
+    const projectionQuery = req.query['projection'];
+    let projectionArray = [];
+    if (typeof projectionQuery === 'string') {
+      projectionArray = projectionQuery.split(',');
+    } else if (Array.isArray(projectionQuery)) {
+      projectionArray = projectionQuery.slice();
     }
+
+    const projection = {};
+    for (const key of projectionArray) {
+      projection[key] = 1;
+    }
+
+    // find document by id and projection
+    let collection = await Competition.find({ _id: req.params.id }, projection);
+    if (!collection.length) {
+      throw createError(404, '해당 ID를 가진 대회 문서를 찾을 수 없습니다.');
+    }
+
+    res.json(collection[0]);
   } catch (err) {
-    next(createError(500, err));
+    next(err);
   }
 });
 
@@ -52,9 +62,9 @@ router.post('/', [
       let document = new Competition(req.body);
 
       document = await document.save(); // save
-      res.status(200).json(document);
+      res.json(document);
     } catch (err) {
-      next(createError(500, err));
+      next(err);
     }
   },
 ]);
@@ -66,15 +76,31 @@ router.patch('/:id', [
     try {
       let document = await Competition.findById(req.params.id);
 
+      // examine the deleted event has participant(s)
+      const originalEvents = document.events.slice();
+      const modifiedEventIds = req.body.events.map((e) => e._id);
+      for (let event of originalEvents) {
+        if (modifiedEventIds.indexOf(event._id.toString()) === -1) {
+          // if the event has been removed in the request
+          // check the removed event has participant(s)
+          if (Array.isArray(event.participants) && event.participants.length) {
+            throw createError(
+              400,
+              `삭제된 '${event.name}' 경연 부문에 참가자가 존재해 삭제할 수 없습니다.`,
+            );
+          }
+        }
+      }
+
       // replace current fields with requested fields
       Object.keys(req.body).forEach((field) => {
         document[field] = req.body[field];
       });
 
       document = await document.save(); // save
-      res.status(200).json(document);
+      res.json(document);
     } catch (err) {
-      next(createError(500, err));
+      next(err);
     }
   },
 ]);
@@ -87,9 +113,9 @@ router.delete('/:id', [
       const { id } = req.params;
       let document = await Competition.findByIdAndDelete(id);
 
-      res.status(200).json(document);
+      res.json(document);
     } catch (err) {
-      next(createError(500, err));
+      next(err);
     }
   },
 ]);

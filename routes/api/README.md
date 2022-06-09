@@ -4,6 +4,35 @@
 
 ## 라인트레이서 대회
 
+라인트레이서 대회 페이지를 관리하는 CRUD(Create, Read, Update, Delete) API입니다. '관리자 인증 필요' 문구가 있는 API에는 [인증](#인증) 항목을 통해 관리자 로그인을 하여 쿠키를 통한 JWT를 발급받은 후에야 접근할 수 있습니다.
+
+- [Competition 모델](../../models/competition.js)
+- [Competition 라우터 미들웨어](../api/competitions.js)
+
+### `GET /api/competitions`
+
+개설된 라인트레이서 대회를 전부 가져옵니다. 이때 Competition 모델 중 오직 `_id`, `name`, `date`, `regDateStart`, `regDateEnd`, `posterId`를 json으로 반환합니다.
+
+### `GET /api/competitions/:id`
+
+`id`에 해당하는 라인트레이서 대회 페이지 정보를 Competition 모델의 JSON 형태로 반환합니다.
+
+#### 쿼리
+
+- `projection`: Competition 모델 중 원하는 필드만 사영하여 가져올 수 있습니다. 여러 개의 `projection` 쿼리 또는 콤마(,)로 구분된 필드 이름을 사용하여 사영하고 싶은 형태를 지정할 수 있습니다. (예: `?projection=name&projection=desc` 또는 `?projection=name,desc`)
+
+### `POST /api/competitions` (관리자 인증 필요)
+
+Competition 모델의 JSON 형태의 요청 본문을 통해 새 라인트레이서 대회 페이지를 개설합니다.
+
+### `PATCH /api/competitions/:id` (관리자 인증 필요)
+
+부분적으로 수정할 Competition 모델의 JSON을 요청 본문으로 받아 해당(`id`) 라인트레이서 대회 페이지를 수정합니다. 이때, `events` 필드에 있는 대회 경연들 중 참가자가 있는 것은 삭제할 수 없으며 HTTP 에러 코드와 함께 수정이 되지 않은 채로 응답합니다.
+
+### `DELETE /api/competition/:id` (관리자 인증 필요)
+
+`id`에 해당하는 라인트레이서 대회 페이지를 삭제합니다.
+
 ## 파일
 
 자체 파일 서버를 운영하여 필요한 파일들을 보관할 수 있도록 도와주는 API입니다. '관리자 인증 필요' 딱지가 붙어있는 API는 요청 `Authorization` 헤더에 관리자 JWT 정보가 필요합니다.
