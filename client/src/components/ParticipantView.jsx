@@ -1,8 +1,8 @@
 import React from 'react';
-import MarkdownIt from 'markdown-it';
-
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+
+import { markdown as md } from '../utils';
 
 function Field(props) {
   const { name, value } = props;
@@ -16,8 +16,6 @@ function Field(props) {
     </Row>
   );
 }
-
-const md = new MarkdownIt();
 
 function ParticipantView(props) {
   const { participant } = props;
