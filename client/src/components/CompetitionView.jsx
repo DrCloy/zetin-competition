@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import axios from 'axios';
-import MarkdownIt from 'markdown-it';
 import moment from 'moment';
 
 import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
 
-const md = new MarkdownIt();
+import { markdown as md } from '../utils';
+
 function Field({ field, title, transform, markdown, children }) {
   if (!field) return null;
   if (transform) field = transform(field);
@@ -25,7 +23,6 @@ function Field({ field, title, transform, markdown, children }) {
 }
 
 export default function CompetitionView(props) {
-  const [ruleData, setRuleData] = useState(null);
   const [showMap, setShowMap] = useState(false);
   const outletContext = useOutletContext(); // get competition data from Outlet of parent element
 
@@ -98,44 +95,17 @@ export default function CompetitionView(props) {
         field={rule}
         transform={(field) => (
           <Button
+            as="a"
             variant="link"
-            onClick={async () => {
-              const res = await axios.get(`/api/rules/${field}`);
-              setRuleData(res.data);
-            }}
+            href={`/api/files/${field}`}
+            target="_blank"
+            rel="noreferrer"
           >
             자세히 보기
           </Button>
         )}
       />
       <Field title="📜 추가 정보" field={moreInfo} markdown />
-
-      {/* Modal for Competition Rule */}
-      <Modal
-        size="lg"
-        show={ruleData ? true : false}
-        onHide={() => setRuleData(null)}
-      >
-        {ruleData && (
-          <>
-            <Modal.Header closeButton>
-              <Modal.Title>{`${ruleData.name} (${ruleData.version})`}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: md.render(ruleData.content),
-                }}
-              ></div>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={() => setRuleData(null)}>
-                닫기
-              </Button>
-            </Modal.Footer>
-          </>
-        )}
-      </Modal>
     </div>
   );
 }

@@ -79,7 +79,7 @@ export default function CompetitionForm(props) {
 
       onSubmitted && onSubmitted(response);
     } catch (err) {
-      window.alert(err.response?.message);
+      window.alert(err.response?.data);
     }
   };
 
@@ -142,25 +142,27 @@ export default function CompetitionForm(props) {
           id="cmpPrize"
           rows={4}
         />
-        <Input
-          type="text"
-          label="대회 규정"
-          name="rule"
-          id="cmpRule"
-          advice="대회 규정 파일 ID를 입력해주세요."
-        />
+        <FieldStack>
+          <Input
+            type="text"
+            label="대회 규정"
+            name="rule"
+            id="cmpRule"
+            advice="대회 규정 파일 ID를 입력해주세요."
+          />
+          <Input
+            type="text"
+            label="대회 포스터"
+            name="posterId"
+            id="cmpPosterId"
+            advice="대회 포스터 파일 ID를 입력해주세요."
+          />
+        </FieldStack>
         <MarkdownTextArea
           label="추가 정보"
           name="moreInfo"
           id="cmpMoreInfo"
           rows={8}
-        />
-        <Input
-          type="text"
-          label="대회 포스터"
-          name="posterId"
-          id="cmpPosterId"
-          advice="대회 포스터 파일 ID를 입력해주세요."
         />
         <Button type="submit">제출</Button>
       </Form>

@@ -27,7 +27,7 @@ export default function Competition() {
   return (
     <Container className="my-3" fluid="xl">
       <Row xs={1} sm={2}>
-        <Col sm={5}>
+        <Col sm={4}>
           <a
             href={`/api/files/${posterId}`}
             target="_blank"
@@ -41,7 +41,7 @@ export default function Competition() {
             />
           </a>
         </Col>
-        <Col sm={7}>
+        <Col sm={8}>
           <h2
             className="font-weight-bold mb-3"
             style={{ wordBreak: 'keep-all' }}
