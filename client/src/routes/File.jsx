@@ -3,6 +3,8 @@ import axios from 'axios';
 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 
 import FileTable from '../components/FileTable';
 import FileUploadForm from '../forms/FileUploadForm';
@@ -64,9 +66,24 @@ export default function File() {
       </Button>
       <FileTable
         data={files}
-        onCopyIdButtonClick={showCopyIdDiaglog}
-        onPatchButtonClick={showPatchDialog}
-        onDeleteButtonClick={showDeleteDialog}
+        renderFunction={(f) => (
+          <DropdownButton
+            id="functions"
+            title="..."
+            variant="secondary"
+            size="sm"
+          >
+            <Dropdown.Item as="button" onClick={() => showCopyIdDiaglog(f)}>
+              파일 ID 복사
+            </Dropdown.Item>
+            <Dropdown.Item as="button" onClick={() => showPatchDialog(f)}>
+              수정
+            </Dropdown.Item>
+            <Dropdown.Item as="button" onClick={() => showDeleteDialog(f)}>
+              삭제
+            </Dropdown.Item>
+          </DropdownButton>
+        )}
       />
       <Modal
         show={showUploadForm}
