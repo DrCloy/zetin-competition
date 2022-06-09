@@ -1,6 +1,6 @@
 import CompetitionListView from '../components/CompetitionListView';
 
-export default function Management() {
+export default function CompetitionManagement() {
   return (
     <div>
       <h3>📜 라인트레이서 대회 페이지 목록</h3>

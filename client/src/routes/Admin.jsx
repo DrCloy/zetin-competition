@@ -21,13 +21,10 @@ export default function Admin() {
         <AdminAuthForm onAuthChange={useCallback((p) => setPayload(p), [])} />
         <hr />
         <ListGroup>
-          <ListGroup.Item as={NavLink} to="management">
-            통합 관리 페이지
+          <ListGroup.Item as={NavLink} to="competitions">
+            라인트레이서 대회 페이지 관리
           </ListGroup.Item>
-          <ListGroup.Item as={NavLink} to="create-competition">
-            라인트레이서 대회 페이지 개설
-          </ListGroup.Item>
-          <ListGroup.Item as={NavLink} to="file">
+          <ListGroup.Item as={NavLink} to="files">
             포스터 및 파일 관리
           </ListGroup.Item>
         </ListGroup>

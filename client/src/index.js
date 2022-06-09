@@ -4,15 +4,18 @@ import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './App';
-import Admin from './routes/Admin';
-import Competitions from './routes/Competitions';
+
+// competition routers
 import Competition from './routes/Competition';
+import Competitions from './routes/Competitions';
 import CompetitionView from './components/CompetitionView';
 import Entry from './routes/Entry';
 import Participants from './routes/Participants';
-import CreateCompetition from './routes/CreateCompetition';
-import Management from './routes/Management';
-import File from './routes/File';
+
+// admin routers
+import Admin from './routes/Admin';
+import CompetitionManagement from './routes/CompetitionManagement';
+import FileManagement from './routes/FileManagement';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -29,9 +32,8 @@ ReactDOM.render(
             </Route>
           </Route>
           <Route path="admin" element={<Admin />}>
-            <Route path="create-competition" element={<CreateCompetition />} />
-            <Route path="management" element={<Management />} />
-            <Route path="file" element={<File />} />
+            <Route path="competitions" element={<CompetitionManagement />} />
+            <Route path="files" element={<FileManagement />} />
           </Route>
         </Route>
       </Routes>

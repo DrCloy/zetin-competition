@@ -9,7 +9,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import FileTable from '../components/FileTable';
 import FileUploadForm from '../forms/FileUploadForm';
 
-export default function File() {
+export default function FileManagement() {
   const [files, setFiles] = useState(null);
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [uploadTarget, setUploadTarget] = useState(null);
