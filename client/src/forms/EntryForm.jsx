@@ -69,20 +69,34 @@ export default function EntryForm(props) {
     reset(data);
   }, [data, reset]);
 
+  const [freshEvents, setFreshEvents] = useState();
+  useEffect(() => {
+    async function getFreshEvents() {
+      const res = await axios.get(`/api/competitions/${competition._id}`, {
+        params: { projection: 'events' },
+      });
+      setFreshEvents(res.data.events);
+    }
+
+    if (!freshEvents) {
+      getFreshEvents();
+    }
+  }, [competition, freshEvents]);
+
   const watchEventId = watch('eventId');
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState();
   useEffect(() => {
     // update selectedEvent
-    setSelectedEvent(
-      competition.events.find((event) => event._id === watchEventId),
-    );
+    if (freshEvents) {
+      setSelectedEvent(freshEvents.find((event) => event._id === watchEventId));
+    }
 
     // change entryOrder field
     setValue('entryOrder', '');
     if (data && watchEventId === data.eventId) {
       setValue('entryOrder', data.entryOrder);
     }
-  }, [watchEventId, competition, data, setValue]);
+  }, [freshEvents, watchEventId, data, setValue]);
 
   const watchEntryOrder = watch('entryOrder');
 
@@ -179,7 +193,7 @@ export default function EntryForm(props) {
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={() => alert('기능 준비 중입니다.')}
+                onClick={() => setFreshEvents()}
               >
                 새로고침
               </Button>
