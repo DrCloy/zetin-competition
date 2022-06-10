@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import moment from 'moment';
 
 import Button from 'react-bootstrap/Button';
 
-import { markdown as md } from '../utils';
+import { markdown as md, formatDatetime } from '../utils';
 
 function Field({ field, title, transform, markdown, children }) {
   if (!field) return null;
@@ -34,6 +33,8 @@ export default function CompetitionView(props) {
     name,
     desc,
     date,
+    regDateStart,
+    regDateEnd,
     place,
     googleMap,
     organizer,
@@ -51,11 +52,11 @@ export default function CompetitionView(props) {
         </h2>
       )}
       <Field field={desc} markdown />
+      <Field title="📅 일시" field={formatDatetime(date)} />
       <Field
-        title="📅 일시"
-        field={date}
-        transform={(field) =>
-          moment(field).format('YYYY년 MM월 DD일, A hh시 mm분')
+        title="✏️ 참가 신청 기간"
+        field={
+          formatDatetime(regDateStart) + ' ~ ' + formatDatetime(regDateEnd)
         }
       />
       <Field
