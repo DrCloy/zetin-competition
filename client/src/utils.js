@@ -15,7 +15,11 @@ function formatBytes(bytes, decimals = 2) {
 }
 
 function formatDate(str) {
-  return moment(str).format('YYYY-MM-DD');
+  return moment(str).format('YYYY년 MM월 DD일');
+}
+
+function formatDatetime(datetime) {
+  return moment(datetime).format('YYYY년 MM월 DD일, A hh시 mm분');
 }
 
 function checkDateTerm(comp, start, end) {
@@ -56,4 +60,4 @@ markdown.renderer.rules.link_open = function (tokens, idx, options, env, self) {
   return defaultRender(tokens, idx, options, env, self);
 };
 
-export { formatBytes, formatDate, checkDateTerm, markdown };
+export { formatBytes, formatDate, formatDatetime, checkDateTerm, markdown };
