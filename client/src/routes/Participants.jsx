@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useOutletContext, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
+import { checkDateTerm } from '../utils';
 
 import Button from 'react-bootstrap/Button';
 
@@ -16,6 +17,12 @@ export default function Participants() {
   const [entryFormData, setEntryFormData] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const participantId = searchParams.get('pid');
+
+  const isRegistrationPeriod = checkDateTerm(
+    Date.now(),
+    competition.regDateStart,
+    competition.regDateEnd,
+  );
 
   useEffect(() => {
     if (participantId) {
@@ -57,7 +64,7 @@ export default function Participants() {
           </Button>
         </div>
         <ParticipantView participant={participant} />
-        <div className="text-right">
+        <div className={`text-right${isRegistrationPeriod ? ' ' : ' d-none'}`}>
           <Button
             variant="primary"
             size="sm"

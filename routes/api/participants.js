@@ -159,14 +159,12 @@ router.delete('/:id', async (req, res, next) => {
       throw createError(401, '비밀번호 인증에 실패했습니다.');
     }
 
-    // password deletion
-    await Password.findByIdAndDelete(password._id); // password deletion
-
     // unparticipate
     const competition = await Competition.findById(participant.competitionId);
-    competition && competition.unparticipate(participant);
+    competition && (await competition.unparticipate(participant));
 
-    // document deletion
+    // deletion
+    await Password.findByIdAndDelete(password._id);
     await Participant.findByIdAndDelete(id);
     res.json(participant);
   } catch (err) {

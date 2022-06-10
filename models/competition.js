@@ -44,6 +44,14 @@ competitionSchema.methods.removeExistingOrderById = function (id) {
   });
 };
 
+competitionSchema.methods.isRegistrationPeriod = function () {
+  const start = this.regDateStart.getTime();
+  const end = this.regDateEnd.getTime();
+  const now = Date.now();
+
+  return start <= now && now <= end;
+};
+
 // Method: Participate the given participant to the competition
 competitionSchema.methods.participate = async function (participant) {
   if (!(participant instanceof Participant)) {
@@ -51,6 +59,10 @@ competitionSchema.methods.participate = async function (participant) {
   }
   const { _id, eventId, entryOrder } = participant;
   const id = _id.toString();
+
+  if (!this.isRegistrationPeriod()) {
+    throw createError(400, '참가 신청 기간이 아닙니다.');
+  }
 
   const event = this.events.find((evt) => evt._id.toString() === eventId);
   if (!event) {
@@ -60,7 +72,7 @@ competitionSchema.methods.participate = async function (participant) {
 
   if (entryOrder > numb) {
     // 인덱스가 1부터 시작하기 때문에, 참가 순번과 정원이 일치해도 상관없다.
-    throw createError(406, `정원 ${numb}명을 초과했습니다`);
+    throw createError(400, `정원 ${numb}명을 초과했습니다`);
   }
 
   if (participants[entryOrder] && participants[entryOrder] !== id) {
@@ -77,6 +89,10 @@ competitionSchema.methods.participate = async function (participant) {
 competitionSchema.methods.unparticipate = async function (participant) {
   if (!(participant instanceof Participant)) {
     throw createError(500, 'The argument is not Participant model');
+  }
+
+  if (!this.isRegistrationPeriod()) {
+    throw createError(400, '참가 신청 기간이 아닙니다.');
   }
 
   this.removeExistingOrderById(participant._id.toString()); // 1. 참가자의 기존 순번 삭제
