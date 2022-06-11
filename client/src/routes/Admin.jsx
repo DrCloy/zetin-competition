@@ -27,6 +27,9 @@ export default function Admin() {
           <ListGroup.Item as={NavLink} to="files">
             포스터 및 파일 관리
           </ListGroup.Item>
+          <ListGroup.Item as={NavLink} to="participants">
+            대회 참가자 관리
+          </ListGroup.Item>
         </ListGroup>
       </div>
       {/* page section */}

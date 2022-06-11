@@ -16,6 +16,7 @@ import Participants from './routes/Participants';
 import Admin from './routes/Admin';
 import CompetitionManagement from './routes/CompetitionManagement';
 import FileManagement from './routes/FileManagement';
+import ParticipantManagement from './routes/ParticipantManagement';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -34,6 +35,7 @@ ReactDOM.render(
           <Route path="admin" element={<Admin />}>
             <Route path="competitions" element={<CompetitionManagement />} />
             <Route path="files" element={<FileManagement />} />
+            <Route path="participants" element={<ParticipantManagement />} />
           </Route>
         </Route>
       </Routes>
