@@ -54,6 +54,25 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
+// Response the detailed competition document by id
+router.get('/detail/:id', admin, async (req, res, next) => {
+  try {
+    const competition = await Competition.findById(req.params.id).populate({
+      path: 'events',
+      populate: {
+        path: 'participants',
+        model: 'Participant',
+        select: ['name', 'team', 'robotName'],
+        retainNullValues: true,
+      },
+    });
+
+    res.send(competition);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Create new competition document
 router.post('/', [
   admin,

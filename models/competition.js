@@ -10,7 +10,7 @@ const competitionSchema = new mongoose.Schema(
     events: [
       {
         _id: { type: mongoose.Schema.ObjectId, auto: true },
-        participants: [{ type: String }],
+        participants: [{ type: mongoose.Schema.Types.ObjectId }],
         name: { type: String, required: true, unique: true },
         desc: { type: String },
         numb: { type: Number },
