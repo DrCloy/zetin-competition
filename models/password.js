@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const passwordSchema = new mongoose.Schema({
-  targetId: { type: String, required: true },
+  targetId: { type: mongoose.Schema.Types.ObjectId, required: true },
   digest: { type: String, required: true },
   hash: { type: String, required: true },
   iteration: { type: Number },

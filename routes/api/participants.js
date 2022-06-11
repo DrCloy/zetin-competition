@@ -68,7 +68,9 @@ router.post('/', async (req, res, next) => {
     const participant = new Participant(req.body);
 
     // find competition document by id
-    const competition = await Competition.findById(participant.competitionId);
+    const competition = await Competition.findById(
+      participant.competitionId.toString(),
+    );
     if (!competition) {
       throw createError(404, '참가하는 대회가 존재하지 않습니다.');
     }
@@ -82,7 +84,7 @@ router.post('/', async (req, res, next) => {
     // create Password document
     const hash = await bcrypt.hash(plain, BCRYPT_SALT); // hash password
     const password = new Password({
-      targetId: participant._id,
+      targetId: participant._id.toString(),
       digest: 'bcrypt',
       hash,
     });
@@ -109,7 +111,9 @@ router.patch('/:id', async (req, res, next) => {
     }
 
     // find competition document
-    const competition = await Competition.findById(participant.competitionId);
+    const competition = await Competition.findById(
+      participant.competitionId.toString(),
+    );
     if (!competition) {
       throw createError(404, '참가하는 대회가 존재하지 않습니다.');
     }
@@ -160,11 +164,13 @@ router.delete('/:id', async (req, res, next) => {
     }
 
     // unparticipate
-    const competition = await Competition.findById(participant.competitionId);
+    const competition = await Competition.findById(
+      participant.competitionId.toString(),
+    );
     competition && (await competition.unparticipate(participant));
 
     // deletion
-    await Password.findByIdAndDelete(password._id);
+    await Password.findByIdAndDelete(password._id.toString());
     await Participant.findByIdAndDelete(id);
     res.json(participant);
   } catch (err) {

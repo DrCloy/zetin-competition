@@ -61,8 +61,6 @@ router.get('/detail/:id', admin, async (req, res, next) => {
       path: 'events',
       populate: {
         path: 'participants',
-        model: 'Participant',
-        select: ['name', 'team', 'robotName'],
         retainNullValues: true,
       },
     });
@@ -97,7 +95,7 @@ router.patch('/:id', [
 
       // examine the deleted event has participant(s)
       const originalEvents = document.events.slice();
-      const modifiedEventIds = req.body.events.map((e) => e._id);
+      const modifiedEventIds = req.body.events.map((e) => e._id.toString());
       for (let event of originalEvents) {
         if (modifiedEventIds.indexOf(event._id.toString()) === -1) {
           // if the event has been removed in the request

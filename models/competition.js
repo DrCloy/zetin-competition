@@ -9,8 +9,10 @@ const competitionSchema = new mongoose.Schema(
     desc: { type: String },
     events: [
       {
-        _id: { type: mongoose.Schema.ObjectId, auto: true },
-        participants: [{ type: mongoose.Schema.Types.ObjectId }],
+        _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+        participants: [
+          { type: mongoose.Schema.Types.ObjectId, ref: 'Participant' },
+        ],
         name: { type: String, required: true, unique: true },
         desc: { type: String },
         numb: { type: Number },
@@ -37,7 +39,9 @@ competitionSchema.methods.removeExistingOrderById = function (id) {
     const { participants } = event;
 
     for (let i = 0; i < participants.length; i++) {
-      if (participants[i] === id) {
+      const pid = participants[i];
+      if (!pid) continue;
+      if (pid.toString() === id) {
         participants[i] = null;
       }
     }
@@ -64,7 +68,9 @@ competitionSchema.methods.participate = async function (participant) {
     throw createError(400, '참가 신청 기간이 아닙니다.');
   }
 
-  const event = this.events.find((evt) => evt._id.toString() === eventId);
+  const event = this.events.find(
+    (evt) => evt._id.toString() === eventId.toString(),
+  );
   if (!event) {
     throw createError(404, '참가자가 선택한 경연 부문이 존재하지 않습니다.');
   }
@@ -75,7 +81,8 @@ competitionSchema.methods.participate = async function (participant) {
     throw createError(400, `정원 ${numb}명을 초과했습니다`);
   }
 
-  if (participants[entryOrder] && participants[entryOrder] !== id) {
+  const participantId = participants[entryOrder];
+  if (participantId && participantId.toString() !== id) {
     throw createError(409, `이미 해당 순번 ${entryOrder}이(가) 점유됐습니다.`);
   }
 

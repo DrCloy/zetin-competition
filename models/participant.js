@@ -2,8 +2,12 @@ const mongoose = require('mongoose');
 
 const participantSchema = new mongoose.Schema(
   {
-    competitionId: { type: String, required: true },
-    eventId: { type: String, required: true },
+    competitionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'Competition',
+    },
+    eventId: { type: mongoose.Schema.Types.ObjectId, required: true },
     name: { type: String, required: true },
     email: { type: String, required: true },
     team: String,
