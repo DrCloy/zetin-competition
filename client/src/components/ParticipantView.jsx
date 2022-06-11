@@ -18,7 +18,7 @@ function Field(props) {
 }
 
 function ParticipantView(props) {
-  const { participant } = props;
+  const { participant, ...restProps } = props;
   const {
     name,
     email,
@@ -36,7 +36,7 @@ function ParticipantView(props) {
   } = participant;
 
   return (
-    <div>
+    <div {...restProps}>
       <h4>인적 사항</h4>
       <Field name="이름" value={name} />
       <Field name="이메일" value={email} />
