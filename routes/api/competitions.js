@@ -172,17 +172,33 @@ router.patch('/:id', [
     try {
       let document = await Competition.findById(req.params.id);
 
-      // examine the deleted event has participant(s)
       const originalEvents = document.events.slice();
-      const modifiedEventIds = req.body.events.map((e) => e._id.toString());
-      for (let event of originalEvents) {
-        if (modifiedEventIds.indexOf(event._id.toString()) === -1) {
-          // if the event has been removed in the request
-          // check the removed event has participant(s)
-          if (Array.isArray(event.participants) && event.participants.length) {
+      const modifiedEventIds = req.body.events.map((e) => e._id);
+
+      for (const event of originalEvents) {
+        let maxOrder = 0; // * order index starts from 1
+        event.participants.forEach(
+          (value, index) => value && (maxOrder = index),
+        );
+
+        const modifiedEventIndex = modifiedEventIds.indexOf(
+          event._id.toString(),
+        );
+        const modifiedEvent = req.body.events[modifiedEventIndex]; // if modifiedEventIndex is -1, the value is undefined.
+
+        if (modifiedEventIndex === -1) {
+          // the event has been deleted
+          if (maxOrder) {
             throw createError(
               400,
               `삭제된 '${event.name}' 경연 부문에 참가자가 존재해 삭제할 수 없습니다.`,
+            );
+          }
+        } else {
+          if (modifiedEvent.numb < maxOrder) {
+            throw createError(
+              400,
+              `참가자 순번으로 인해 경연 부문의 참가 인원 수가 ${maxOrder}보다 작을 수 없습니다.`,
             );
           }
         }
@@ -207,8 +223,19 @@ router.delete('/:id', [
   async (req, res, next) => {
     try {
       const { id } = req.params;
-      let document = await Competition.findByIdAndDelete(id);
+      const competition = await Competition.findById(id);
 
+      for (const event of competition.events) {
+        for (const participant of event.participants) {
+          if (participant)
+            throw createError(
+              400,
+              '참가자가 존재하여 삭제할 수 없습니다. 참가자를 모두 참가 취소한 후 다시 시도하여 주십시오.',
+            );
+        }
+      }
+
+      let document = await Competition.findByIdAndDelete(id);
       res.json(document);
     } catch (err) {
       next(err);
