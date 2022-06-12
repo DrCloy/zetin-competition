@@ -8,6 +8,7 @@ import Button from 'react-bootstrap/Button';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Modal from 'react-bootstrap/Modal';
+import ParticipantView from '../components/ParticipantView';
 import ParticipantTable from '../components/ParticipantTable';
 import EntryForm from '../forms/EntryForm';
 
@@ -16,6 +17,7 @@ export default function ParticipantManagement() {
   const [targetCompetition, setTargetCompetition] = useState();
   const [targetParticipant, setTargetParticipant] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [showView, setShowView] = useState(false);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const competitionId = searchParams.get('cid');
@@ -125,6 +127,13 @@ export default function ParticipantManagement() {
             <ParticipantTable
               data={event.participants.filter((p) => p !== null)}
               countPerPage={10}
+              onClick={(p) => {
+                setTargetParticipant(p);
+                setShowView(true);
+              }}
+              renderHref={(p) =>
+                `/competitions/${p.competitionId}/participants?pid=${p._id}`
+              }
               renderFunction={(p) => (
                 <DropdownButton
                   id="functions"
@@ -156,7 +165,9 @@ export default function ParticipantManagement() {
         size="lg"
       >
         <Modal.Header closeButton>
-          <Modal.Title>참가자 등록</Modal.Title>
+          <Modal.Title>
+            {targetParticipant ? '참가자 수정' : '참가자 등록'}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <EntryForm
@@ -164,11 +175,23 @@ export default function ParticipantManagement() {
             data={targetParticipant}
             onSubmitted={() => {
               loadDetailedCompetition(); // reload
-              alert('참가자 등록이 완료됐습니다.');
               setTargetParticipant(null);
               setShowForm(false);
             }}
           />
+        </Modal.Body>
+      </Modal>
+      <Modal
+        show={showView}
+        onHide={() => setShowView(false)}
+        backdrop="static"
+        size="lg"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>참가자 정보</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ParticipantView participant={targetParticipant} />
         </Modal.Body>
       </Modal>
     </div>
