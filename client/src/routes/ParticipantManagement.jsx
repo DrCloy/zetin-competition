@@ -35,7 +35,7 @@ export default function ParticipantManagement() {
     async function getTargetCompetition() {
       try {
         const res = await axios.get(
-          `/api/competitions/detail/${competitionId}`,
+          `/api/competitions/${competitionId}/detail`,
         );
         setTargetCompetition(res.data);
       } catch (err) {

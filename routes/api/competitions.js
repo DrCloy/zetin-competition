@@ -57,7 +57,7 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // Response the detailed competition document by id
-router.get('/detail/:id', admin, async (req, res, next) => {
+router.get('/:id/detail', admin, async (req, res, next) => {
   try {
     const competition = await Competition.findById(req.params.id).populate({
       path: 'events',
