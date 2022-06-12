@@ -22,12 +22,9 @@ export default function Participants() {
   useEffect(() => {
     async function getParticipants() {
       try {
-        const res = await axios.get('/api/participants', {
-          params: {
-            competitionId: competition._id,
-            dateSort: 'desc',
-          },
-        });
+        const res = await axios.get(
+          `/api/competitions/${competition._id}/participants?dateSort=desc`,
+        );
         setParticipants(res.data);
       } catch (err) {
         alert(err.response?.data);
@@ -40,24 +37,17 @@ export default function Participants() {
   }, [participants, competition]);
 
   useEffect(() => {
-    async function getTargetParticipant() {
-      try {
-        const res = await axios.get(`/api/participants/${participantId}`);
-        setTargetParticipant(res.data);
-      } catch (err) {
-        alert(err.response.data);
-        setTargetParticipant(null);
-      }
-    }
-
     if (participantId) {
-      getTargetParticipant();
+      if (participants)
+        setTargetParticipant(
+          participants.find((value) => value._id === participantId),
+        );
     } else {
       setTargetParticipant(null);
       setModification(null);
       setEntryFormProps(null);
     }
-  }, [participantId]);
+  }, [participants, participantId]);
 
   if (targetParticipant) {
     if (modification) {
@@ -100,10 +90,10 @@ export default function Participants() {
               data: res.data,
               auth: password,
               onSubmitted: (res) => {
-                setTargetParticipant(res.data);
+                setParticipants(); // reload
+                alert('참가 신청 내용이 수정되었습니다.');
                 setModification(null);
                 setEntryFormProps(null);
-                alert('참가 신청 내용이 수정되었습니다.');
               },
             });
           } catch (err) {
@@ -121,9 +111,10 @@ export default function Participants() {
             await axios.delete(`/api/participants/${participantId}`, {
               headers: { Authorization: data.password },
             });
+            setParticipants(); // reload
             alert('참가 신청이 취소되었습니다.');
-            setSearchParams({});
             setModification(null);
+            setSearchParams({});
           } catch (err) {
             alert(err.response?.data);
           }
@@ -162,7 +153,7 @@ export default function Participants() {
         setSearchParams({ pid: p._id });
       }}
       renderHref={(p) => `?pid=${p._id}`}
-      countPerPage={15}
+      countPerPage={10}
     />
   );
 }
