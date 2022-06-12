@@ -99,21 +99,7 @@ export default function EventInput(props) {
         value={targetEvent?.item}
         resolver={yupResolver(
           yup.object({
-            name: yup
-              .string()
-              .test(
-                'isUniqueName',
-                '중복된 경연 이름이 존재합니다.',
-                (input) => {
-                  // search for duplicate names
-                  for (let i = 0; i < value.length; i++) {
-                    if (targetEvent && targetEvent.index === i) continue; // don't check itself.
-                    if (input === value[i].name) return false;
-                  }
-                  return true;
-                },
-              )
-              .required('경연 부문 이름을 입력해주세요.'),
+            name: yup.string().required('경연 부문 이름을 입력해주세요.'),
             numb: yup
               .number()
               .min(1, '참가 인원은 1명 이상이어야 합니다.')

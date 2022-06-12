@@ -13,7 +13,7 @@ const competitionSchema = new mongoose.Schema(
         participants: [
           { type: mongoose.Schema.Types.ObjectId, ref: 'Participant' },
         ],
-        name: { type: String, required: true, unique: true },
+        name: { type: String, required: true },
         desc: { type: String },
         numb: { type: Number },
       },
