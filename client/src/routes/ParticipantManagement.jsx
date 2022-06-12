@@ -77,9 +77,18 @@ export default function ParticipantManagement() {
               </Form.Control>
             </Form.Group>
           </Col>
-          <Col className="text-right">
-            <Button variant="secondary">CSV 파일로 내보내기</Button>
-          </Col>
+          {targetCompetition && (
+            <Col className="text-right">
+              <Button
+                variant="secondary"
+                href={`/api/competitions/${competitionId}/participants?toCSV=true`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                CSV 파일로 내보내기
+              </Button>
+            </Col>
+          )}
         </Form.Row>
       </Form>
       {targetCompetition &&

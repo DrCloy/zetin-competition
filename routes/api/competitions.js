@@ -2,7 +2,9 @@
 const router = require('express').Router();
 const Competition = require('../../models/competition');
 const createError = require('http-errors');
+const ObjectsToCsv = require('objects-to-csv');
 const admin = require('../../middlewares/admin')();
+const checkAdmin = require('../../middlewares/admin')({ adminOnly: false });
 
 // Response competition collection
 // (with createdAt, updatedAt, date, regDateEnd, regDateStart, name, posterId)
@@ -66,6 +68,83 @@ router.get('/detail/:id', admin, async (req, res, next) => {
     });
 
     res.send(competition);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get(`/:id/participants`, checkAdmin, async (req, res, next) => {
+  try {
+    let { dateSort, toCSV } = req.query;
+    const competition = await Competition.findById(req.params.id).populate({
+      path: 'events',
+      populate: {
+        path: 'participants',
+        retainNullValue: true,
+      },
+    });
+
+    if (!competition) {
+      throw createError(404, '해당 ID를 가진 대회 문서를 찾을 수 없습니다.');
+    }
+
+    // create participant data
+    const data = [];
+    competition.events.forEach((event) => {
+      let realOrder = 0;
+
+      event.participants.forEach((participant) => {
+        if (participant)
+          data.push({
+            ...participant.toObject(),
+            competitionName: competition.name,
+            eventName: event.name,
+            realOrder: ++realOrder,
+          });
+      });
+    });
+
+    // delete the secure fields
+    if (!req.isAdmin) {
+      data.forEach((value) => {
+        delete value.email;
+      });
+    }
+
+    // sort by datetime
+    dateSort = dateSort === 'desc' ? -1 : 1;
+    data.sort((a, b) => dateSort * (a.createdAt - b.createdAt));
+
+    // make and send csv file when 'toCSV' query has been provided
+    if (toCSV) {
+      data.unshift({
+        name: '이름',
+        email: '이메일',
+        team: '소속',
+        robotName: '로봇 이름',
+        robotCPU: 'CPU',
+        robotROM: 'ROM',
+        robotRAM: 'RAM',
+        robotMotorDriver: '모터 드라이버',
+        robotMotor: '모터',
+        robotADC: 'ADC',
+        robotSensor: '센서',
+        competitionName: '대회 이름',
+        eventName: '참가 부문',
+        entryOrder: '참가 순번',
+        realOrder: '실제 순번',
+        comment: '하고 싶은 말',
+        createdAt: '참가 신청일',
+      }); // add custom csv header
+      const csv = new ObjectsToCsv(data);
+      res.writeHead(200, {
+        'Content-Disposition': `attachment; filename="${competition._id.toString()}.csv"`,
+        'Content-Type': 'text/csv',
+      });
+      return res.end(await csv.toString(false));
+    }
+
+    res.send(data);
   } catch (err) {
     next(err);
   }
