@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 
@@ -7,11 +7,15 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+import Modal from 'react-bootstrap/Modal';
 import ParticipantTable from '../components/ParticipantTable';
+import EntryForm from '../forms/EntryForm';
 
 export default function ParticipantManagement() {
   const [competitions, setCompetitions] = useState();
   const [targetCompetition, setTargetCompetition] = useState();
+  const [targetParticipant, setTargetParticipant] = useState(null);
+  const [showForm, setShowForm] = useState(false);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const competitionId = searchParams.get('cid');
@@ -31,24 +35,38 @@ export default function ParticipantManagement() {
     }
   }, [competitions]);
 
-  useEffect(() => {
-    async function getTargetCompetition() {
-      try {
-        const res = await axios.get(
-          `/api/competitions/${competitionId}/detail`,
-        );
-        setTargetCompetition(res.data);
-      } catch (err) {
-        alert(err.response?.data);
-      }
-    }
-
-    if (competitionId) {
-      getTargetCompetition();
-    } else {
-      setTargetCompetition(null);
-    }
+  const loadDetailedCompetition = useCallback(async () => {
+    const res = await axios.get(`/api/competitions/${competitionId}/detail`);
+    setTargetCompetition(res.data);
   }, [competitionId]);
+
+  useEffect(() => {
+    try {
+      if (competitionId) {
+        loadDetailedCompetition();
+      } else {
+        setTargetCompetition(null);
+      }
+    } catch (err) {
+      alert(err.response?.data);
+    }
+  }, [competitionId, loadDetailedCompetition]);
+
+  const showParticipantEditDialog = (p) => {
+    setTargetParticipant(p);
+    setShowForm(true);
+  };
+
+  const showUnparticipationDialog = async (p) => {
+    try {
+      if (window.confirm(`정말로 '${p.name}'의 참가를 취소하시겠습니까?`)) {
+        await axios.delete(`/api/participants/${p._id}`);
+        loadDetailedCompetition(); // reload
+      }
+    } catch (err) {
+      alert(err.response?.data);
+    }
+  };
 
   return (
     <div>
@@ -80,6 +98,15 @@ export default function ParticipantManagement() {
           {targetCompetition && (
             <Col className="text-right">
               <Button
+                variant="secondary mr-1"
+                onClick={() => {
+                  setTargetParticipant(null);
+                  setShowForm(true);
+                }}
+              >
+                참가자 등록
+              </Button>
+              <Button
                 variant="secondary"
                 href={`/api/competitions/${competitionId}/participants?toCSV=true`}
                 target="_blank"
@@ -105,13 +132,45 @@ export default function ParticipantManagement() {
                   variant="link"
                   size="sm"
                 >
-                  <Dropdown.Item as="button">수정</Dropdown.Item>
-                  <Dropdown.Item as="button">참가 취소</Dropdown.Item>
+                  <Dropdown.Item
+                    as="button"
+                    onClick={() => showParticipantEditDialog(p)}
+                  >
+                    수정
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    as="button"
+                    onClick={() => showUnparticipationDialog(p)}
+                  >
+                    참가 취소
+                  </Dropdown.Item>
                 </DropdownButton>
               )}
             />
           </div>
         ))}
+      <Modal
+        show={showForm}
+        onHide={() => setShowForm(false)}
+        backdrop="static"
+        size="lg"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>참가자 등록</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <EntryForm
+            competition={targetCompetition}
+            data={targetParticipant}
+            onSubmitted={() => {
+              loadDetailedCompetition(); // reload
+              alert('참가자 등록이 완료됐습니다.');
+              setTargetParticipant(null);
+              setShowForm(false);
+            }}
+          />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }
