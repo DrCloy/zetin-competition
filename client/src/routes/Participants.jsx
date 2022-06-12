@@ -49,6 +49,9 @@ export default function Participants() {
     }
   }, [participants, participantId]);
 
+  let page = searchParams.get('page');
+  if (!page) page = 1;
+
   if (targetParticipant) {
     if (modification) {
       return entryFormProps ? (
@@ -114,7 +117,7 @@ export default function Participants() {
             setParticipants(); // reload
             alert('참가 신청이 취소되었습니다.');
             setModification(null);
-            setSearchParams({});
+            setSearchParams({ page });
           } catch (err) {
             alert(err.response?.data);
           }
@@ -126,7 +129,7 @@ export default function Participants() {
         <Button
           variant="secondary"
           size="sm"
-          onClick={() => setSearchParams({})}
+          onClick={() => setSearchParams({ page })}
         >
           돌아가기
         </Button>
@@ -150,8 +153,11 @@ export default function Participants() {
     <ParticipantTable
       data={participants}
       onClick={(p) => {
-        setSearchParams({ pid: p._id });
+        setSearchParams({ pid: p._id, page });
       }}
+      onPaginationClick={(i) => setSearchParams({ page: i })}
+      page={page}
+      numbering="desc"
       renderHref={(p) => `?pid=${p._id}`}
       countPerPage={10}
     />

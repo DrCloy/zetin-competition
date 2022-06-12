@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Table from 'react-bootstrap/Table';
 import Pagination from 'react-bootstrap/Pagination';
 
@@ -7,7 +7,10 @@ export default function ParticipantTable(props) {
     data,
     renderFunction,
     renderHref,
+    numbering,
     onClick,
+    onPaginationClick,
+    page,
     countPerPage,
     ...restProps
   } = props;
@@ -18,6 +21,10 @@ export default function ParticipantTable(props) {
   const count = props.countPerPage || 5;
   const offset = activePage * count;
 
+  useEffect(() => {
+    if (page) setActivePage(page - 1);
+  }, [page]);
+
   if (data) {
     // for pagination
     for (let i = 0; i < data.length / countPerPage; i++) {
@@ -25,7 +32,10 @@ export default function ParticipantTable(props) {
         <Pagination.Item
           key={i}
           active={i === activePage}
-          onClick={() => setActivePage(i)}
+          onClick={() => {
+            setActivePage(i);
+            onPaginationClick && onPaginationClick(i + 1);
+          }}
         >
           {i + 1}
         </Pagination.Item>,
@@ -37,7 +47,11 @@ export default function ParticipantTable(props) {
       const { _id, name, team, robotName } = value;
       return (
         <tr key={_id}>
-          <td>{data.length - index - offset}</td>
+          <td>
+            {numbering === 'desc'
+              ? data.length - index - offset
+              : offset + index + 1}
+          </td>
           <td>{name}</td>
           <td>{team}</td>
           <td>
