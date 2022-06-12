@@ -66,6 +66,21 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
+router.get('/:id/password', async (req, res, next) => {
+  try {
+    // password verification
+    const password = await Password.findByTargetId(req.params.id);
+    const isAuthed = await password.verify(req.headers.authorization);
+    if (isAuthed) {
+      res.sendStatus(200); // OK
+    } else {
+      res.sendStatus(401); // Unauthorized
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.post('/', async (req, res, next) => {
   try {
     // create new document
@@ -186,26 +201,6 @@ router.delete('/:id', async (req, res, next) => {
     await Password.findByIdAndDelete(password._id.toString());
     await Participant.findByIdAndDelete(id);
     res.json(participant);
-  } catch (err) {
-    next(err);
-  }
-});
-
-router.options('/:id', async (req, res, next) => {
-  try {
-    const { id } = req.params;
-
-    // password verification
-    const password = await Password.findByTargetId(id);
-    const isAuthed = await password.verify(req.headers.authorization);
-    if (isAuthed || req.isAdmin) {
-      // https://developer.mozilla.org/ko/docs/Web/HTTP/Methods/OPTIONS
-      res.header('Allow', 'OPTIONS, GET, PATCH, DELETE');
-    } else {
-      res.header('Allow', 'OPTIONS, GET');
-    }
-
-    res.sendStatus(200);
   } catch (err) {
     next(err);
   }

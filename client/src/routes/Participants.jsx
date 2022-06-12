@@ -61,7 +61,6 @@ export default function Participants() {
           <p>{modification.message}</p>
           <ParticipantAuthForm
             participant={targetParticipant}
-            method={modification.method}
             onSucceed={modification.onSucceed}
             onCancelled={() => setModification(null)}
           />
@@ -77,7 +76,6 @@ export default function Participants() {
 
     const handlePatchClick = () =>
       setModification({
-        method: 'PATCH',
         message: '참가 신청 내용을 수정하려면 비밀번호를 입력해주세요.',
         onSucceed: async (data) => {
           try {
@@ -107,7 +105,6 @@ export default function Participants() {
 
     const handleDeleteClick = () =>
       setModification({
-        method: 'DELETE',
         message: '참가 신청을 취소하려면 비밀번호를 입력해주세요.',
         onSucceed: async (data) => {
           try {
