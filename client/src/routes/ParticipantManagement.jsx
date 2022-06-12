@@ -125,7 +125,13 @@ export default function ParticipantManagement() {
           <div key={event._id}>
             <h5>'{event.name}' 참가자</h5>
             <ParticipantTable
-              data={event.participants.filter((p) => p !== null)}
+              data={event.participants
+                .filter((p) => p !== null)
+                .map((p, order) => ({
+                  ...p,
+                  realOrder: order + 1,
+                  eventName: event.name,
+                }))}
               countPerPage={10}
               onClick={(p) => {
                 setTargetParticipant(p);

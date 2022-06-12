@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 import Button from 'react-bootstrap/Button';
@@ -68,7 +69,13 @@ export default function CompetitionManagement() {
         data={competitions}
         renderFunction={(c) => (
           <>
-            <Button variant="outline-secondary" size="sm" className="border-0">
+            <Button
+              as={Link}
+              variant="outline-secondary"
+              size="sm"
+              className="border-0"
+              to={`/admin/participants?cid=${c._id}`}
+            >
               참가자 목록
             </Button>
             <Button
