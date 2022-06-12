@@ -57,14 +57,19 @@ competitionSchema.methods.isRegistrationPeriod = function () {
 };
 
 // Method: Participate the given participant to the competition
-competitionSchema.methods.participate = async function (participant) {
+competitionSchema.methods.participate = async function (
+  participant,
+  options = {},
+) {
+  const { ignoreRegistrationPeriod } = options;
+
   if (!(participant instanceof Participant)) {
     throw createError(500, 'The argument is not Participant model');
   }
   const { _id, eventId, entryOrder } = participant;
   const id = _id.toString();
 
-  if (!this.isRegistrationPeriod()) {
+  if (!this.isRegistrationPeriod() && !ignoreRegistrationPeriod) {
     throw createError(400, '참가 신청 기간이 아닙니다.');
   }
 
@@ -93,12 +98,17 @@ competitionSchema.methods.participate = async function (participant) {
 };
 
 // Method: Unparticipate the given participant from the competition
-competitionSchema.methods.unparticipate = async function (participant) {
+competitionSchema.methods.unparticipate = async function (
+  participant,
+  options,
+) {
+  const { ignoreRegistrationPeriod } = options;
+
   if (!(participant instanceof Participant)) {
     throw createError(500, 'The argument is not Participant model');
   }
 
-  if (!this.isRegistrationPeriod()) {
+  if (!this.isRegistrationPeriod() && !ignoreRegistrationPeriod) {
     throw createError(400, '참가 신청 기간이 아닙니다.');
   }
 

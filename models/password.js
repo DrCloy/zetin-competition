@@ -9,16 +9,9 @@ const passwordSchema = new mongoose.Schema({
   salt: { type: Number },
 });
 
-passwordSchema.statics.verify = async function (targetId, plain) {
-  const password = await this.findOne({ targetId });
-
-  if (!password) return null;
-  if (!plain) return null;
-
-  const match = await bcrypt.compare(plain, password.hash);
-  if (match) return password;
-
-  return null;
+passwordSchema.methods.verify = async function (plain) {
+  if (!plain) return false;
+  return await bcrypt.compare(plain, this.hash);
 };
 
 passwordSchema.statics.findByTargetId = async function (targetId) {

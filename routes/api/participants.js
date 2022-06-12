@@ -2,6 +2,7 @@
 const router = require('express').Router();
 const createError = require('http-errors');
 const bcrypt = require('bcrypt');
+const checkAdmin = require('../../middlewares/admin')({ adminOnly: false });
 
 /* Models */
 const Competition = require('../../models/competition');
@@ -9,6 +10,8 @@ const Participant = require('../../models/participant');
 const Password = require('../../models/password');
 
 const BCRYPT_SALT = 12;
+
+router.use(checkAdmin);
 
 router.get('/', async (req, res, next) => {
   try {
@@ -50,8 +53,9 @@ router.get('/:id', async (req, res, next) => {
       throw createError(404, '해당 참가자를 찾을 수 없습니다.');
     }
 
-    const password = await Password.verify(id, req.headers.authorization);
-    if (!password) {
+    const password = await Password.findByTargetId(id);
+    const isAuthed = await password.verify(req.headers.authorization);
+    if (!isAuthed && !req.isAdmin) {
       // if verification fail, remove sensitive information from response
       delete participant.email;
     }
@@ -90,7 +94,9 @@ router.post('/', async (req, res, next) => {
     });
 
     // participate
-    await competition.participate(participant);
+    await competition.participate(participant, {
+      ignoreRegistrationPeriod: req.isAdmin,
+    });
 
     await password.save();
     await participant.save();
@@ -119,8 +125,9 @@ router.patch('/:id', async (req, res, next) => {
     }
 
     // password verification
-    const password = await Password.verify(id, req.headers.authorization);
-    if (!password) {
+    const password = await Password.findByTargetId(id);
+    const isAuthed = await password.verify(req.headers.authorization);
+    if (!isAuthed && !req.isAdmin) {
       throw createError(401, '비밀번호 인증에 실패했습니다.');
     }
 
@@ -137,7 +144,9 @@ router.patch('/:id', async (req, res, next) => {
     });
 
     // participate
-    await competition.participate(participant);
+    await competition.participate(participant, {
+      ignoreRegistrationPeriod: req.isAdmin,
+    });
 
     await password.save();
     await participant.save();
@@ -158,8 +167,9 @@ router.delete('/:id', async (req, res, next) => {
     }
 
     // password verification
-    const password = await Password.verify(id, req.headers.authorization);
-    if (!password) {
+    const password = await Password.findByTargetId(id);
+    const isAuthed = await password.verify(req.headers.authorization);
+    if (!isAuthed && !req.isAdmin) {
       throw createError(401, '비밀번호 인증에 실패했습니다.');
     }
 
@@ -167,7 +177,10 @@ router.delete('/:id', async (req, res, next) => {
     const competition = await Competition.findById(
       participant.competitionId.toString(),
     );
-    competition && (await competition.unparticipate(participant));
+    competition &&
+      (await competition.unparticipate(participant, {
+        ignoreRegistrationPeriod: req.isAdmin,
+      }));
 
     // deletion
     await Password.findByIdAndDelete(password._id.toString());
@@ -183,8 +196,9 @@ router.options('/:id', async (req, res, next) => {
     const { id } = req.params;
 
     // password verification
-    const password = await Password.verify(id, req.headers.authorization);
-    if (password) {
+    const password = await Password.findByTargetId(id);
+    const isAuthed = await password.verify(req.headers.authorization);
+    if (isAuthed || req.isAdmin) {
       // https://developer.mozilla.org/ko/docs/Web/HTTP/Methods/OPTIONS
       res.header('Allow', 'OPTIONS, GET, PATCH, DELETE');
     } else {
