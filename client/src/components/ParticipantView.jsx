@@ -39,7 +39,6 @@ function ParticipantView(props) {
 
   return (
     <div {...restProps}>
-      <hr />
       <h4>인적 사항</h4>
       <Field name="이름" value={name} />
       <Field name="이메일" value={email} />

@@ -17,7 +17,7 @@ export default function Entry() {
   useEffect(() => {
     if (!isRegistrationPeriod) {
       alert('참가 신청 기간이 아닙니다.');
-      navigate(`/competitions/${_id}`);
+      navigate(-1);
     }
   }, [isRegistrationPeriod, navigate, _id]);
 
