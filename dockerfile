@@ -1,6 +1,3 @@
-# -----------------------------------------
-# 1. Install packages and build react app
-# -----------------------------------------
 FROM node:16-alpine
 
 RUN apk update
