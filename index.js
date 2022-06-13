@@ -9,7 +9,7 @@ const app = express();
 require('dotenv').config();
 const PORT = process.env.PORT || 8000;
 const MONGODB_URL =
-  `mongodb://${process.env.MONGODB_HOST || localhost}:${
+  `mongodb://${process.env.MONGODB_HOST || 'localhost'}:${
     process.env.MONDODB_PORT || 27017
   }/` + (process.env.MONGODB_NAME || 'zetin-competition');
 
