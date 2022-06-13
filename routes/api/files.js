@@ -1,7 +1,7 @@
 /* Dependencies */
 const router = require('express').Router();
 const multer = require('multer');
-const sharp = require('sharp');
+const Jimp = require('jimp');
 const mime = require('mime-types');
 const path = require('path');
 const fs = require('fs');
@@ -60,13 +60,29 @@ const generateThumbnail = (imageFilePath) => {
       resolve(thumbnailPath);
     } else {
       // resize and convert image
-      sharp(imageFilePath)
-        .resize({ width: THUMB_WIDTH })
-        .toFormat(THUMB_EXTENSION)
-        .toFile(thumbnailPath, function (err) {
-          if (err) reject(err);
-          resolve(thumbnailPath);
-        });
+      Jimp.read(imageFilePath, (err, image) => {
+        if (err) reject(err);
+        image
+          .resize(THUMB_WIDTH, Jimp.AUTO)
+          .quality(80)
+          .getBuffer(mime.lookup(THUMB_EXTENSION), (err, buffer) => {
+            if (err) reject(err);
+
+            // https://github.com/oliver-moran/jimp/blob/53ff9d1266207f7f674233f465ec358274510511/packages/core/src/index.js#L538
+            const stream = fs.createWriteStream(thumbnailPath);
+            stream
+              .on('open', () => {
+                stream.write(buffer);
+                stream.end();
+              })
+              .on('error', (err) => {
+                reject(err);
+              });
+            stream.on('finish', () => {
+              resolve(thumbnailPath);
+            });
+          });
+      });
     }
   });
 };
