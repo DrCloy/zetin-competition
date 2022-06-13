@@ -1,7 +1,7 @@
 /* Dependencies */
 const router = require('express').Router();
 const createError = require('http-errors');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const checkAdmin = require('../../middlewares/admin')({ adminOnly: false });
 
 /* Models */
@@ -54,7 +54,7 @@ router.get('/:id', async (req, res, next) => {
     }
 
     const password = await Password.findByTargetId(id);
-    const isAuthed = await password.verify(req.headers.authorization);
+    const isAuthed = password.verify(req.headers.authorization);
     if (!isAuthed && !req.isAdmin) {
       // if verification fail, remove sensitive information from response
       delete participant.email;
@@ -70,7 +70,7 @@ router.get('/:id/password', async (req, res, next) => {
   try {
     // password verification
     const password = await Password.findByTargetId(req.params.id);
-    const isAuthed = await password.verify(req.headers.authorization);
+    const isAuthed = password.verify(req.headers.authorization);
     if (isAuthed) {
       res.sendStatus(200); // OK
     } else {
@@ -101,7 +101,8 @@ router.post('/', async (req, res, next) => {
     }
 
     // create Password document
-    const hash = await bcrypt.hash(plain, BCRYPT_SALT); // hash password
+    const salt = bcrypt.genSaltSync(BCRYPT_SALT);
+    const hash = bcrypt.hashSync(plain, salt); // hash password
     const password = new Password({
       targetId: participant._id.toString(),
       digest: 'bcrypt',
@@ -141,7 +142,7 @@ router.patch('/:id', async (req, res, next) => {
 
     // password verification
     const password = await Password.findByTargetId(id);
-    const isAuthed = await password.verify(req.headers.authorization);
+    const isAuthed = password.verify(req.headers.authorization);
     if (!isAuthed && !req.isAdmin) {
       throw createError(401, '비밀번호 인증에 실패했습니다.');
     }
@@ -149,7 +150,8 @@ router.patch('/:id', async (req, res, next) => {
     // update password
     const newPassword = req.body.password;
     if (newPassword) {
-      password.hash = await bcrypt.hash(newPassword, BCRYPT_SALT);
+      const salt = bcrypt.genSaltSync(BCRYPT_SALT);
+      password.hash = bcrypt.hashSync(newPassword, salt); // hash password
       password.digest = 'bcrypt';
     }
 
@@ -183,7 +185,7 @@ router.delete('/:id', async (req, res, next) => {
 
     // password verification
     const password = await Password.findByTargetId(id);
-    const isAuthed = await password.verify(req.headers.authorization);
+    const isAuthed = password.verify(req.headers.authorization);
     if (!isAuthed && !req.isAdmin) {
       throw createError(401, '비밀번호 인증에 실패했습니다.');
     }

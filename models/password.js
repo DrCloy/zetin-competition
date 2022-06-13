@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const passwordSchema = new mongoose.Schema({
   targetId: { type: mongoose.Schema.Types.ObjectId, required: true },
@@ -9,9 +9,9 @@ const passwordSchema = new mongoose.Schema({
   salt: { type: Number },
 });
 
-passwordSchema.methods.verify = async function (plain) {
+passwordSchema.methods.verify = function (plain) {
   if (!plain) return false;
-  return await bcrypt.compare(plain, this.hash);
+  return bcrypt.compareSync(plain, this.hash);
 };
 
 passwordSchema.statics.findByTargetId = async function (targetId) {
