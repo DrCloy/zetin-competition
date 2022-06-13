@@ -27,7 +27,7 @@ if (error) {
   };
 } else {
   const publicKey = fs.readFileSync(ADMIN_AUTH_PUBLIC_PEM); // get public key from environment variable
-  const adminIDs = ADMIN_ID.split(' '); // get administrator account information
+  const adminIDs = ADMIN_ID.split(','); // get administrator account information
 
   module.exports = function (token) {
     if (!token) {

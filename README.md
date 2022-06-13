@@ -15,7 +15,7 @@
 
 - `PATH_FILES`: 업로드된 파일들을 보관하는 디렉터리를 지정합니다.
 - `ADMIN_AUTH_PUBLIC_PEM`: 관리자 인증을 위한 공개키 PEM 파일을 지정합니다.
-- `ADMIN_ID`: 관리자 계정을 지정합니다. 띄어쓰기로 여러 명을 지정할 수 있습니다.
+- `ADMIN_ID`: 관리자 계정을 지정합니다. 콤마(,)로 여러 명을 지정할 수 있습니다.
 
 다음은 필수는 아니나 사용자에 맞게 설정할 수 있는 환경변수입니다.
 
@@ -23,7 +23,7 @@
 - `MONGODB_NAME`: mongodb 데이터베이스 이름을 지정합니다. (기본값: `zetin-competition`)
 - `MONGODB_HOST`: mongodb 서버 호스트를 지정합니다. (기본값: `localhost`)
 - `MONGODB_PORT`: mongodb 서버 포트를 지정합니다. (기본값: `27017`)
-- `ZETIN_AUTH_HOST`: ZETIN 인증 서버 호스트를 지정합니다. (기본값: [여기서 확인](./routes/api/auth.js))
+- `ZETIN_AUTH_HOST`: ZETIN 인증 서버 호스트를 지정합니다. (기본값: [여기서 확인](./routes/api/admin.js))
 
 ## 동작 환경
 

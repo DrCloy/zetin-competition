@@ -7,8 +7,10 @@ const createError = require('http-errors');
 const verifyAdmin = require('../../modules/verifyAdmin');
 
 /* Constants */
-const AUTH_HOST =
-  process.env.ZETIN_AUTH_HOST || 'https://auth.zetin.uos.ac.kr/auth';
+const AUTH_URL = `https://${
+  process.env.ZETIN_AUTH_HOST || 'auth.zetin.uos.ac.kr'
+}/auth`;
+
 const COOKIE_NAME = 'adminToken';
 const COOKIE_PATH = '/api';
 
@@ -27,7 +29,7 @@ router.post('/signin', async (req, res, next) => {
   try {
     // first, zetin member authentication
     const { id, pw } = req.body;
-    const resLogin = await axios.post(AUTH_HOST, {
+    const resLogin = await axios.post(AUTH_URL, {
       id,
       pw,
     });
