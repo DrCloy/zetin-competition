@@ -52,11 +52,9 @@ services:
     build: {dockerfile 부모 경로}
     image: zetin-competition
     volumes:
-      - {ZETIN 인증 서버 공개키 경로}:/zetin-competition/zetin.pem
       - {파일을 저장할 경로}:/zetin-competition/files
     environment:
       - PATH_FILES=/zetin-competition/files
-      - ADMIN_AUTH_PUBLIC_PEM=/zetin-competition/zetin.pem
       - ADMIN_ID={관리자로 사용할 ZETIN 계정}
       - MONGODB_HOST=zetin-competition-db
     links:
