@@ -9,16 +9,12 @@ function admin(options) {
   options = { adminOnly: true, ...options };
 
   // return admin authentication middleware
-  return (req, res, next) => {
+  return async (req, res, next) => {
     try {
       let token = req.cookies.adminToken;
 
-      if (!token) {
-        throw createError(401, '인증 정보가 없습니다.');
-      }
-
       // verify given token.
-      verifyAdmin(token);
+      await verifyAdmin(token);
       req.isAdmin = true;
       next();
     } catch (err) {

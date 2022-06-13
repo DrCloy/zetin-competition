@@ -14,10 +14,10 @@ const AUTH_URL = `https://${
 const COOKIE_NAME = 'adminToken';
 const COOKIE_PATH = '/api';
 
-router.get('/status', (req, res, next) => {
+router.get('/status', async (req, res, next) => {
   try {
     const token = req.cookies[COOKIE_NAME];
-    const payload = verifyAdmin(token);
+    const payload = await verifyAdmin(token);
 
     res.send(payload); // send only payload, not with token
   } catch (err) {
@@ -43,7 +43,7 @@ router.post('/signin', async (req, res, next) => {
     }
 
     // second, check the member is admin.
-    const payload = verifyAdmin(token);
+    const payload = await verifyAdmin(token);
 
     // third, if the member is admin, cookie the jwt.
     res
