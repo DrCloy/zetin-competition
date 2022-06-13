@@ -21,7 +21,8 @@
 
 - `PORT`: 서버 포트를 지정합니다. (기본값: `8000`)
 - `MONGODB_NAME`: mongodb 데이터베이스 이름을 지정합니다. (기본값: `zetin-competition`)
-- `MONGODB_HOST`: mongodb 서버 호스트를 지정합니다. (기본값: `mongodb://localhost:27017/`)
+- `MONGODB_HOST`: mongodb 서버 호스트를 지정합니다. (기본값: `localhost`)
+- `MONGODB_PORT`: mongodb 서버 포트를 지정합니다. (기본값: `27017`)
 - `ZETIN_AUTH_HOST`: ZETIN 인증 서버 호스트를 지정합니다. (기본값: [여기서 확인](./routes/api/auth.js))
 
 ## 동작 환경
@@ -33,6 +34,7 @@
 
 1. 해당 프로젝트를 내려받는다.
 1. [환경 변수](#환경-변수) 항목을 참고하여 환경 변수를 설정한다.
+1. 프로젝트 최상단 디렉터리 및 client 디렉터리에서 각각 `npm install` 명령어를 실행한다.
 1. 프로젝트 최상단 디렉터리에서 `npm run dev` 명령어를 실행한다.
    - express 서버와 CRA(Create-React-App) 개발 서버가 동시에 실행된다.
 
@@ -42,4 +44,30 @@
 
 ## 배포
 
-Docker 기반의 배포 시스템 구축 준비중
+다음 docker-compose를 참고하여 프론트엔드/백엔드 프로젝트와 mongodb를 연동하여 서비스를 운용하면 된다.
+
+```
+version: "3.0"
+services:
+  zetin-competition:
+    build: {dockerfile 부모 경로}
+    image: zetin-competition
+    volumes:
+      - {ZETIN 인증 서버 공개키 경로}:/zetin-competition/zetin.pem
+      - {파일을 저장할 경로}:/zetin-competition/files
+    environment:
+      - PATH_FILES=/zetin-competition/files
+      - ADMIN_AUTH_PUBLIC_PEM=/zetin-competition/zetin.pem
+      - ADMIN_ID={관리자로 사용할 ZETIN 계정}
+      - MONGODB_HOST=zetin-competition-db
+    links:
+      - zetin-competition-db
+    ports:
+      - "8080:8000"
+
+  zetin-competition-db:
+    image: mongo
+    volumes:
+      - {db를 저장할 경로}:/data/db
+
+```

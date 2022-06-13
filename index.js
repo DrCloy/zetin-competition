@@ -8,9 +8,10 @@ const app = express();
 /* Constants */
 require('dotenv').config();
 const PORT = process.env.PORT || 8000;
-const MONGODB_NAME = process.env.MONGODB_NAME || 'zetin-competition';
 const MONGODB_URL =
-  (process.env.MONGODB_HOST || 'mongodb://localhost:27017/') + MONGODB_NAME;
+  `mongodb://${process.env.MONGODB_HOST || localhost}:${
+    process.env.MONDODB_PORT || 27017
+  }/` + (process.env.MONGODB_NAME || 'zetin-competition');
 
 /* Connect to mongodb server */
 mongoose
