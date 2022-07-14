@@ -12,6 +12,9 @@ import Input from './components/Input';
 import OrderSelector from './components/OrderSelector';
 import MarkdownTextArea from './components/MarkdownTextArea';
 
+import AgreementInput from './components/AgreementInput';
+import privacy from './agreements/privacy_20220714';
+
 const schema = yup.object({
   eventId: yup.string().required('참가 부문을 선택해주세요.'),
   name: yup.string().required('이름을 입력해주세요.'),
@@ -28,6 +31,9 @@ const schema = yup.object({
       '입력한 비밀번호가 서로 일치하지 않습니다.',
       (value, context) => value === context.parent.password,
     ),
+  privacyAgreed: yup
+    .boolean()
+    .test('agreed', '동의가 필요합니다.', (value) => value),
 });
 
 export default function EntryForm(props) {
@@ -103,6 +109,13 @@ export default function EntryForm(props) {
   return (
     <FormProvider {...form}>
       <Form noValidate onSubmit={handleSubmit(onSubmit)}>
+        <AgreementInput
+          id="entryPrivacyAgreed"
+          name="privacyAgreed"
+          agreement={privacy}
+        />
+        <hr />
+
         <h3>인적 사항</h3>
         <p className="text-muted">참가자의 정보를 입력해주세요.</p>
         <FieldStack>
@@ -225,6 +238,7 @@ export default function EntryForm(props) {
             id="entryPasswordCheck"
           />
         </FieldStack>
+        <hr />
         <Button type="submit" disabled={isSubmitting}>
           참가 신청
         </Button>

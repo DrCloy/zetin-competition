@@ -21,6 +21,7 @@ const participantSchema = new mongoose.Schema(
     robotSensor: String,
     entryOrder: { type: Number, required: true },
     comment: String,
+    privacyAgreed: Boolean,
   },
   { timestamps: true },
 );
