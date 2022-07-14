@@ -147,16 +147,23 @@ export default function Participants() {
   }
 
   return (
-    <ParticipantTable
-      data={participants}
-      onClick={(p) => {
-        setSearchParams({ pid: p._id, page });
-      }}
-      onPaginationClick={(i) => setSearchParams({ page: i })}
-      page={page}
-      numbering="desc"
-      renderHref={(p) => `?pid=${p._id}`}
-      countPerPage={10}
-    />
+    <div>
+      <ParticipantTable
+        data={participants}
+        onClick={(p) => {
+          setSearchParams({ pid: p._id, page });
+        }}
+        onPaginationClick={(i) => setSearchParams({ page: i })}
+        page={page}
+        numbering="desc"
+        renderHref={(p) => `?pid=${p._id}`}
+        countPerPage={10}
+      />
+      <div className="text-center">
+        <a href="/privacy" target="_blank" rel="noreferrer">
+          <small>개인정보 처리 방침</small>
+        </a>
+      </div>
+    </div>
   );
 }

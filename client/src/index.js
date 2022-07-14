@@ -18,6 +18,9 @@ import CompetitionManagement from './routes/CompetitionManagement';
 import FileManagement from './routes/FileManagement';
 import ParticipantManagement from './routes/ParticipantManagement';
 
+// privacy router
+import Privacy from './routes/Privacy';
+
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
@@ -37,6 +40,7 @@ ReactDOM.render(
             <Route path="files" element={<FileManagement />} />
             <Route path="participants" element={<ParticipantManagement />} />
           </Route>
+          <Route path="privacy" element={<Privacy />} />
         </Route>
       </Routes>
     </BrowserRouter>
