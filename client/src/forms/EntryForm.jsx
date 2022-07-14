@@ -10,7 +10,6 @@ import Button from 'react-bootstrap/Button';
 import FieldStack from './components/FieldStack';
 import Input from './components/Input';
 import OrderSelector from './components/OrderSelector';
-import MarkdownTextArea from './components/MarkdownTextArea';
 
 import AgreementInput from './components/AgreementInput';
 import privacy from './agreements/privacy_20220714';
@@ -213,12 +212,7 @@ export default function EntryForm(props) {
             </div>
           </div>
         )}
-        <MarkdownTextArea
-          label="하고 싶은 말"
-          name="comment"
-          id="entryComment"
-          rows={5}
-        />
+        <Input label="하고 싶은 말" name="comment" id="entryComment" />
         <hr />
         <h3>참가자 인증 수단</h3>
         <p className="text-muted">

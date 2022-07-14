@@ -2,8 +2,6 @@ import React from 'react';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
-import { markdown as md } from '../utils';
-
 function Field(props) {
   const { name, value } = props;
 
@@ -58,14 +56,7 @@ function ParticipantView(props) {
       <Field name="참가 부문" value={eventName} />
       <Field name="참가 순번" value={entryOrder} />
       <Field name="실제 순번" value={realOrder} />
-      <Field
-        name="하고 싶은 말"
-        value={
-          comment && (
-            <div dangerouslySetInnerHTML={{ __html: md.render(comment) }}></div>
-          )
-        }
-      />
+      <Field name="하고 싶은 말" value={comment} />
       <hr />
     </div>
   );
