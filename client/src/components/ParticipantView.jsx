@@ -39,7 +39,7 @@ function ParticipantView(props) {
     <div {...restProps}>
       <h4>인적 사항</h4>
       <Field name="이름" value={name} />
-      <Field name="이메일" value={email} />
+      {email && <Field name="이메일" value={email} />}
       <Field name="소속" value={team} />
       <hr />
       <h4>로봇 정보</h4>
