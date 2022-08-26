@@ -1,6 +1,7 @@
 .env
 /files
 /keys
+/db
 
 # dependencies
 /node_modules
