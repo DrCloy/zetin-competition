@@ -17,6 +17,7 @@ import Admin from './routes/Admin';
 import CompetitionManagement from './routes/CompetitionManagement';
 import FileManagement from './routes/FileManagement';
 import ParticipantManagement from './routes/ParticipantManagement';
+import Counter from './routes/Counter';
 
 // privacy router
 import Privacy from './routes/Privacy';
@@ -39,6 +40,7 @@ ReactDOM.render(
             <Route path="competitions" element={<CompetitionManagement />} />
             <Route path="files" element={<FileManagement />} />
             <Route path="participants" element={<ParticipantManagement />} />
+            <Route path="counter" element={<Counter />} />
           </Route>
           <Route path="privacy" element={<Privacy />} />
         </Route>

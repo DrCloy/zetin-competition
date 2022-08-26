@@ -30,6 +30,9 @@ export default function Admin() {
           <ListGroup.Item as={NavLink} to="participants">
             대회 참가자 관리
           </ListGroup.Item>
+          <ListGroup.Item as={NavLink} to="counter">
+            계수기 관리
+          </ListGroup.Item>
         </ListGroup>
       </div>
       {/* page section */}
