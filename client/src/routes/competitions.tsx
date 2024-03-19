@@ -1,20 +1,12 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-type Competition = {
-  id: number;
-  name: string;
-  description: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
 export default function Competitions() {
-  const [competitions, setCompetitions] = useState<Competition[]>([]);
+  const [competitions, setCompetitions] = useState();
 
   useEffect(() => {
     async function fetchData() {
-      const { data } = await axios.get<Competition[]>('/api/competitions');
+      const { data } = await axios.get('/api/competitions');
       setCompetitions(data);
     }
     fetchData();
