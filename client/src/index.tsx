@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import Home from 'routes/home';
+import Competitions from 'routes/competitions';
 
 const router = createBrowserRouter([
   {
@@ -16,7 +17,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/competitions',
-    element: null,
+    element: <Competitions />,
     children: [
       {
         path: '',
