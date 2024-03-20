@@ -5,7 +5,7 @@ export interface CompetitionListRepository {
 }
 
 export interface CompetitionDetailRepository {
-  getCompetition(id: string): Promise<CompetitionItem>;
+  getCompetitionDetail(id: string): Promise<CompetitionItem>;
 }
 
 export interface CompetitionFormRepository {

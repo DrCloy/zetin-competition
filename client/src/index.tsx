@@ -17,15 +17,15 @@ const router = createBrowserRouter([
   },
   {
     path: '/competitions',
-    element: <Competitions />,
     children: [
       {
         path: '',
-        element: null,
+        element: <Competitions />,
       },
       {
         path: ':id',
         element: null,
+        children: [],
       },
     ],
   },
