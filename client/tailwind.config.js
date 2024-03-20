@@ -2,7 +2,22 @@
 module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      aspectRatio: {
+        '3/2': '3/2',
+        '3/4': '3/4',
+        '16/9': '16/9',
+      },
+      scale: {
+        102: '1.02',
+      },
+      boxShadow: {
+        'competition-card': 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;',
+      },
+      borderColor: {
+        shadow: 'rgba(0, 0, 0, .125)',
+      },
+    },
     colors: {
       'uos-signature-blue': '#004094',
       'uos-blue': '#005eb8',
