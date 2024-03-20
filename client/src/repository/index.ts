@@ -1,6 +1,7 @@
-import { CompetitionRepository } from '../core/repository';
+import { CompetitionListRepository } from '../core/repository';
 import CompetitionsBackendRepo from './competitions/competitions-backend';
 
-const competitionList: CompetitionRepository = new CompetitionsBackendRepo();
+const competitionList: CompetitionListRepository =
+  new CompetitionsBackendRepo();
 
 export const repo = { competitionList };

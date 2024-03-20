@@ -22,3 +22,8 @@ export type CompetitionItem = {
   moreInfo: string;
   posterId: string;
 };
+
+export type CompetitionItemMeta = Pick<
+  CompetitionItem,
+  'id' | 'name' | 'posterId'
+>;
