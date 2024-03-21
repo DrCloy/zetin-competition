@@ -4,6 +4,8 @@ import './index.css';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import Home from 'routes/home';
 import Competitions from 'routes/competitions';
+import Competition from 'routes/competition';
+import CompetitionError from 'routes/competition-error';
 
 const router = createBrowserRouter([
   {
@@ -23,11 +25,34 @@ const router = createBrowserRouter([
         element: <Competitions />,
       },
       {
-        path: ':id',
-        element: null,
-        children: [],
+        path: ':competitionId',
+        element: <Competition />,
+        children: [
+          {
+            path: '',
+            element: null,
+          },
+          {
+            path: 'entry',
+            element: null,
+          },
+          {
+            path: 'participants',
+            element: null,
+          },
+        ],
       },
     ],
+  },
+  {
+    path: '/competition-error',
+    element: <CompetitionError />,
+    children: [],
+  },
+  {
+    path: '*',
+    element: null,
+    children: [],
   },
 ]);
 
