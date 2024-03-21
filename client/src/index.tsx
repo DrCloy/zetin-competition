@@ -6,6 +6,7 @@ import Home from 'routes/home';
 import Competitions from 'routes/competitions';
 import Competition from 'routes/competition';
 import CompetitionError from 'routes/competition-error';
+import CompetitionView from 'components/competition-view';
 
 const router = createBrowserRouter([
   {
@@ -30,7 +31,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: '',
-            element: null,
+            element: <CompetitionView />,
           },
           {
             path: 'entry',
