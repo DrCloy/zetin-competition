@@ -15,14 +15,17 @@ export default function Admin() {
           onAuthChange={useCallback((p: any) => setPayload(p), [])}
         />
         <hr className="my-4 border-t box-content overflow-visible" />
-        <div className="flex flex-col pl-0 rounded-md">
+        <div
+          className="flex flex-col pl-0 rounded-md divide-y border border-shadow overflow-hidden
+        *:relative *:block *:px-3 *:py-3 *:no-underline"
+        >
           <NavLink
             to="/admin/competitions"
             className={({ isActive }) =>
               (isActive
                 ? 'bg-blue-500 text-white font-semibold'
                 : 'bg-white text-sky-500 hover:text-blue-500 font-normal') +
-              'relative block px-3 py-4 rounded-md border border-shadow no-underline hover:underline'
+              'hover:underline'
             }
           >
             라인트레이서 대회 페이지 관리
@@ -33,7 +36,7 @@ export default function Admin() {
               (isActive
                 ? 'bg-blue-500 text-white font-semibold'
                 : 'bg-white text-sky-500 hover:text-blue-500 font-normal') +
-              'relative block px-3 py-4 border-t-0 border-shadow no-underline hover:underline'
+              'hover:underline'
             }
           >
             포스터 및 파일 관리
@@ -44,7 +47,7 @@ export default function Admin() {
               (isActive
                 ? 'bg-blue-500 text-white font-semibold'
                 : 'bg-white text-sky-500 hover:text-blue-500 font-normal') +
-              'relative block px-3 py-4 border-t-0 border-shadow no-underline hover:underline'
+              'hover:underline'
             }
           >
             대회 참가자 관리
@@ -55,7 +58,7 @@ export default function Admin() {
               (isActive
                 ? 'bg-blue-500 text-white font-semibold'
                 : 'bg-white text-sky-500 hover:text-blue-500 font-normal') +
-              'relative block px-3 py-4 rounded-md border-t-0 border-shadow no-underline hover:underline'
+              'hover:underline'
             }
           >
             계수기 관리
