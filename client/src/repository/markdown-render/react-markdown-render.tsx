@@ -39,39 +39,3 @@ export class MarkdownRender implements MarkdownRenderRepository {
     );
   }
 }
-
-// export default function MarkdownRender(props: { markdown: string }) {
-//   return (
-//     // react-nmakrdown with gfm plugin
-//     // make new tab for link
-//     <ReactMarkdown
-//       children={props.markdown}
-//       remarkPlugins={[remarkGfm]}
-//       components={{
-//         a: ({ node, ...props }) => {
-//           return (
-//             <a
-//               {...props}
-//               target="_blank"
-//               rel="noreferrer noopener"
-//               title="새 창에서 열기"
-//               className="text-blue-500 underline hover:text-blue-700 "
-//             />
-//           );
-//         },
-//         // h4 tag for title
-//         h4: ({ node, ...props }) => {
-//           return (
-//             <h4 {...props} className="font-bold text-2xl">
-//               {props.children}
-//             </h4>
-//           );
-//         },
-//         // list tag with bullet and margin
-//         ul: ({ node, ...props }) => {
-//           return <ul {...props} className="list-disc ml-10" />;
-//         },
-//       }}
-//     />
-//   );
-// }
