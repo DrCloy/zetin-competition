@@ -1,7 +1,19 @@
 import { useFormContext } from 'react-hook-form';
 
-export default function Input(props: any) {
-  const { id, label, name, advice, children, ...restProps } = props;
+export default function Input({
+  id,
+  label,
+  name,
+  advice,
+  type,
+  ...restProps
+}: {
+  id: string;
+  label: string;
+  name: string;
+  advice: string;
+  type: string;
+}) {
   const {
     register,
     formState: { errors },
@@ -24,6 +36,7 @@ export default function Input(props: any) {
           ''
         }
         id={id}
+        type={type}
         {...register(name, {
           required: advice,
         })}
