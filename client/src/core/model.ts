@@ -27,3 +27,14 @@ export type CompetitionItemMeta = Pick<
   CompetitionItem,
   'id' | 'name' | 'posterId'
 >;
+
+export type AuthInput = {
+  id: string;
+  pw: string;
+};
+
+export type UserItem = {
+  id: string;
+  status: boolean;
+  token: string;
+};
