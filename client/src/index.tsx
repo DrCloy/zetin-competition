@@ -8,6 +8,7 @@ import Competitions from 'routes/competitions';
 import Competition from 'routes/competition';
 import CompetitionError from 'routes/competition-error';
 import CompetitionView from 'components/competition-view';
+import Entry from 'routes/entry';
 
 /* router */
 const router = createBrowserRouter([
@@ -37,7 +38,7 @@ const router = createBrowserRouter([
           },
           {
             path: 'entry',
-            element: null,
+            element: <Entry />,
           },
           {
             path: 'participants',
