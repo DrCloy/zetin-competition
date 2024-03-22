@@ -38,7 +38,7 @@ export default function Competition() {
   return (
     <div className="my-4 max-w-screen-xl w-full px-4 mx-auto box-border block ">
       <div className="flex flex-wrap flex-auto">
-        <div className="max-w-full xs:max-w-1/3 mx-2">
+        <div className="max-w-full xs:max-w-1/3 mx-2 p-4">
           <Link
             to={`/api/files/${competition?.posterId}`}
             className=""
@@ -49,11 +49,11 @@ export default function Competition() {
             <img
               src={`/api/files/${competition?.posterId}`}
               alt=""
-              className="w-full h-auto rounded mb-2 aspect-2/3"
+              className="w-full h-auto rounded-lg mb-2 aspect-2/3"
             />
           </Link>
         </div>
-        <div className="max-w-2/3 mx-2 flex-1">
+        <div className="max-w-2/3 mx-2 flex-1 pt-4">
           <h2 className="font-bold mb-3 flex text-3xl">{competition?.name}</h2>
           <nav className="rounded grid grid-flow-row bg-light p-2 mb-3">
             <ul className="flex">

@@ -34,6 +34,10 @@ export class MarkdownRender implements MarkdownRenderRepository {
           ul: ({ node, ...props }) => {
             return <ul {...props} className="list-disc ml-10" />;
           },
+          // add p tag with margin-bottom
+          p: ({ node, ...props }) => {
+            return <p {...props} className="mb-3" />;
+          },
         }}
       />
     );
