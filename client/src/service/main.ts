@@ -1,9 +1,13 @@
+// Dependency Injection
+import { MarkdownRender } from '../repository/markdown/markdown-render';
 import {
   CompetitionDetailRepository,
   CompetitionListRepository,
 } from '../core/repository';
-import CompetitionDetailBackendRepo from './competitions/competition-detail-backend';
-import CompetitionsBackendRepo from './competitions/competitions-backend';
+import CompetitionsBackendRepo from 'repository/competitions/competitions-backend';
+import CompetitionDetailBackendRepo from 'repository/competitions/competition-detail-backend';
+
+const md = new MarkdownRender();
 
 const competitionList: CompetitionListRepository =
   new CompetitionsBackendRepo();
@@ -11,4 +15,5 @@ const competitionList: CompetitionListRepository =
 const competitionDetail: CompetitionDetailRepository =
   new CompetitionDetailBackendRepo();
 
+export { md };
 export const repo = { competitionList, competitionDetail };

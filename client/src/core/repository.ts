@@ -13,3 +13,7 @@ export interface CompetitionFormRepository {
   updateCompetition(competition: CompetitionItem): Promise<void>;
   deleteCompetition(id: string): Promise<void>;
 }
+
+export interface MarkdownRenderRepository {
+  render(markdown: string): JSX.Element;
+}

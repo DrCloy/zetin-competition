@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { CompetitionItemMeta } from '../core/model';
-import { repo } from '../repository';
+import { repo } from '../service/main';
 import CompetitionCard from 'components/competition-card';
 
 export default function Competitions() {

@@ -7,8 +7,7 @@ import {
   useNavigate,
   useParams,
 } from 'react-router-dom';
-import { repo } from 'repository';
-
+import { repo } from 'service/main';
 export default function Competition() {
   const { competitionId } = useParams();
   const [competition, setCompetition] = useState<CompetitionItem | null>(null);

@@ -31,7 +31,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: '',
-            element: <CompetitionView />,
+            element: <CompetitionView hideTitle />,
           },
           {
             path: 'entry',
