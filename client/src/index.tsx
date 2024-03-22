@@ -20,7 +20,24 @@ const router = createBrowserRouter([
   {
     path: '/admin',
     element: <Admin />,
-    children: [],
+    children: [
+      {
+        path: 'competitions',
+        element: null,
+      },
+      {
+        path: 'files',
+        element: null,
+      },
+      {
+        path: 'participants',
+        element: null,
+      },
+      {
+        path: 'privacy',
+        element: null,
+      },
+    ],
   },
   {
     path: '/competitions',
