@@ -1,3 +1,4 @@
+/* dependency */
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
@@ -8,6 +9,7 @@ import Competition from 'routes/competition';
 import CompetitionError from 'routes/competition-error';
 import CompetitionView from 'components/competition-view';
 
+/* router */
 const router = createBrowserRouter([
   {
     path: '/',
@@ -57,6 +59,7 @@ const router = createBrowserRouter([
   },
 ]);
 
+/* routing */
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <RouterProvider router={router} />,
 );
