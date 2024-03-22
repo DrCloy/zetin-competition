@@ -9,6 +9,7 @@ import Competition from 'routes/competition';
 import CompetitionError from 'routes/competition-error';
 import CompetitionView from 'components/competition-view';
 import Entry from 'routes/entry';
+import Admin from 'routes/admin';
 
 /* router */
 const router = createBrowserRouter([
@@ -18,7 +19,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/admin',
-    element: null,
+    element: <Admin />,
     children: [],
   },
   {
