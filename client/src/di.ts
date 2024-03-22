@@ -1,9 +1,9 @@
 // Dependency Injection
-import { MarkdownRender } from '../repository/markdown/markdown-render';
+import { MarkdownRender } from './repository/markdown-render/react-markdown-render';
 import {
   CompetitionDetailRepository,
   CompetitionListRepository,
-} from '../core/repository';
+} from './core/repository';
 import CompetitionsBackendRepo from 'repository/competitions/competitions-backend';
 import CompetitionDetailBackendRepo from 'repository/competitions/competition-detail-backend';
 
@@ -15,5 +15,4 @@ const competitionList: CompetitionListRepository =
 const competitionDetail: CompetitionDetailRepository =
   new CompetitionDetailBackendRepo();
 
-export { md };
-export const repo = { competitionList, competitionDetail };
+export const repo = { competitionList, competitionDetail, md };

@@ -1,7 +1,7 @@
 import { CompetitionItem } from 'core/model';
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { md } from 'service/main';
+import { repo } from 'di';
 
 function Field({
   field,
@@ -25,7 +25,7 @@ function Field({
     <div className="grid grid-cols-1 gap-2">
       {title && <h4 className="font-bold text-2xl">{title}</h4>}
       {markdown ? (
-        md.render(field as string)
+        repo.md.render(field as string)
       ) : (
         <div className="flex flex-wrap gap-2">{field}</div>
       )}
