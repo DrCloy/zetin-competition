@@ -34,7 +34,7 @@ const router = createBrowserRouter([
         element: null,
       },
       {
-        path: 'privacy',
+        path: 'counter',
         element: null,
       },
     ],
@@ -65,6 +65,10 @@ const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: '/privacy',
+    element: null,
   },
   {
     path: '/competition-error',
