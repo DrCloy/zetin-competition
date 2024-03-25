@@ -1,4 +1,9 @@
-import { CompetitionItem, CompetitionItemMeta } from './model';
+import {
+  AuthInput,
+  AuthPayload,
+  CompetitionItem,
+  CompetitionItemMeta,
+} from './model';
 
 export interface CompetitionListRepository {
   getCompetitions(): Promise<CompetitionItemMeta[]>;
@@ -16,4 +21,10 @@ export interface CompetitionFormRepository {
 
 export interface MarkdownRenderRepository {
   render(markdown: string): JSX.Element;
+}
+
+export interface AuthRepository {
+  signin(auth: AuthInput): Promise<AuthPayload>;
+  signout(): Promise<void>;
+  getStatus(): Promise<AuthPayload>;
 }

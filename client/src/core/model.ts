@@ -33,8 +33,7 @@ export type AuthInput = {
   pw: string;
 };
 
-export type UserItem = {
-  id: string;
-  status: boolean;
-  token: string;
+export type AuthPayload = {
+  username: string;
+  expiredAt: Date;
 };
