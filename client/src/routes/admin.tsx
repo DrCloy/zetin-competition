@@ -7,8 +7,8 @@ export default function Admin() {
   return (
     <>
       <div className="float-left block fixed left-0 top-0 p-6 w-80 h-full overflow-x-hidden overflow-y-auto bg-light border-r box-border">
-        <h3 className="text-3xl font-medium mb-2 leading-tight">
-          ZETIN Competiton Admin Page
+        <h3 className="text-[1.75rem] font-medium mb-2 leading-tight">
+          ZETIN Competition Admin Page
         </h3>
         <hr className="my-4 border-t box-content overflow-visible" />
         <AdminAuthForm
@@ -24,7 +24,7 @@ export default function Admin() {
             className={({ isActive }) =>
               (isActive
                 ? 'bg-blue-500 text-white font-semibold'
-                : 'bg-white text-sky-500 hover:text-blue-500 font-normal') +
+                : 'bg-white text-blue-500 hover:text-uos-signature-blue hover:underline font-normal') +
               'hover:underline'
             }
           >
@@ -35,7 +35,7 @@ export default function Admin() {
             className={({ isActive }) =>
               (isActive
                 ? 'bg-blue-500 text-white font-semibold'
-                : 'bg-white text-sky-500 hover:text-blue-500 font-normal') +
+                : 'bg-white text-blue-500 hover:text-uos-signature-blue hover:underline font-normal') +
               'hover:underline'
             }
           >
@@ -46,7 +46,7 @@ export default function Admin() {
             className={({ isActive }) =>
               (isActive
                 ? 'bg-blue-500 text-white font-semibold'
-                : 'bg-white text-sky-500 hover:text-blue-500 font-normal') +
+                : 'bg-white text-blue-500 hover:text-uos-signature-blue hover:underline font-normal') +
               'hover:underline'
             }
           >
@@ -57,7 +57,7 @@ export default function Admin() {
             className={({ isActive }) =>
               (isActive
                 ? 'bg-blue-500 text-white font-semibold'
-                : 'bg-white text-sky-500 hover:text-blue-500 font-normal') +
+                : 'bg-white text-blue-500 hover:text-uos-signature-blue hover:underline font-normal') +
               'hover:underline'
             }
           >
