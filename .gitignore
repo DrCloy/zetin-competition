@@ -1,3 +1,5 @@
+.devcontainer/files
+.devcontainer/db
 .env
 /files
 /keys
