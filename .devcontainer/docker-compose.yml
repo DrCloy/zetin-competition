@@ -2,25 +2,18 @@ version: '3.8'
 
 services:
   zetin-competition:
-    build:
-      context: ../
-      target: builder
+    image: node:20
     volumes:
-      - ../:/srv
+      - ../:/workspace
     environment:
-      - PATH_FILES=/srv/files
+      - PATH_FILES=/workspace/.devcontainer/files
       - ADMIN_ID=admin
       - MONGODB_HOST=zetin-competition-db
-    ports:
-      - 3000:3000
-      - 8000:8000
     links:
       - zetin-competition-db
-    entrypoint: /bin/bash
-    stdin_open: true # docker run -i
-    tty: true # docker run -t
+    command: sleep infinity
 
   zetin-competition-db:
     image: mongo:4.4.14
     volumes:
-      - ../db:/data/db
+      - ./db:/data/db

@@ -1,12 +1,12 @@
 {
-  "name": "zetin-competition",
+  "name": "zetin-competition-dev",
   "dockerComposeFile": ["./docker-compose.yml"],
   "service": "zetin-competition",
-  "shutdownAction": "stopCompose",
+  "shutdownAction": "none",
   "extensions": ["esbenp.prettier-vscode"],
   "settings": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true
   },
-  "workspaceFolder": "/srv"
+  "workspaceFolder": "/workspace"
 }
