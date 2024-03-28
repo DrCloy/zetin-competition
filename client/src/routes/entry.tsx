@@ -1,4 +1,4 @@
-import EntryForm from 'form/entry-form';
+import EntryForm from 'components/forms/entry-form';
 import { CompetitionItem } from 'core/model';
 import { useEffect } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';

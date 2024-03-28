@@ -1,4 +1,4 @@
-import AdminAuthForm from 'form/admin-auth-form';
+import AdminAuthForm from 'components/forms/admin-auth-form';
 import { useCallback, useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 
