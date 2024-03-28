@@ -28,9 +28,9 @@ export default function AdminAuthForm({
   );
 
   const onFailed = useCallback(
-    (error: { message: string }) => {
+    (error: { response: { data: string } }) => {
       setPayload(null);
-      setErrorMessage(error.message);
+      setErrorMessage(error.response.data);
       onAuthChange && onAuthChange(null);
     },
     [onAuthChange],
