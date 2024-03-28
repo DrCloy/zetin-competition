@@ -108,7 +108,7 @@ export default function AdminAuthForm({
           />
         </div>
         <button
-          className=" m-0 box-border leading-normal inline-block text-center align-middle border border-transparent py-[0.375rem] px-3 text-base rounded transition duration-150 ease-in-out text-white bg-blue-500 border-blue-500 cursor-pointer 
+          className=" m-0 box-border leading-normal inline-block text-center align-middle border border-transparent py-[0.375rem] px-3 text-base rounded transition duration-150 ease-in-out text-white bg-blue-600 border-blue-600 cursor-pointer 
           active:bg-[#0062cc] active:border-[#005cbf]
           hover:bg-[#0069d9] hover:border-[#0062cc] 
           focus:shadow-[0px_0px_0px_0.2rem] focus:shadow-[rgba(38,143,255,.5)"
