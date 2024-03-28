@@ -10,6 +10,7 @@ import CompetitionError from 'routes/competition-error';
 import CompetitionView from 'components/competition-view';
 import Entry from 'routes/entry';
 import Admin from 'routes/admin';
+import CompetitionManagement from 'routes/competition-management';
 
 /* router */
 const router = createBrowserRouter([
@@ -23,7 +24,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: 'competitions',
-        element: null,
+        element: <CompetitionManagement />,
       },
       {
         path: 'files',
