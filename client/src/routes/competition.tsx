@@ -38,9 +38,9 @@ export default function Competition() {
   return (
     <div className="my-4 max-w-screen-xl w-full px-4 mx-auto box-border block ">
       <div className="flex flex-wrap flex-auto">
-        <div className="max-w-full xs:max-w-1/3 mx-2 p-4">
+        <div className="max-w-full xs:max-w-1/3 w-full mx-2 p-4">
           <Link
-            to={`/api/files/${competition?.posterId}`}
+            to={`/api/files/${competition?.posterId}/thumbnail`}
             className=""
             target="_blank"
             rel="noreferrer"
