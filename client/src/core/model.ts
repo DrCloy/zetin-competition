@@ -25,7 +25,7 @@ export type CompetitionItem = {
 
 export type CompetitionItemMeta = Pick<
   CompetitionItem,
-  'id' | 'name' | 'posterId'
+  'id' | 'date' | 'regDateStart' | 'regDateEnd' | 'name' | 'posterId'
 >;
 
 export type AuthInput = {

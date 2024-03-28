@@ -10,6 +10,9 @@ export default class CompetitionsBackendRepo
     return data.map((competition: any) => ({
       id: competition._id,
       name: competition.name,
+      date: competition.date,
+      regDateStart: competition.regDateStart,
+      regDateEnd: competition.regDateEnd,
       posterId: competition.posterId,
     }));
   }
