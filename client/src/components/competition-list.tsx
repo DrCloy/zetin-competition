@@ -1,25 +1,15 @@
 import { CompetitionItemMeta } from 'core/model';
-import { repo } from 'di';
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { checkDateTerm } from 'utils';
 
-export default function CompetitionList() {
-  const [competitions, setCompetitions] = useState<CompetitionItemMeta[]>([]);
-
-  useEffect(() => {
-    async function getCompetitions() {
-      const data = await repo.competitionList.getCompetitions();
-      setCompetitions(data);
-    }
-    if (competitions.length === 0) {
-      getCompetitions();
-    }
-  }, [competitions]);
-
+export default function CompetitionList({
+  data,
+}: {
+  data: CompetitionItemMeta[];
+}) {
   return (
     <div className="flex flex-col pl-0 mb-0 border rounded divide-y">
-      {competitions.map((competition) => (
+      {data.map((competition) => (
         <div key={competition.id} className="px-5 py-3 bg-white">
           <div>
             <Link
