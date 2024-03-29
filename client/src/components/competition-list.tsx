@@ -14,7 +14,7 @@ export default function CompetitionList({
           <div>
             <Link
               className="text-blue-500 no-underline hover:text-blue-800 hover:underline font-bold"
-              to={`/admin/competitions/${competition.id}`}
+              to={`/competitions/${competition.id}`}
               target="_blank"
               rel="noreferrer"
             >
