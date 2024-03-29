@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { CompetitionEvent } from 'core/model';
-import { CompetitionDetailRepository } from 'core/repository';
+import { CompetitionEvent, CompetitionItem } from 'core/model';
+import { CompetitionManagementRepository } from 'core/repository';
 
-export default class CompetitionDetailBackendRepo
-  implements CompetitionDetailRepository
+export default class CompetitionManagementBackendRepo
+  implements CompetitionManagementRepository
 {
   async getCompetitionDetail(competitionId: string) {
     const { data } = await axios.get(`/api/competitions/${competitionId}`);
@@ -25,5 +25,17 @@ export default class CompetitionDetailBackendRepo
       moreInfo: data.moreInfo,
       posterId: data.posterId,
     };
+  }
+
+  async createCompetition(competition: CompetitionItem) {
+    await axios.post('/api/competitions', competition);
+  }
+
+  async updateCompetition(competition: CompetitionItem) {
+    await axios.put(`/api/competitions/${competition.id}`, competition);
+  }
+
+  async deleteCompetition(competitionId: string) {
+    await axios.delete(`/api/competitions/${competitionId}`);
   }
 }
