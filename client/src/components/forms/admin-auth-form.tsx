@@ -1,7 +1,7 @@
 import Input from 'components/input';
 import { AuthInput, AuthPayload } from 'core/model';
 import { repo } from 'di';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Form } from 'react-router-dom';
 
@@ -18,34 +18,29 @@ export default function AdminAuthForm({
   const [payload, setPayload] = useState<AuthPayload | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
-  const onSucceed = useCallback(
-    (payload: AuthPayload | null) => {
-      setPayload(payload);
-      setErrorMessage('');
-      onAuthChange && onAuthChange(payload);
-    },
-    [onAuthChange],
-  );
-
-  const onFailed = useCallback(
-    (error: { response: { data: string } }) => {
-      setPayload(null);
-      setErrorMessage(error.response.data);
-      onAuthChange && onAuthChange(null);
-    },
-    [onAuthChange],
-  );
-
   useEffect(() => {
     (async () => {
       try {
         const response = await repo.auth.getStatus();
-        onSucceed(response);
+        setPayload(response);
+        onAuthChange && onAuthChange(response);
       } catch (error: any) {
-        onFailed(error);
+        setErrorMessage(error.response.data);
       }
     })();
-  }, [onSucceed, onFailed]);
+  }, [onAuthChange]);
+
+  const onSucceed = (payload: AuthPayload | null) => {
+    setPayload(payload);
+    setErrorMessage('');
+    onAuthChange && onAuthChange(payload);
+  };
+
+  const onFailed = (error: { response: { data: string } }) => {
+    setPayload(null);
+    setErrorMessage(error.response.data);
+    onAuthChange && onAuthChange(null);
+  };
 
   const onSignIn = async (data: AuthInput) => {
     try {
@@ -64,6 +59,7 @@ export default function AdminAuthForm({
       onFailed(error);
     }
   };
+
   return payload ? (
     <div>
       <p className="mb-4">{payload.username}님 환영합니다.</p>
