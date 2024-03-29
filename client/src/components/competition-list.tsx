@@ -4,8 +4,12 @@ import { checkDateTerm } from 'utils';
 
 export default function CompetitionList({
   data,
+  onPatchClick,
+  onDeleteClick,
 }: {
   data: CompetitionItemMeta[];
+  onPatchClick: (competition: CompetitionItemMeta) => void;
+  onDeleteClick: (competition: CompetitionItemMeta) => void;
 }) {
   return (
     <div className="flex flex-col pl-0 mb-0 border rounded divide-y">
@@ -71,6 +75,7 @@ export default function CompetitionList({
               className="cursor-pointer border-0 px-2 py-1 text-[0.875rem] rounded-[0.2rem] text-gray-400
             text-center align-middle trasition ease-in-out duration-150
             hover:text-white hover:bg-gray-400 hover:no-underline"
+              onClick={() => onPatchClick(competition)}
             >
               수정
             </button>
@@ -78,6 +83,7 @@ export default function CompetitionList({
               className="cursor-pointer border-0 px-2 py-1 text-[0.875rem] rounded-[0.2rem] text-red-600
             text-center align-middle trasition ease-in-out duration-150
             hover:text-white hover:bg-red-600 hover:no-underline"
+              onClick={() => onDeleteClick(competition)}
             >
               삭제
             </button>
