@@ -29,7 +29,29 @@ export default class CompetitionManagementBackendRepo
 
   async createCompetition(competition: CompetitionItem) {
     try {
-      const { data } = await axios.post('/api/competitions', competition);
+      const { data } = await axios.post('/api/competitions', {
+        _id: competition.id,
+        name: competition.name,
+        desc: competition.description,
+        events: competition.events.map((event) => ({
+          _id: event.id,
+          participants: event.participants,
+          name: event.name,
+          desc: '',
+          numb: event.limit,
+        })),
+        date: competition.date.toLocaleString(),
+        regDateStart: competition.regDateStart.toLocaleString(),
+        regDateEnd: competition.regDateEnd.toLocaleString(),
+        place: competition.place,
+        googleMap: competition.googleMap,
+        organizer: competition.organizer,
+        sponser: competition.sponser,
+        prize: competition.prize,
+        rule: competition.rule,
+        moreInfo: competition.moreInfo,
+        posterId: competition.posterId,
+      });
 
       return {
         id: data._id,
@@ -55,9 +77,31 @@ export default class CompetitionManagementBackendRepo
 
   async updateCompetition(competition: CompetitionItem) {
     try {
-      const { data } = await axios.put(
+      const { data } = await axios.patch(
         `/api/competitions/${competition.id}`,
-        competition,
+        {
+          _id: competition.id,
+          name: competition.name,
+          desc: competition.description,
+          events: competition.events.map((event) => ({
+            _id: event.id,
+            participants: event.participants,
+            name: event.name,
+            desc: '',
+            numb: event.limit,
+          })),
+          date: competition.date.toLocaleString(),
+          regDateStart: competition.regDateStart.toLocaleString(),
+          regDateEnd: competition.regDateEnd.toLocaleString(),
+          place: competition.place,
+          googleMap: competition.googleMap,
+          organizer: competition.organizer,
+          sponser: competition.sponser,
+          prize: competition.prize,
+          rule: competition.rule,
+          moreInfo: competition.moreInfo,
+          posterId: competition.posterId,
+        },
       );
 
       return {
