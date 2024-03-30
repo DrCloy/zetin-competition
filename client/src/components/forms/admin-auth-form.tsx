@@ -1,9 +1,9 @@
-import Input from 'components/input';
 import { AuthInput, AuthPayload } from 'core/model';
 import { repo } from 'di';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Form } from 'react-router-dom';
+import Input from './components/input';
 
 export default function AdminAuthForm({
   onAuthChange,
