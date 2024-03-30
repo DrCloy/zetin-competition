@@ -76,9 +76,9 @@ export default function CompetitionManagement() {
       <ReactModal
         isOpen={showForm}
         onRequestClose={() => setShowForm(false)}
-        overlayClassName="fixed top-0 left-0 bg-black bg-opacity-50 z-[1040] w-full h-full transition-opacity ease-linear"
+        overlayClassName="fixed top-0 left-0 bg-black bg-opacity-50 z-[1040] w-full h-full transition-opacity ease-linear overflow-y-auto"
         className="block box-border relative max-w-full md:max-w-2xl w-full mx-auto my-7 transition-transform ease-out duration-300 text-gray-800
-        before-close:transition before-close:ease-in-out before-close:duration-200 before-close:translate-y-full"
+        overflow-y-auto"
         bodyOpenClassName="overflow-hidden"
         shouldCloseOnOverlayClick={false}
         closeTimeoutMS={200}
