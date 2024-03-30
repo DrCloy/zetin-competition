@@ -4,6 +4,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { Form } from 'react-router-dom';
 import Input from './components/input';
 import MarkdownTextArea from './components/markdown-text-area';
+import EventInput from './components/event-input';
 
 export default function CompetitionForm({
   competition,
@@ -65,6 +66,7 @@ export default function CompetitionForm({
           id="cmpDesc"
           rows={12}
         />
+        <EventInput name="events" label="경연 부문" id="cmpEvents" />
       </Form>
       <button type="submit">제출</button>
     </FormProvider>
