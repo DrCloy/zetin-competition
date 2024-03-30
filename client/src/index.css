@@ -17,3 +17,20 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
         monospace;
 }
+
+.ReactModal__Content {
+    opacity: 0;
+    transform: translateY(-100px);
+    transition: all 300ms ease-in-out;
+}
+
+.ReactModal__Content--after-open {
+    opacity: 1;
+    transform: translateY(0px);
+
+}
+
+.ReactModal__Content--before-close {
+    opacity: 0;
+    transform: translateY(-100px);
+}
