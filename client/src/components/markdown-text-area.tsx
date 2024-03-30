@@ -55,8 +55,12 @@ export default function MarkdownTextArea({
       <div className="float-right mt-2">
         <small className="mr-3">Markdown 문법을 지원합니다.</small>
         <button
-          onClick={() => setPreview(!preview)}
-          className="ml-2 px-2 py-1 bg-blue-500 text-white rounded"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setPreview(!preview);
+          }}
+          className="ml-2 px-2 py-2 text-sm leading-normal bg-gray-400 border-gray-400 text-white rounded"
         >
           {preview ? '수정' : '미리 보기'}
         </button>
