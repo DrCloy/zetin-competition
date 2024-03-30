@@ -1,7 +1,9 @@
 import CompetitionList from 'components/competition-list';
+import CompetitionForm from 'components/forms/competition-form';
 import { CompetitionItem, CompetitionItemMeta } from 'core/model';
 import { repo } from 'di';
 import { useEffect, useState } from 'react';
+import ReactModal from 'react-modal';
 
 export default function CompetitionManagement() {
   const [competitions, setCompetitions] = useState<CompetitionItemMeta[]>([]);
@@ -53,7 +55,13 @@ export default function CompetitionManagement() {
           현재 개설된 라인트레이서 대회 페이지 목록입니다. 여기서 페이지를 수정
           및 삭제할 수 있으며, 참가자 목록을 확인할 수 있습니다.
         </p>
-        <button className="mb-4 bg-blue-500 border-blue-500 text-white text-center rounded p-[0.375rem_0.75rem]">
+        <button
+          className="mb-4 bg-blue-500 border-blue-500 text-white text-center rounded p-[0.375rem_0.75rem]"
+          onClick={() => {
+            setShowForm(true);
+            setTarget(null);
+          }}
+        >
           라인트레이서 대회 페이지 만들기
         </button>
         <CompetitionList
@@ -62,6 +70,35 @@ export default function CompetitionManagement() {
           onDeleteClick={showDeleteDialog}
         />
       </div>
+      {/* <Modal isOpen={showForm} onClose={() => setShowForm(false)}>
+        <CompetitionForm />
+      </Modal> */}
+      <ReactModal
+        isOpen={showForm}
+        onRequestClose={() => setShowForm(false)}
+        overlayClassName="fixed top-0 left-0 bg-black bg-opacity-50 z-[1040] w-full h-full transition-opacity ease-linear "
+        className="block box-border relative max-w-full md:max-w-2xl w-full mx-auto my-7 transition-transform ease-out duration-300 text-gray-800 "
+      >
+        <div className="relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding border border-white border-opacity-20 rounded-md divide-y divide-slate-300">
+          <div className="flex items-start justify-between p-4 mb-0 text-2xl">
+            {target
+              ? '라인트레이서 대회 페이지 수정'
+              : '라인트레이서 대회 페이지 만들기'}
+            <button className="float-right" onClick={() => setShowForm(false)}>
+              X
+            </button>
+          </div>
+          <div className="relative flex-auto p-4">
+            <CompetitionForm
+              competition={target}
+              onSubmitted={(response) => {
+                setCompetitions([]);
+                setShowForm(false);
+              }}
+            />
+          </div>
+        </div>
+      </ReactModal>
     </div>
   );
 }
