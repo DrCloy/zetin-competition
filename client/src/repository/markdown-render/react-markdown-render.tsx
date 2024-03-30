@@ -6,7 +6,6 @@ export class MarkdownRender implements MarkdownRenderRepository {
   render(markdown: string): JSX.Element {
     return (
       // react-nmakrdown with gfm plugin
-      // make new tab for link
       <ReactMarkdown
         children={markdown}
         remarkPlugins={[remarkGfm]}
@@ -22,7 +21,6 @@ export class MarkdownRender implements MarkdownRenderRepository {
               />
             );
           },
-          // h4 tag for title
           h4: ({ node, ...props }) => {
             return (
               <h4 {...props} className="font-bold text-2xl">
@@ -30,11 +28,9 @@ export class MarkdownRender implements MarkdownRenderRepository {
               </h4>
             );
           },
-          // list tag with bullet and margin
           ul: ({ node, ...props }) => {
             return <ul {...props} className="list-disc ml-10" />;
           },
-          // add p tag with margin-bottom
           p: ({ node, ...props }) => {
             return <p {...props} className="mb-3" />;
           },
