@@ -12,7 +12,12 @@ export default class CompetitionManagementBackendRepo
       id: data._id,
       name: data.name,
       description: data.desc,
-      events: data.events as CompetitionEvent[],
+      events: data.events.map((event: any) => ({
+        id: event._id,
+        participants: event.participants,
+        name: event.name,
+        limit: event.numb,
+      })) as CompetitionEvent[],
       regDateStart: new Date(data.regDateStart),
       regDateEnd: new Date(data.regDateEnd),
       date: new Date(data.date),
