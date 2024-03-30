@@ -1,9 +1,9 @@
-import Input from 'components/input';
-import MarkdownTextArea from 'components/markdown-text-area';
 import { CompetitionItem } from 'core/model';
 import { repo } from 'di';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Form } from 'react-router-dom';
+import Input from './components/input';
+import MarkdownTextArea from './components/markdown-text-area';
 
 export default function CompetitionForm({
   competition,
