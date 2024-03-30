@@ -28,11 +28,58 @@ export default class CompetitionManagementBackendRepo
   }
 
   async createCompetition(competition: CompetitionItem) {
-    await axios.post('/api/competitions', competition);
+    try {
+      const { data } = await axios.post('/api/competitions', competition);
+
+      return {
+        id: data._id,
+        name: data.name,
+        description: data.desc,
+        events: data.events as CompetitionEvent[],
+        regDateStart: new Date(data.regDateStart),
+        regDateEnd: new Date(data.regDateEnd),
+        date: new Date(data.date),
+        place: data.place,
+        googleMap: data.googleMap,
+        organizer: data.organizer,
+        sponser: data.sponser,
+        prize: data.prize,
+        rule: data.rule,
+        moreInfo: data.moreInfo,
+        posterId: data.posterId,
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 
   async updateCompetition(competition: CompetitionItem) {
-    await axios.put(`/api/competitions/${competition.id}`, competition);
+    try {
+      const { data } = await axios.put(
+        `/api/competitions/${competition.id}`,
+        competition,
+      );
+
+      return {
+        id: data._id,
+        name: data.name,
+        description: data.desc,
+        events: data.events as CompetitionEvent[],
+        regDateStart: new Date(data.regDateStart),
+        regDateEnd: new Date(data.regDateEnd),
+        date: new Date(data.date),
+        place: data.place,
+        googleMap: data.googleMap,
+        organizer: data.organizer,
+        sponser: data.sponser,
+        prize: data.prize,
+        rule: data.rule,
+        moreInfo: data.moreInfo,
+        posterId: data.posterId,
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 
   async deleteCompetition(competitionId: string) {
