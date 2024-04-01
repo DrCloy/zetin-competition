@@ -37,6 +37,7 @@ export default function CompetitionForm({
   const onSubmit = async (data: CompetitionItem) => {
     try {
       let response: CompetitionItem;
+      console.log(data);
       if (!data) {
         response = await repo.competitionDetail.createCompetition(data);
       } else {
@@ -68,7 +69,12 @@ export default function CompetitionForm({
         />
         <EventInput name="events" label="경연 부문" id="cmpEvents" />
       </Form>
-      <button type="submit">제출</button>
+      <button
+        type="submit"
+        className="cursor-pointer text-white bg-blue-500 border-blue-500 inline-block text-center align-middle border px-3 py-1 rounded transition duration-150 ease-in-out active:bg-blue-600 active:border-blue-600 hover:bg-blue-600 hover:border-blue-600 no-underline focus:outline-0 focus:shadow-[0_0_0_0.2rem] focus:shadow-[rgba(38,143,255,.5)] focus:bg-blue-600 focus:border-blue-600"
+      >
+        제출
+      </button>
     </FormProvider>
   );
 }
