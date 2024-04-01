@@ -30,7 +30,7 @@ export default function MarkdownTextArea({
   }, [preview, getValues, name]);
 
   return (
-    <div className="mb-4">
+    <div className="mb-4 box-border block after:clear-both after:block after:content-end">
       {label && (
         <label className="inline-block mb-2" htmlFor={id}>
           {label}
@@ -52,15 +52,15 @@ export default function MarkdownTextArea({
       >
         {content}
       </div>
-      <div className="float-right mt-2">
-        <small className="mr-3">Markdown 문법을 지원합니다.</small>
+      <div className="float-right mt-2 block box-border">
+        <small className="">Markdown 문법을 지원합니다.</small>
         <button
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
             setPreview(!preview);
           }}
-          className="ml-2 px-2 py-2 text-sm leading-normal bg-gray-400 border-gray-400 text-white rounded"
+          className="ml-2 px-2 py-1.5 text-sm leading-normal bg-gray-400 border-gray-400 text-white rounded"
         >
           {preview ? '수정' : '미리 보기'}
         </button>
