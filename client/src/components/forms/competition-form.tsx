@@ -5,6 +5,7 @@ import { Form } from 'react-router-dom';
 import Input from './components/input';
 import MarkdownTextArea from './components/markdown-text-area';
 import EventInput from './components/event-input';
+import FieldStack from './components/field-stack';
 
 export default function CompetitionForm({
   competition,
@@ -33,6 +34,14 @@ export default function CompetitionForm({
     },
   });
   const { handleSubmit } = form;
+  const checkRegDateEnd = {
+    validate: {
+      minDateTime: (value: Date) =>
+        !competition || value < competition.regDateStart
+          ? '참가 신청 접수 시작일보다 빠를 수 없습니다'
+          : true,
+    },
+  };
 
   const onSubmit = async (data: CompetitionItem) => {
     try {
@@ -68,6 +77,23 @@ export default function CompetitionForm({
           rows={12}
         />
         <EventInput name="events" label="경연 부문" id="cmpEvents" />
+        <FieldStack>
+          <Input
+            type="datetime-local"
+            name="regDateStart"
+            label="참가 신청 접수 시작"
+            id="regDateStart"
+            advice="참가 신청 접수 시작일을 입력해주세요."
+          />
+          <Input
+            type="datetime-local"
+            name="regDateEnd"
+            label="참가 신청 접수 종료"
+            id="regDateEnd"
+            advice="참가 신청 접수 마감일을 입력해주세요."
+            otherOption={checkRegDateEnd}
+          />
+        </FieldStack>
       </Form>
       <button
         type="submit"
