@@ -66,7 +66,14 @@ export default function AdminAuthForm({
       <p className="mb-4">
         발급된 인증 토큰은
         <br />
-        {payload.expiredAt.toLocaleString('sv-SE')}
+        {payload.expiredAt.toLocaleString('ko-KR', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+        })}
         까지
         <br />
         사용할 수 있습니다. 재발급받길 원한다면 인증 해제 후 다시 인증하시길
