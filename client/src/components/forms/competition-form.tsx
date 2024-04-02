@@ -35,11 +35,16 @@ export default function CompetitionForm({
   });
   const { handleSubmit } = form;
   const checkRegDateEnd = {
-    validate: {
-      minDateTime: (value: Date) =>
-        !competition || value < competition.regDateStart
-          ? '참가 신청 접수 시작일보다 빠를 수 없습니다'
-          : true,
+    input: {
+      max: '9999-12-31',
+    },
+    form: {
+      validate: {
+        minDateTime: (value: Date) =>
+          !competition || value < competition.regDateStart
+            ? '참가 신청 접수 시작일보다 빠를 수 없습니다'
+            : true,
+      },
     },
   };
 
