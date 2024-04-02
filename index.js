@@ -6,7 +6,11 @@ const path = require('path');
 const app = express();
 
 /* Constants */
-require('dotenv').config();
+require('dotenv').config({
+  path: path.resolve(__dirname, '.env'),
+  override: true,
+  encoding: 'utf8',
+});
 const PORT = process.env.PORT || 8000;
 const MONGODB_URL =
   `mongodb://${process.env.MONGODB_HOST || 'localhost'}:${
