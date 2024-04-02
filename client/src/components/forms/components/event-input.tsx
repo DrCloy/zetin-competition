@@ -156,9 +156,11 @@ function EventAddition({
   const form = useForm({ defaultValues });
   const { handleSubmit, reset, register } = form;
   const numbOption = {
-    min: {
-      value: 3,
-      message: '참가 인원을 입력해주세요.',
+    form: {
+      min: {
+        value: 3,
+        message: '참가 인원을 입력해주세요.',
+      },
     },
   };
 
