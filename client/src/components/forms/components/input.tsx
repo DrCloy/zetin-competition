@@ -14,7 +14,10 @@ export default function Input({
   name: string;
   advice: string;
   type: string;
-  otherOption?: Object;
+  otherOption?: {
+    input?: Object;
+    form?: Object;
+  };
 }) {
   const {
     register,
@@ -45,7 +48,7 @@ export default function Input({
         type={type}
         {...register(name, {
           required: advice,
-          ...otherOption,
+          ...otherOption?.form,
         })}
         {...restProps}
       />
