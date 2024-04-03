@@ -10,10 +10,13 @@ export default function FieldStack({
   children: React.ReactNode[] | React.ReactNode;
 }) {
   if (Array.isArray(children)) {
+    const count = children.length;
     return (
-      <div className="grid grid-flow-row md:grid-flow-col gap-4">
+      <div className={`grid grid-cols-1 md:grid-cols-${count} gap-4`}>
         {children.map((child, index) => (
-          <div key={index}>{child}</div>
+          <div key={index} className={`max-w-[${100 / count}%] w-full`}>
+            {child}
+          </div>
         ))}
       </div>
     );
