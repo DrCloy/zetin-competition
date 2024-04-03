@@ -1,7 +1,7 @@
 import { CompetitionItem } from 'core/model';
 import { repo } from 'di';
 import { FormProvider, useForm } from 'react-hook-form';
-import { Form } from 'react-router-dom';
+import { Form, Link } from 'react-router-dom';
 import Input from './components/input';
 import MarkdownTextArea from './components/markdown-text-area';
 import EventInput from './components/event-input';
@@ -138,13 +138,26 @@ export default function CompetitionForm({
             id="place"
             advice="대회가 열리는 장소를 입력해주세요."
           />
-          <Input
-            type="text"
-            name="googleMap"
-            label="구글맵 URL"
-            id="googleMap"
-            advice="구글맵 URL을 입력해주세요."
-          />
+          <div>
+            <Input
+              type="text"
+              name="googleMap"
+              label="구글맵 URL"
+              id="googleMap"
+              advice="구글맵 URL을 입력해주세요."
+            />
+            <small className="text-gray-400 block -mt-3 text-[80%] box-border">
+              <Link
+                to="https://www.google.com/maps"
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-500 no-underline hover:text-blue-700 hover:underline"
+              >
+                구글 지도
+              </Link>
+              의 "공유 &gt; 지도 퍼가기"에서 iframe의 src 속성을 입력해주세요.
+            </small>
+          </div>
         </FieldStack>
       </Form>
       <button
