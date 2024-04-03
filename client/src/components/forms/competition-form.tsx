@@ -69,12 +69,21 @@ export default function CompetitionForm({
       },
     },
   };
+  const option_googleMap = {
+    input: {},
+    form: {
+      pattern: {
+        value: /https:\/\/www.google.com\/maps\/embed/,
+        message: '올바른 구글맵 URL을 입력해주세요.',
+      },
+    },
+  };
 
   const onSubmit = async (data: CompetitionItem) => {
     console.log(data);
     try {
       let response: CompetitionItem;
-      if (!data) {
+      if (!competition) {
         response = await repo.competitionDetail.createCompetition(data);
       } else {
         data.id = competition?.id || '';
@@ -131,34 +140,63 @@ export default function CompetitionForm({
           />
         </FieldStack>
         <FieldStack>
-          <Input
-            type="text"
-            name="place"
-            label="장소"
-            id="place"
-            advice="대회가 열리는 장소를 입력해주세요."
-          />
+          <Input type="text" name="place" label="장소" id="place" />
           <div>
             <Input
               type="text"
               name="googleMap"
               label="구글맵 URL"
               id="googleMap"
-              advice="구글맵 URL을 입력해주세요."
+              footer={
+                <small className="text-gray-400 block text-[80%] box-border">
+                  <Link
+                    to="https://www.google.com/maps"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-blue-500 no-underline hover:text-blue-700 hover:underline"
+                  >
+                    구글 지도
+                  </Link>
+                  의 "공유 &gt; 지도 퍼가기"에서 iframe의 src 속성을
+                  입력해주세요.
+                </small>
+              }
+              otherOption={option_googleMap}
             />
-            <small className="text-gray-400 block -mt-3 text-[80%] box-border">
-              <Link
-                to="https://www.google.com/maps"
-                target="_blank"
-                rel="noreferrer"
-                className="text-blue-500 no-underline hover:text-blue-700 hover:underline"
-              >
-                구글 지도
-              </Link>
-              의 "공유 &gt; 지도 퍼가기"에서 iframe의 src 속성을 입력해주세요.
-            </small>
           </div>
         </FieldStack>
+        <FieldStack>
+          <Input
+            type="text"
+            name="organizer"
+            label="주최 및 주관"
+            id="organizer"
+          />
+          <Input type="text" name="sponser" label="후원" id="sponser" />
+        </FieldStack>
+        <MarkdownTextArea name="prize" label="시상 내역" id="prize" rows={4} />
+        <FieldStack>
+          <Input
+            type="text"
+            name="rule"
+            label="대회 규정"
+            id="rule"
+            footer={<small>대회 규정 파일 ID를 입력해주세요.</small>}
+          />
+          <Input
+            type="text"
+            name="posterId"
+            label="대회 포스터"
+            id="posterId"
+            footer={<small>대회 포스터 파일 ID를 입력해주세요.</small>}
+          />
+        </FieldStack>
+        <MarkdownTextArea
+          name="moreInfo"
+          label="추가 정보"
+          id="moreInfo"
+          rows={8}
+        />
       </Form>
       <button
         type="submit"
