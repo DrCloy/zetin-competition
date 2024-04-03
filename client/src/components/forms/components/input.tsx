@@ -50,6 +50,7 @@ export default function Input({
           required: advice,
           ...otherOption?.form,
         })}
+        {...otherOption?.input}
         {...restProps}
       />
       <div className="w-full mt-1 text-sm text-red-600">{error as string}</div>
