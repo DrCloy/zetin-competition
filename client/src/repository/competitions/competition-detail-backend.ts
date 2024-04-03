@@ -35,7 +35,6 @@ export default class CompetitionManagementBackendRepo
   async createCompetition(competition: CompetitionItem) {
     try {
       const { data } = await axios.post('/api/competitions', {
-        _id: competition.id,
         name: competition.name,
         desc: competition.description,
         events: competition.events.map((event) => ({
@@ -45,9 +44,9 @@ export default class CompetitionManagementBackendRepo
           desc: '',
           numb: event.limit,
         })),
-        date: competition.date.toLocaleString(),
-        regDateStart: competition.regDateStart.toLocaleString(),
-        regDateEnd: competition.regDateEnd.toLocaleString(),
+        date: competition.date.toISOString(),
+        regDateStart: competition.regDateStart.toISOString(),
+        regDateEnd: competition.regDateEnd.toISOString(),
         place: competition.place,
         googleMap: competition.googleMap,
         organizer: competition.organizer,
