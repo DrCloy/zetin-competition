@@ -21,6 +21,7 @@ export default function EventInput({
     formState: { errors },
   } = useFormContext();
   const { ref } = register(name, {
+    required: '하나 이상의 경연 대회를 추가해주세요.',
     minLength: 1,
   });
   const value = watch(name);
@@ -41,7 +42,11 @@ export default function EventInput({
           {label}
         </label>
       )}
-      <div className="flex flex-col pl-0 mb-0 border border-gray-300 rounded divide-y">
+      <div
+        className={`flex flex-col pl-0 mb-0 border rounded divide-y ${
+          error ? 'border-red-600' : 'border-gray-400 divide-gray-400'
+        }`}
+      >
         {Array.isArray(value) && value.length > 0 ? (
           value.map((item, index) => (
             <div key={index} className="relative block px-5 py-3">
@@ -85,11 +90,7 @@ export default function EventInput({
             </div>
           ))
         ) : (
-          <div
-            className={`${
-              error && 'border-red-600'
-            } relative block py-3 px-5 bg-white  `}
-          >
+          <div className={` border-0 relative block py-3 px-5 bg-white  `}>
             없음
           </div>
         )}
