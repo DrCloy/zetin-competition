@@ -22,7 +22,6 @@ export default function EventInput({
   } = useFormContext();
   const { ref } = register(name, {
     required: '하나 이상의 경연 대회를 추가해주세요.',
-    minLength: 1,
   });
   const value = watch(name);
   const error = errors[name]?.message;
@@ -162,6 +161,7 @@ function EventAddition({
         value: 3,
         message: '참가 인원을 입력해주세요.',
       },
+      valueAsNumber: true,
     },
   };
 
