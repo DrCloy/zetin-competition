@@ -7,7 +7,8 @@ export default function Input({
   advice,
   type,
   footer,
-  otherOption,
+  registerOption,
+  inputOption,
   ...restProps
 }: {
   id: string;
@@ -16,10 +17,8 @@ export default function Input({
   advice?: string;
   type: string;
   footer?: JSX.Element;
-  otherOption?: {
-    input?: Object;
-    form?: Object;
-  };
+  registerOption?: Object;
+  inputOption?: Object;
 }) {
   const {
     register,
@@ -50,9 +49,9 @@ export default function Input({
         type={type}
         {...register(name, {
           required: advice,
-          ...otherOption?.form,
+          ...registerOption,
         })}
-        {...otherOption?.input}
+        {...inputOption}
         {...restProps}
       />
       <div className="w-full mt-1 text-sm text-red-600">{error as string}</div>

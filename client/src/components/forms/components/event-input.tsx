@@ -216,7 +216,7 @@ function EventAddition({
               name="limit"
               id="limit"
               advice="참가 인원을 입력해주세요."
-              otherOption={numbOption}
+              registerOption={numbOption.form}
             />
           </div>
           <div className="flex flex-wrap align-center justify-end p-3">

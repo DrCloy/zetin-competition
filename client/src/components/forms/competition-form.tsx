@@ -74,7 +74,6 @@ export default function CompetitionForm({
     },
   };
   const option_googleMap = {
-    input: {},
     form: {
       pattern: {
         value: /https:\/\/www.google.com\/maps\/embed/,
@@ -129,7 +128,7 @@ export default function CompetitionForm({
             label="참가 신청 접수 시작"
             id="regDateStart"
             advice="참가 신청 접수 시작일을 입력해주세요."
-            otherOption={option_regDateStart}
+            registerOption={option_regDateStart.form}
           />
           <Input
             type="datetime-local"
@@ -137,7 +136,7 @@ export default function CompetitionForm({
             label="참가 신청 접수 종료"
             id="regDateEnd"
             advice="참가 신청 접수 마감일을 입력해주세요."
-            otherOption={option_regDateEnd}
+            registerOption={option_regDateEnd.form}
           />
           <Input
             type="datetime-local"
@@ -145,7 +144,7 @@ export default function CompetitionForm({
             label="대회 개최일"
             id="date"
             advice="대회 실시 날짜를 입력해주세요."
-            otherOption={option_date}
+            registerOption={option_date.form}
           />
         </FieldStack>
         <FieldStack>
@@ -170,7 +169,7 @@ export default function CompetitionForm({
                   입력해주세요.
                 </small>
               }
-              otherOption={option_googleMap}
+              registerOption={option_googleMap.form}
             />
           </div>
         </FieldStack>
