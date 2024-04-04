@@ -3,6 +3,8 @@ import {
   AuthPayload,
   CompetitionItem,
   CompetitionItemMeta,
+  FileData,
+  FileInput,
 } from './model';
 
 export interface CompetitionListRepository {
@@ -24,4 +26,11 @@ export interface AuthRepository {
   signin(auth: AuthInput): Promise<AuthPayload>;
   signout(): Promise<void>;
   getStatus(): Promise<AuthPayload>;
+}
+
+export interface FileRepository {
+  getFiles(): Promise<FileData[]>;
+  uploadFile(file: FileInput): Promise<FileData>;
+  updateFile(file: FileInput): Promise<FileData>;
+  deleteFile(id: string): Promise<void>;
 }
