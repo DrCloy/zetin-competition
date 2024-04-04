@@ -93,6 +93,7 @@ export default function CompetitionManagement() {
           </div>
           <div className="relative flex-auto p-4">
             <CompetitionForm
+              isOpen={showForm}
               competition={target}
               onSubmitted={(response) => {
                 setCompetitions([]);

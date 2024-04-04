@@ -6,23 +6,30 @@ import Input from './components/input';
 import MarkdownTextArea from './components/markdown-text-area';
 import EventInput from './components/event-input';
 import FieldStack from './components/field-stack';
+import { useEffect } from 'react';
 
 export default function CompetitionForm({
+  isOpen,
   competition,
   onSubmitted,
 }: {
+  isOpen: boolean;
   competition: CompetitionItem | null;
   onSubmitted: (response: CompetitionItem) => void;
 }) {
-  const form = useForm<CompetitionItem>({
+  const form = useForm({
     defaultValues: {
       id: competition?.id || '',
       name: competition?.name || '',
       description: competition?.description || '',
       events: competition?.events || [],
-      regDateStart: competition?.regDateStart || new Date(),
-      regDateEnd: competition?.regDateEnd || new Date(),
-      date: competition?.date || new Date(),
+      regDateStart: (competition?.regDateStart || new Date())
+        .toISOString()
+        .slice(0, 16),
+      regDateEnd: (competition?.regDateEnd || new Date())
+        .toISOString()
+        .slice(0, 16),
+      date: (competition?.date || new Date()).toISOString().slice(0, 16),
       place: competition?.place || '',
       googleMap: competition?.googleMap || '',
       organizer: competition?.organizer || '',
@@ -36,24 +43,11 @@ export default function CompetitionForm({
   const { handleSubmit } = form;
 
   const option_regDateStart = {
-    input: {
-      // value: (competition?.regDateStart || new Date())
-      //   .toISOString()
-      //   .slice(0, 16),
-    },
     form: {
-      value: (competition?.regDateStart || new Date())
-        .toISOString()
-        .slice(0, 16),
       valueAsDate: true,
     },
   };
   const option_regDateEnd = {
-    input: {
-      value: (competition?.regDateStart || new Date())
-        .toISOString()
-        .slice(0, 16),
-    },
     form: {
       valueAsDate: true,
       validate: {
@@ -67,11 +61,6 @@ export default function CompetitionForm({
     },
   };
   const option_date = {
-    input: {
-      value: (competition?.regDateStart || new Date())
-        .toISOString()
-        .slice(0, 16),
-    },
     form: {
       valueAsDate: true,
       validate: {
@@ -94,8 +83,7 @@ export default function CompetitionForm({
     },
   };
 
-  const onSubmit = async (data: CompetitionItem) => {
-    console.log(data);
+  const onSubmit = async (data: any) => {
     try {
       let response: CompetitionItem;
       if (!competition) {
@@ -110,6 +98,12 @@ export default function CompetitionForm({
       window.alert(error.response?.data);
     }
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      form.reset();
+    }
+  }, [isOpen, form]);
 
   return (
     <FormProvider {...form}>
