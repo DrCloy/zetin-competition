@@ -24,12 +24,14 @@ export default function CompetitionForm({
       description: competition?.description || '',
       events: competition?.events || [],
       regDateStart: (competition?.regDateStart || new Date())
-        .toISOString()
+        .toLocaleString('sv-SE', {})
         .slice(0, 16),
       regDateEnd: (competition?.regDateEnd || new Date())
-        .toISOString()
+        .toLocaleString('sv-SE', {})
         .slice(0, 16),
-      date: (competition?.date || new Date()).toISOString().slice(0, 16),
+      date: (competition?.date || new Date())
+        .toLocaleString('sv-SE', {})
+        .slice(0, 16),
       place: competition?.place || '',
       googleMap: competition?.googleMap || '',
       organizer: competition?.organizer || '',
@@ -83,6 +85,7 @@ export default function CompetitionForm({
   };
 
   const onSubmit = async (data: any) => {
+    console.log(data);
     try {
       let response: CompetitionItem;
       if (!competition) {
