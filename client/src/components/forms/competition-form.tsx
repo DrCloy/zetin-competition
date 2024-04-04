@@ -36,13 +36,24 @@ export default function CompetitionForm({
   const { handleSubmit } = form;
 
   const option_regDateStart = {
-    input: {},
+    input: {
+      // value: (competition?.regDateStart || new Date())
+      //   .toISOString()
+      //   .slice(0, 16),
+    },
     form: {
+      value: (competition?.regDateStart || new Date())
+        .toISOString()
+        .slice(0, 16),
       valueAsDate: true,
     },
   };
   const option_regDateEnd = {
-    input: {},
+    input: {
+      value: (competition?.regDateStart || new Date())
+        .toISOString()
+        .slice(0, 16),
+    },
     form: {
       valueAsDate: true,
       validate: {
@@ -56,7 +67,11 @@ export default function CompetitionForm({
     },
   };
   const option_date = {
-    input: {},
+    input: {
+      value: (competition?.regDateStart || new Date())
+        .toISOString()
+        .slice(0, 16),
+    },
     form: {
       valueAsDate: true,
       validate: {
