@@ -11,6 +11,7 @@ import CompetitionView from 'components/competition-view';
 import Entry from 'routes/entry';
 import Admin from 'routes/admin';
 import CompetitionManagement from 'routes/competition-management';
+import FileManagement from 'routes/file-management';
 
 /* router */
 const router = createBrowserRouter([
@@ -28,7 +29,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'files',
-        element: null,
+        element: <FileManagement />,
       },
       {
         path: 'participants',
