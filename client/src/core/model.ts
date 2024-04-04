@@ -37,3 +37,20 @@ export type AuthPayload = {
   username: string;
   expiredAt: Date;
 };
+
+export type FileData = {
+  id: string;
+  name: string;
+  description: string;
+  filename: string;
+  mimetype: string;
+  size: number;
+};
+
+export type FileInput = {
+  id?: string;
+  name: string;
+  description: string;
+  private: boolean;
+  file: File;
+};
