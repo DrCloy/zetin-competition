@@ -53,5 +53,5 @@ export type FileInput = {
   name: string;
   description: string;
   private: boolean;
-  file: File;
+  file: FileList;
 };

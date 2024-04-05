@@ -22,13 +22,9 @@ export default class FileManager implements FileRepository {
     formData.set('name', file.name);
     formData.set('description', file.description);
     formData.set('private', file.private.toString());
-    formData.set('file', file.file);
+    formData.set('file', file.file[0]);
 
-    const { data } = await axios.post('/api/files', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    const { data } = await axios.post('/api/files', formData);
 
     return {
       id: data._id,
@@ -46,7 +42,7 @@ export default class FileManager implements FileRepository {
     formData.set('name', file.name);
     formData.set('description', file.description);
     formData.set('private', file.private.toString());
-    formData.set('file', file.file);
+    formData.set('file', file.file[0]);
 
     const { data } = await axios.patch(`/api/files/${file.id}`, formData);
 
