@@ -1,6 +1,6 @@
 import { FileData, FileInput } from 'core/model';
 import { repo } from 'di';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Form } from 'react-router-dom';
 import Input from './components/input';
