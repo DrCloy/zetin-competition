@@ -42,6 +42,7 @@ export type FileData = {
   id: string;
   name: string;
   description: string;
+  private: boolean;
   filename: string;
   mimetype: string;
   size: number;
