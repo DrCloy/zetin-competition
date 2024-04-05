@@ -8,7 +8,7 @@ export default function DropdownButton({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="relative inline-block text-left">
+    <div className="relative inline-block text-left -ml-1">
       <div>
         <button
           className="no-underline inline-flex text-center align-middle justify-center gap-x-1 w-full rounded-md border border-gray-500 px-2 py-1 bg-gray-500 text-sm font-normal text-white transision ease-in-out duration-150 active:bg-gray-600 active:border-gray-600 active:cursor-pointer focus:outline-0 focus:bg-gray-600 focus:border-gray-600 focus:shadow-[0_0_0_0_0.2rem] focus:shadow-[rgba(130,138,145,.5)]"
