@@ -46,6 +46,10 @@ export default function FileManagement() {
       <button
         className="cursor-pointer mb-4 px-3 py-1.5 text-white bg-blue-500 border-blue-500 inline-block text-center align-middle border rounded transition duration-150 ease-in-out
       active:bg-blue-600 active:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:no-underline focus:outline-0 focus:shadow-[0_0_0_0_0.2rem] focus:shadow-[rgba(38,143,255,.5)]"
+        onClick={() => {
+          setUploadTarget(null);
+          setShowUploadForm(true);
+        }}
       >
         파일 업로드
       </button>
@@ -133,7 +137,7 @@ export default function FileManagement() {
           </div>
           <FileUploadForm
             data={uploadTarget}
-            onSubmitted={() => {
+            onSubmitted={(response) => {
               setFiles([]);
               setShowUploadForm(false);
             }}
