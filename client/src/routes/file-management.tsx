@@ -36,6 +36,17 @@ export default function FileManagement() {
     setShowUploadForm(true);
   };
 
+  const showDeleteDialog = async (file: FileData) => {
+    try {
+      if (window.confirm(`정말로 ${file.name} 파일을 삭제하시겠습니까?`)) {
+        await repo.fileManager.deleteFile(file.id);
+        setFiles([]);
+      }
+    } catch (error: any) {
+      window.alert(error.response?.data);
+    }
+  };
+
   return (
     <div className="py-6 max-w-[90%] md:max-w-7xl mx-auto">
       <h3 className="text-3xl mb-2">📁 포스터 및 파일 관리</h3>
@@ -101,7 +112,7 @@ export default function FileManagement() {
                         onClick: () => showCopyIdDialog(file),
                       },
                       { label: '수정', onClick: () => showPatchDialog(file) },
-                      { label: '삭제', onClick: () => {} },
+                      { label: '삭제', onClick: () => showDeleteDialog(file) },
                     ]}
                   />
                 </td>
