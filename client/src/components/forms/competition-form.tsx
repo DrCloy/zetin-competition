@@ -85,7 +85,6 @@ export default function CompetitionForm({
   };
 
   const onSubmit = async (data: any) => {
-    console.log(data);
     try {
       let response: CompetitionItem;
       if (!competition) {
