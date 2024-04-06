@@ -42,7 +42,10 @@ export default class FileManager implements FileRepository {
     formData.set('name', file.name);
     formData.set('description', file.description);
     formData.set('private', file.private.toString());
-    formData.set('file', file.file[0]);
+
+    if (file.file.length > 0) {
+      formData.set('file', file.file[0]);
+    }
 
     const { data } = await axios.patch(`/api/files/${file.id}`, formData);
 

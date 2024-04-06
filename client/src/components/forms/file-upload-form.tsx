@@ -74,7 +74,8 @@ export default function FileUploadForm({
                 id="file"
                 className="z-[2] overflow-hidden opacity-0 relative h-full w-full"
                 {...register('file', {
-                  required: '업로드할 파일을 선택해주세요.',
+                  validate: (value) =>
+                    data || value.length > 0 ? true : '파일을 선택해주세요.',
                 })}
               />
               <label
