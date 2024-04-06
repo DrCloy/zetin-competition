@@ -48,7 +48,7 @@ export default function FileManagement() {
   };
 
   return (
-    <div className="py-6 max-w-[90%] md:max-w-7xl mx-auto">
+    <>
       <h3 className="text-3xl mb-2">📁 포스터 및 파일 관리</h3>
       <p className="mb-4">
         포스터 이미지를 등록하거나 대회 페이지에 필요한 파일들을 보관할 수 있는
@@ -155,6 +155,6 @@ export default function FileManagement() {
           />
         </div>
       </ReactModal>
-    </div>
+    </>
   );
 }

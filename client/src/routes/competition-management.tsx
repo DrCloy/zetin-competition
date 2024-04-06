@@ -48,7 +48,7 @@ export default function CompetitionManagement() {
   };
 
   return (
-    <div className="w-full lg:max-w-[75%] p-3 mx-auto">
+    <>
       <div className="py-6 container px-[15px]">
         <h3 className="text-[1.75rem]">📜 라인트레이서 대회 페이지 목록</h3>
         <p className="mb-4">
@@ -103,6 +103,6 @@ export default function CompetitionManagement() {
           </div>
         </div>
       </ReactModal>
-    </div>
+    </>
   );
 }

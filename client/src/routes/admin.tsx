@@ -67,7 +67,7 @@ export default function Admin() {
       </div>
       <div className="ml-80 p-6">
         {payload ? (
-          <div>
+          <div className="py-6 max-w-full md:max-w-6xl mx-auto">
             <Outlet />
           </div>
         ) : (
