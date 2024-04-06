@@ -49,7 +49,7 @@ export default function CompetitionManagement() {
 
   return (
     <>
-      <div className="py-6 container px-[15px]">
+      <div>
         <h3 className="text-[1.75rem]">📜 라인트레이서 대회 페이지 목록</h3>
         <p className="mb-4">
           현재 개설된 라인트레이서 대회 페이지 목록입니다. 여기서 페이지를 수정
