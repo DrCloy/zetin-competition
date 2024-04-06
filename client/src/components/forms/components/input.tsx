@@ -34,11 +34,6 @@ export default function Input({
         </label>
       )}
       <input
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-          }
-        }}
         className={
           'block w-full px-3 py-2 text-base font-normal leading-normal text-gray-700 bg-white border rounded transition duration-150 ease-in-out focus:outline-0 bg-clip-padding' +
           (!error

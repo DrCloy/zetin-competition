@@ -108,7 +108,15 @@ export default function CompetitionForm({
 
   return (
     <FormProvider {...form}>
-      <Form noValidate onSubmit={handleSubmit(onSubmit)}>
+      <Form
+        noValidate
+        onSubmit={handleSubmit(onSubmit)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+          }
+        }}
+      >
         <Input
           type="text"
           name="name"

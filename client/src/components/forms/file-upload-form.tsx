@@ -64,7 +64,15 @@ export default function FileUploadForm({
 
   return (
     <FormProvider {...form}>
-      <Form noValidate onSubmit={handleSubmit(onSubmit)}>
+      <Form
+        noValidate
+        onSubmit={handleSubmit(onSubmit)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+          }
+        }}
+      >
         <div className="relative flex-auto p-4">
           <div className="mb-4 box-border block">
             <label className="inline-block mb-2">파일 업로드</label>
