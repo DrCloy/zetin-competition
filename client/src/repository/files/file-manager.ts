@@ -60,7 +60,7 @@ export default class FileManager implements FileRepository {
     };
   }
 
-  async deleteFile(id: string) {
-    await axios.delete(`/api/files/${id}`);
+  async deleteFile(fileId: string) {
+    await axios.delete(`/api/files/${fileId}`);
   }
 }
