@@ -25,6 +25,7 @@ export class ParticipantBackend implements ParticipantManagementRepository {
       robotSensor: data.robotSensor,
       eventName: data.eventName,
       entryOrder: data.entryOrder,
+      realOrder: data.realOrder,
       comment: data.comment,
       privacy: data.privacy,
     })) as ParticipantItem[];
@@ -52,6 +53,7 @@ export class ParticipantBackend implements ParticipantManagementRepository {
       robotSensor: data.robotSensor,
       eventName: data.eventName,
       entryOrder: data.entryOrder,
+      realOrder: data.realOrder,
       comment: data.comment,
       privacy: data.privacy,
     };
@@ -82,6 +84,7 @@ export class ParticipantBackend implements ParticipantManagementRepository {
       robotSensor: data.robotSensor,
       eventName: data.eventName,
       entryOrder: data.entryOrder,
+      realOrder: data.realOrder,
       comment: data.comment,
       privacy: data.privacy,
     };
