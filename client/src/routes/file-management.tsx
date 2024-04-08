@@ -73,7 +73,7 @@ export default function FileManagement() {
           <col style={{ width: '10%' }} />
           <col style={{ width: '5%' }} />
         </colgroup>
-        <thead className="table-header-group align-middle border-b-3 border-t border-b-gray-300">
+        <thead className="table-header-group align-middle border-b-2 border-t border-b-gray-300">
           <tr>
             <th className="align-bottom p-1.5 font-bold table-cell">이름</th>
             <th className="align-bottom p-1.5 font-bold table-cell">설명</th>
