@@ -14,10 +14,10 @@ export interface CompetitionListRepository {
 }
 
 export interface CompetitionManagementRepository {
-  getCompetitionDetail(id: string): Promise<CompetitionItem>;
+  getCompetitionDetail(competitionId: string): Promise<CompetitionItem>;
   createCompetition(competition: CompetitionItem): Promise<CompetitionItem>;
   updateCompetition(competition: CompetitionItem): Promise<CompetitionItem>;
-  deleteCompetition(id: string): Promise<void>;
+  deleteCompetition(competitionId: string): Promise<void>;
 }
 
 export interface MarkdownRenderRepository {
@@ -34,11 +34,11 @@ export interface FileRepository {
   getFiles(): Promise<FileData[]>;
   uploadFile(file: FileInput): Promise<FileData>;
   updateFile(file: FileInput): Promise<FileData>;
-  deleteFile(id: string): Promise<void>;
+  deleteFile(fileId: string): Promise<void>;
 }
 
 export interface ParticipantManagementRepository {
-  getParticipants(id: string): Promise<ParticipantItem[]>;
+  getParticipants(eventId: string): Promise<ParticipantItem[]>;
   createParticipant(participant: ParticipantInput): Promise<ParticipantItem>;
   updateParticipant(participant: ParticipantInput): Promise<ParticipantItem>;
   deleteParticipant(participantId: string): Promise<void>;

@@ -3,8 +3,10 @@ import { ParticipantInput, ParticipantItem } from 'core/model';
 import { ParticipantManagementRepository } from 'core/repository';
 
 export class ParticipantBackend implements ParticipantManagementRepository {
-  async getParticipants(id: string): Promise<ParticipantItem[]> {
-    const { data } = await axios.get(`/api/competitions/${id}/participants`);
+  async getParticipants(eventId: string): Promise<ParticipantItem[]> {
+    const { data } = await axios.get(
+      `/api/competitions/${eventId}/participants`,
+    );
 
     return data.map((participant: any) => ({
       participantId: data._id,
