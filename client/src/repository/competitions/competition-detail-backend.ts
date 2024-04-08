@@ -6,7 +6,9 @@ export default class CompetitionManagementBackendRepo
   implements CompetitionManagementRepository
 {
   async getCompetitionDetail(competitionId: string) {
-    const { data } = await axios.get(`/api/competitions/${competitionId}`);
+    const { data } = await axios.get(
+      `/api/competitions/${competitionId}/detail`,
+    );
 
     return {
       id: data._id,

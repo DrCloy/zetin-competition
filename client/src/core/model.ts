@@ -1,6 +1,6 @@
 export type CompetitionEvent = {
   id: string;
-  participants: string[];
+  participants: ParticipantItem[];
   name: string;
   limit: number;
 };
