@@ -5,6 +5,7 @@ import {
   CompetitionManagementRepository,
   CompetitionListRepository,
   FileRepository,
+  ParticipantManagementRepository,
 } from './core/repository';
 
 /* repositories */
@@ -13,6 +14,7 @@ import CompetitionsBackendRepo from 'repository/competitions/competitions-backen
 import CompetitionManagementBackendRepo from 'repository/competitions/competition-detail-backend';
 import AuthBackendRepo from 'repository/auth/auth-backend';
 import FileManager from 'repository/files/file-manager';
+import { ParticipantBackend } from 'repository/participants/participants-backend';
 
 /* depedency injection */
 const md = new MarkdownRender();
@@ -27,6 +29,9 @@ const auth: AuthRepository = new AuthBackendRepo();
 
 const fileManager: FileRepository = new FileManager();
 
+const participantManager: ParticipantManagementRepository =
+  new ParticipantBackend();
+
 /* export */
 export const repo = {
   competitionList,
@@ -34,4 +39,5 @@ export const repo = {
   md,
   auth,
   fileManager,
+  participantManager,
 };
