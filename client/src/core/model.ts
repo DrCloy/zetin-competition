@@ -55,3 +55,46 @@ export type FileInput = {
   private: boolean;
   file: FileList;
 };
+
+export type ParticipantItem = {
+  participantId: string;
+  competitionId: string;
+  eventId: string;
+  name: string;
+  email: string;
+  team: string;
+  robotName: string;
+  robotCPU: string;
+  robotROM: string;
+  robotRAM: string;
+  robotMotorDriver: string;
+  robotMotor: string;
+  robotADC: string;
+  robotSensor: string;
+  eventName: string;
+  entryOrder: number;
+  comment: string;
+  privacy: boolean;
+};
+
+export type ParticipantInput = {
+  participantId?: string;
+  competitionId: string;
+  eventId: string;
+  name: string;
+  email: string;
+  team: string;
+  robotName: string;
+  robotCPU: string;
+  robotROM: string;
+  robotRAM: string;
+  robotMotorDriver: string;
+  robotMotor: string;
+  robotADC: string;
+  robotSensor: string;
+  eventName: string;
+  entryOrder: number;
+  comment: string;
+  privacy: boolean;
+  password: string;
+};
