@@ -14,7 +14,10 @@ export interface CompetitionListRepository {
 }
 
 export interface CompetitionManagementRepository {
-  getCompetitionDetail(competitionId: string): Promise<CompetitionItem>;
+  getCompetitionDetail(
+    competitionId: string,
+    detail?: boolean,
+  ): Promise<CompetitionItem>;
   createCompetition(competition: CompetitionItem): Promise<CompetitionItem>;
   updateCompetition(competition: CompetitionItem): Promise<CompetitionItem>;
   deleteCompetition(competitionId: string): Promise<void>;
