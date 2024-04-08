@@ -12,9 +12,12 @@ export default function CompetitionList({
   onDeleteClick: (competition: CompetitionItemMeta) => void;
 }) {
   return (
-    <div className="flex flex-col pl-0 mb-0 border rounded divide-y">
+    <div className="flex flex-col pl-0 mb-0 ">
       {data.map((competition) => (
-        <div key={competition.id} className="px-5 py-3 bg-white">
+        <div
+          key={competition.id}
+          className="px-5 py-3 bg-white border-x first:rounded-t border-t last:rounded-b last:border-b"
+        >
           <div>
             <Link
               className="text-blue-500 no-underline hover:text-blue-800 hover:underline font-bold"
