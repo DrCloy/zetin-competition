@@ -5,6 +5,8 @@ import {
   CompetitionItemMeta,
   FileData,
   FileInput,
+  ParticipantInput,
+  ParticipantItem,
 } from './model';
 
 export interface CompetitionListRepository {
@@ -33,4 +35,11 @@ export interface FileRepository {
   uploadFile(file: FileInput): Promise<FileData>;
   updateFile(file: FileInput): Promise<FileData>;
   deleteFile(id: string): Promise<void>;
+}
+
+export interface ParticipantManagementRepository {
+  getParticipants(id: string): Promise<ParticipantItem[]>;
+  createParticipant(participant: ParticipantInput): Promise<ParticipantItem>;
+  updateParticipant(participant: ParticipantInput): Promise<ParticipantItem>;
+  deleteParticipant(participantId: string): Promise<void>;
 }
