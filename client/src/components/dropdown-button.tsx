@@ -32,7 +32,7 @@ export default function DropdownButton({
           aria-orientation="vertical"
           aria-labelledby="options-menu"
         >
-          <div className="py- w-fit" role="none">
+          <div className="py-1 w-full" role="none">
             {innerItems.map((item, index) => (
               <button
                 key={index}
