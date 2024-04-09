@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CompetitionEvent, CompetitionItem } from 'core/model';
+import { CompetitionEvent, CompetitionItem, ParticipantItem } from 'core/model';
 import { CompetitionManagementRepository } from 'core/repository';
 
 export default class CompetitionManagementBackendRepo
@@ -7,34 +7,85 @@ export default class CompetitionManagementBackendRepo
 {
   async getCompetitionDetail(
     competitionId: string,
-    detail = false,
+    { moreDetail }: { moreDetail?: boolean },
   ): Promise<CompetitionItem> {
-    const { data } = await axios.get(
-      `/api/competitions/${competitionId}${detail ? '/detail' : ''}`,
-    );
+    if (moreDetail) {
+      const { data } = await axios.get(
+        `/api/competitions/${competitionId}/detail`,
+      );
 
-    return {
-      id: data._id,
-      name: data.name,
-      description: data.desc,
-      events: data.events.map((event: any) => ({
-        id: event._id,
-        participants: event.participants,
-        name: event.name,
-        limit: event.numb,
-      })) as CompetitionEvent[],
-      regDateStart: new Date(data.regDateStart),
-      regDateEnd: new Date(data.regDateEnd),
-      date: new Date(data.date),
-      place: data.place,
-      googleMap: data.googleMap,
-      organizer: data.organizer,
-      sponser: data.sponser,
-      prize: data.prize,
-      rule: data.rule,
-      moreInfo: data.moreInfo,
-      posterId: data.posterId,
-    };
+      return {
+        id: data._id,
+        name: data.name,
+        description: data.desc,
+        events: data.events.map((event: any) => ({
+          id: event._id,
+          participants: event.participants.map((participant: any) => {
+            if (participant === null) {
+              return null;
+            } else {
+              return {
+                participantId: participant._id,
+                competitionId: participant.competitionId,
+                eventId: participant.eventId,
+                name: participant.name,
+                email: participant.email,
+                team: participant.team,
+                robotName: participant.robotName,
+                robotCPU: participant.robotCPU,
+                robotROM: participant.robotROM,
+                robotRAM: participant.robotRAM,
+                robotMotorDriver: participant.robotMotorDriver,
+                robotMotor: participant.robotMotor,
+                robotADC: participant.robotADC,
+                robotSensor: participant.robotSensor,
+                entryOrder: participant.entryOrder,
+                comment: participant.comment,
+                privacy: participant.privacyAgreed,
+              } as ParticipantItem;
+            }
+          }),
+          name: event.name,
+          limit: event.numb,
+        })) as CompetitionEvent[],
+        regDateStart: new Date(data.regDateStart),
+        regDateEnd: new Date(data.regDateEnd),
+        date: new Date(data.date),
+        place: data.place,
+        googleMap: data.googleMap,
+        organizer: data.organizer,
+        sponser: data.sponser,
+        prize: data.prize,
+        rule: data.rule,
+        moreInfo: data.moreInfo,
+        posterId: data.posterId,
+      };
+    } else {
+      const { data } = await axios.get(`/api/competitions/${competitionId}`);
+
+      return {
+        id: data._id,
+        name: data.name,
+        description: data.desc,
+        events: data.events.map((event: any) => ({
+          id: event._id,
+          participants: event.participants,
+          name: event.name,
+          limit: event.numb,
+        })) as CompetitionEvent[],
+        regDateStart: new Date(data.regDateStart),
+        regDateEnd: new Date(data.regDateEnd),
+        date: new Date(data.date),
+        place: data.place,
+        googleMap: data.googleMap,
+        organizer: data.organizer,
+        sponser: data.sponser,
+        prize: data.prize,
+        rule: data.rule,
+        moreInfo: data.moreInfo,
+        posterId: data.posterId,
+      };
+    }
   }
 
   async createCompetition(

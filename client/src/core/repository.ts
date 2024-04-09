@@ -16,7 +16,9 @@ export interface CompetitionListRepository {
 export interface CompetitionManagementRepository {
   getCompetitionDetail(
     competitionId: string,
-    detail?: boolean,
+    option?: {
+      moreDetail?: boolean;
+    },
   ): Promise<CompetitionItem>;
   createCompetition(competition: CompetitionItem): Promise<CompetitionItem>;
   updateCompetition(competition: CompetitionItem): Promise<CompetitionItem>;
@@ -41,7 +43,7 @@ export interface FileRepository {
 }
 
 export interface ParticipantManagementRepository {
-  getParticipants(eventId: string): Promise<ParticipantItem[]>;
+  getParticipants(competitionId: string): Promise<ParticipantItem[]>;
   createParticipant(participant: ParticipantInput): Promise<ParticipantItem>;
   updateParticipant(participant: ParticipantInput): Promise<ParticipantItem>;
   deleteParticipant(participantId: string): Promise<void>;

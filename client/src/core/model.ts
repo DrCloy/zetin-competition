@@ -77,6 +77,11 @@ export type ParticipantItem = {
   privacy: boolean;
 };
 
+export type ParticipantItemMeta = Pick<
+  ParticipantItem,
+  'participantId' | 'eventId' | 'name' | 'team' | 'robotName' | 'entryOrder'
+>;
+
 export type ParticipantInput = {
   participantId?: string;
   competitionId: string;
@@ -92,7 +97,7 @@ export type ParticipantInput = {
   robotMotor: string;
   robotADC: string;
   robotSensor: string;
-  eventName: string;
+  eventName?: string;
   entryOrder: number;
   comment: string;
   privacy: boolean;
