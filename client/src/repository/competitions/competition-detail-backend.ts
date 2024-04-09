@@ -5,7 +5,10 @@ import { CompetitionManagementRepository } from 'core/repository';
 export default class CompetitionManagementBackendRepo
   implements CompetitionManagementRepository
 {
-  async getCompetitionDetail(competitionId: string, detail = false) {
+  async getCompetitionDetail(
+    competitionId: string,
+    detail = false,
+  ): Promise<CompetitionItem> {
     const { data } = await axios.get(
       `/api/competitions/${competitionId}${detail ? '/detail' : ''}`,
     );
@@ -34,7 +37,9 @@ export default class CompetitionManagementBackendRepo
     };
   }
 
-  async createCompetition(competition: CompetitionItem) {
+  async createCompetition(
+    competition: CompetitionItem,
+  ): Promise<CompetitionItem> {
     try {
       const { data } = await axios.post('/api/competitions', {
         name: competition.name,
@@ -86,7 +91,9 @@ export default class CompetitionManagementBackendRepo
     }
   }
 
-  async updateCompetition(competition: CompetitionItem) {
+  async updateCompetition(
+    competition: CompetitionItem,
+  ): Promise<CompetitionItem> {
     try {
       const { data } = await axios.patch(
         `/api/competitions/${competition.id}`,
@@ -142,7 +149,7 @@ export default class CompetitionManagementBackendRepo
     }
   }
 
-  async deleteCompetition(competitionId: string) {
+  async deleteCompetition(competitionId: string): Promise<void> {
     await axios.delete(`/api/competitions/${competitionId}`);
   }
 }
