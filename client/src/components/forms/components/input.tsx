@@ -8,7 +8,6 @@ export default function Input({
   footer,
   formOption,
   inputOption,
-  children,
   ...restProps
 }: {
   id: string;
@@ -18,7 +17,6 @@ export default function Input({
   footer?: JSX.Element;
   formOption?: object;
   inputOption?: object;
-  children?: React.ReactNode;
 }) {
   const {
     register,
@@ -47,9 +45,7 @@ export default function Input({
         })}
         {...inputOption}
         {...restProps}
-      >
-        {children}
-      </input>
+      />
       <div className="w-full mt-1 text-sm text-red-600">{error as string}</div>
       {footer && <div className="mt-1">{footer}</div>}
     </div>
