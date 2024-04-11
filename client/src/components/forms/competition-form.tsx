@@ -165,7 +165,7 @@ export default function CompetitionForm({
               name="googleMap"
               label="구글맵 URL"
               id="googleMap"
-              footer={
+              advice={
                 <small className="text-gray-400 block text-[80%] box-border">
                   <Link
                     to="https://www.google.com/maps"
@@ -199,14 +199,14 @@ export default function CompetitionForm({
             name="rule"
             label="대회 규정"
             id="rule"
-            footer={<small>대회 규정 파일 ID를 입력해주세요.</small>}
+            advice={<small>대회 규정 파일 ID를 입력해주세요.</small>}
           />
           <Input
             type="text"
             name="posterId"
             label="대회 포스터"
             id="posterId"
-            footer={<small>대회 포스터 파일 ID를 입력해주세요.</small>}
+            advice={<small>대회 포스터 파일 ID를 입력해주세요.</small>}
           />
         </FieldStack>
         <MarkdownTextArea

@@ -194,7 +194,7 @@ export default function ParticipantManagement() {
           <ParticipantForm
             competition={targetCompetition!}
             participant={targetParticipant}
-            onSubmit={() => {
+            onSubmitted={() => {
               loadCompetition(competitionId);
               setTargetParticipant(null);
               setShowForm(false);

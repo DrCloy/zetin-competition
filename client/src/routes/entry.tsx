@@ -24,7 +24,7 @@ export default function Entry() {
     <ParticipantForm
       competition={competition}
       participant={null}
-      onSubmit={() => {
+      onSubmitted={() => {
         alert('참가 신청이 완료되었습니다.');
         navigate(-1);
       }}
