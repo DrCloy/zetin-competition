@@ -1,4 +1,4 @@
-import EntryForm from 'components/forms/entry-form';
+import ParticipantForm from 'components/forms/participant-form';
 import { CompetitionItem } from 'core/model';
 import { useEffect } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
@@ -20,5 +20,14 @@ export default function Entry() {
     }
   }, [isRegisterPeriod, navigate]);
 
-  return isRegisterPeriod ? <EntryForm /> : null;
+  return isRegisterPeriod ? (
+    <ParticipantForm
+      competition={competition}
+      participant={null}
+      onSubmit={() => {
+        alert('참가 신청이 완료되었습니다.');
+        navigate(-1);
+      }}
+    />
+  ) : null;
 }
