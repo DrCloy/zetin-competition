@@ -5,7 +5,7 @@ export default function Input({
   label,
   name,
   type,
-  footer,
+  advice,
   formOption,
   inputOption,
   ...restProps
@@ -14,7 +14,7 @@ export default function Input({
   label: string;
   name: string;
   type: string;
-  footer?: JSX.Element;
+  advice?: JSX.Element;
   formOption?: object;
   inputOption?: object;
 }) {
@@ -47,7 +47,7 @@ export default function Input({
         {...restProps}
       />
       <div className="w-full mt-1 text-sm text-red-600">{error as string}</div>
-      {footer && <div className="mt-1">{footer}</div>}
+      {advice && <div className="mt-1">{advice}</div>}
     </div>
   );
 }
