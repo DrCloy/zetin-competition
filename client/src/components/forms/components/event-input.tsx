@@ -157,6 +157,7 @@ function EventAddition({
   const { handleSubmit, reset, register } = form;
   const numbOption = {
     form: {
+      required: '참가 인원을 입력해주세요.',
       min: {
         value: 3,
         message: '참가 인원을 입력해주세요.',
@@ -196,7 +197,7 @@ function EventAddition({
               label="이름"
               name="name"
               id="name"
-              advice="경연 부문 이름를 입력해주세요"
+              formOption={{ required: '경연 부문 이름를 입력해주세요' }}
             />
             <div className="mb-4">
               <label className="inline-block mb-2" htmlFor="desc">
@@ -215,8 +216,7 @@ function EventAddition({
               label="참가 인원"
               name="limit"
               id="limit"
-              advice="참가 인원을 입력해주세요."
-              registerOption={numbOption.form}
+              formOption={numbOption.form}
             />
           </div>
           <div className="flex flex-wrap align-center justify-end p-3">

@@ -98,7 +98,7 @@ export default function AdminAuthForm({
             id="id"
             label="아이디"
             name="id"
-            advice="ZETIN 서비스 아이디를 입력해주세요."
+            formOption={{ required: 'ZETIN 서비스 아이디를 입력해주세요.' }}
           />
         </div>
         <div>
@@ -107,7 +107,7 @@ export default function AdminAuthForm({
             id="pw"
             label="비밀번호"
             name="pw"
-            advice="비밀번호를 입력해주세요."
+            formOption={{ required: '비밀번호를 입력해주세요.' }}
           />
         </div>
         <button

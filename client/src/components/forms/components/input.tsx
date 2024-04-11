@@ -4,21 +4,19 @@ export default function Input({
   id,
   label,
   name,
-  advice,
   type,
   footer,
-  registerOption,
+  formOption,
   inputOption,
   ...restProps
 }: {
   id: string;
   label: string;
   name: string;
-  advice?: string;
   type: string;
   footer?: JSX.Element;
-  registerOption?: Object;
-  inputOption?: Object;
+  formOption?: object;
+  inputOption?: object;
 }) {
   const {
     register,
@@ -43,8 +41,7 @@ export default function Input({
         id={id}
         type={type}
         {...register(name, {
-          required: advice,
-          ...registerOption,
+          ...formOption,
         })}
         {...inputOption}
         {...restProps}

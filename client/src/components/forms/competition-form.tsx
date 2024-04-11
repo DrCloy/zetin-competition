@@ -46,11 +46,13 @@ export default function CompetitionForm({
 
   const option_regDateStart = {
     form: {
+      required: '참가 신청 접수 시작일을 입력해주세요.',
       valueAsDate: true,
     },
   };
   const option_regDateEnd = {
     form: {
+      required: '참가 신청 접수 마감일을 입력해주세요.',
       valueAsDate: true,
       validate: {
         minDate: (value: string) => {
@@ -64,6 +66,7 @@ export default function CompetitionForm({
   };
   const option_date = {
     form: {
+      required: '대회 실시 날짜를 입력해주세요.',
       valueAsDate: true,
       validate: {
         minDate: (value: string) => {
@@ -122,7 +125,7 @@ export default function CompetitionForm({
           name="name"
           label="이름"
           id="cmpName"
-          advice="대회 이름을 입력해주세요."
+          formOption={{ required: '대회 이름을 입력해주세요.' }}
         />
         <MarkdownTextArea
           name="description"
@@ -137,24 +140,21 @@ export default function CompetitionForm({
             name="regDateStart"
             label="참가 신청 접수 시작"
             id="regDateStart"
-            advice="참가 신청 접수 시작일을 입력해주세요."
-            registerOption={option_regDateStart.form}
+            formOption={option_regDateStart.form}
           />
           <Input
             type="datetime-local"
             name="regDateEnd"
             label="참가 신청 접수 종료"
             id="regDateEnd"
-            advice="참가 신청 접수 마감일을 입력해주세요."
-            registerOption={option_regDateEnd.form}
+            formOption={option_regDateEnd.form}
           />
           <Input
             type="datetime-local"
             name="date"
             label="대회 개최일"
             id="date"
-            advice="대회 실시 날짜를 입력해주세요."
-            registerOption={option_date.form}
+            formOption={option_date.form}
           />
         </FieldStack>
         <FieldStack>
@@ -179,7 +179,7 @@ export default function CompetitionForm({
                   입력해주세요.
                 </small>
               }
-              registerOption={option_googleMap.form}
+              formOption={option_googleMap.form}
             />
           </div>
         </FieldStack>

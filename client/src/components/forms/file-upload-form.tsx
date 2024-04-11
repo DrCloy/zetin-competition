@@ -112,7 +112,7 @@ export default function FileUploadForm({
             label="파일 이름"
             name="name"
             id="name"
-            advice="파일 이름을 입력해주세요."
+            formOption={{ required: '파일 이름을 입력해주세요.' }}
           />
           <Input
             type="text"
