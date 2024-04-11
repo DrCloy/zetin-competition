@@ -31,6 +31,7 @@ export default function EventInput({
     item: Object;
     index: number;
   } | null>(null);
+
   return (
     <div
       className="mb-4 after:content-end after:block after:clear-both"

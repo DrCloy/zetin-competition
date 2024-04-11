@@ -9,7 +9,6 @@ export default class CompetitionManagementBackendRepo
     competitionId: string,
     moreDetail: boolean = false,
   ): Promise<CompetitionItem> {
-    console.log(competitionId);
     if (moreDetail) {
       const { data } = await axios.get(
         `/api/competitions/${competitionId}/detail`,
@@ -63,7 +62,6 @@ export default class CompetitionManagementBackendRepo
       };
     } else {
       const { data } = await axios.get(`/api/competitions/${competitionId}`);
-      console.log(data);
       return {
         id: data._id,
         name: data.name,
@@ -156,7 +154,15 @@ export default class CompetitionManagementBackendRepo
           events: competition.events.map((event) => ({
             _id: event.id,
             participants:
-              event.participants || new Array(event.limit + 1).fill(null),
+              event.participants.length >= event.limit
+                ? event.participants.slice(0, event.limit + 1)
+                : [
+                    ...event.participants,
+                    ...new Array(
+                      event.limit - event.participants.length + 1,
+                    ).fill(null),
+                  ],
+
             name: event.name,
             desc: '',
             numb: event.limit,

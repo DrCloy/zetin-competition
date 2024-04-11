@@ -22,11 +22,9 @@ export default function CompetitionManagement() {
 
   const showPatchDialog = async (competition: CompetitionItemMeta) => {
     try {
-      console.log(competition.id);
       const response = await repo.competitionDetail.getCompetitionDetail(
         competition.id,
       );
-      console.log(response);
       setTarget(response);
       setShowForm(true);
     } catch (error: any) {
