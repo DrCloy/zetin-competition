@@ -1,3 +1,4 @@
+import ParticipantForm from 'components/forms/participant-form';
 import ParticipantTable from 'components/participant-table';
 import ParticipantView from 'components/participant-view';
 import {
@@ -110,6 +111,10 @@ export default function ParticipantManagement() {
             <button
               className="cursor-pointer mr-1 text-white bg-gray-500 border-gray-500 inline-block text-center align-middle px-3 py-1.5 rounded transition duration-150 ease-in0out
           active:border-gray-600 active:bg-gray-600 hover:bg-gray-600 hover:border-gray-600 focus:outline-0 focus:shadow-[0_0_0_0.2rem] focus:shadow-gray-300"
+              onClick={() => {
+                setTargetParticipant(null);
+                setShowForm(true);
+              }}
             >
               참가자 등록
             </button>
@@ -165,6 +170,36 @@ export default function ParticipantManagement() {
             </button>
           </div>
           <ParticipantView participant={targetParticipant!} />
+        </div>
+      </ReactModal>
+      <ReactModal
+        isOpen={showForm}
+        onRequestClose={() => setShowForm(false)}
+        overlayClassName="fixed top-0 left-0 bg-black bg-opacity-50 z-[1040] w-full h-full transition-opacity ease-linear overflow-y-auto"
+        className="block box-border relative max-w-full md:max-w-3xl w-full mx-auto my-7 transition-transform ease-out duration-300 text-gray-800
+        overflow-y-auto"
+        bodyOpenClassName="overflow-hidden"
+        shouldCloseOnOverlayClick={false}
+        closeTimeoutMS={200}
+        shouldReturnFocusAfterClose={false}
+        ariaHideApp={false}
+      >
+        <div className="relative flex flex-col w-full bg-white bg-clip-padding border border-white border-opacity-20 rounded-md divide-y divide-slate-300">
+          <div className="flex items-start justify-between p-4 mb-0 text-2xl leading-normal">
+            {targetParticipant ? '참가자 수정' : '참가자 등록'}
+            <button className="float-right" onClick={() => setShowForm(false)}>
+              X
+            </button>
+          </div>
+          <ParticipantForm
+            competition={targetCompetition!}
+            participant={targetParticipant}
+            onSubmit={() => {
+              loadCompetition(competitionId);
+              setTargetParticipant(null);
+              setShowForm(false);
+            }}
+          />
         </div>
       </ReactModal>
     </div>
