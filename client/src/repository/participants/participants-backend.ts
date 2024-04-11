@@ -13,8 +13,8 @@ export class ParticipantBackend implements ParticipantManagementRepository {
     );
 
     return data.events.map((item: any) => ({
-      eventId: item._id,
-      eventName: item.eventName,
+      id: item._id,
+      name: item.name,
       participants: item.participants,
       limit: item.numb,
     }));
@@ -82,7 +82,7 @@ export class ParticipantBackend implements ParticipantManagementRepository {
   async updateParticipant(
     participant: ParticipantInput,
   ): Promise<ParticipantItem> {
-    const { data } = await axios.put(
+    const { data } = await axios.patch(
       `/api/participants/${participant.participantId}`,
       {
         _id: participant.participantId,

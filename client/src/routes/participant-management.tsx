@@ -8,9 +8,9 @@ import {
   ParticipantItem,
 } from 'core/model';
 import { repo } from 'di';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 export default function ParticipantManagement() {
   const [competitions, setCompetitions] = useState<CompetitionItemMeta[]>([]);
@@ -18,7 +18,11 @@ export default function ParticipantManagement() {
     useState<CompetitionItem | null>(null);
   const [targetParticipant, setTargetParticipant] =
     useState<ParticipantItem | null>(null);
-  const [competitionId, setCompetitionId] = useState<string>('');
+
+  const [searchParams, setSearchParams] = useSearchParams({
+    cid: '',
+  });
+  const competitionId: string = searchParams.get('cid') || '';
 
   const [showForm, setShowForm] = useState(false);
   const [showView, setShowView] = useState(false);
@@ -38,29 +42,29 @@ export default function ParticipantManagement() {
     }
   }, [competitions]);
 
-  const loadCompetition = async (competitionId: string) => {
+  const loadCompetition = useCallback(async () => {
+    const response = await repo.competitionDetail.getCompetitionDetail(
+      competitionId,
+      true,
+    );
+    setTargetCompetition(response);
+  }, [competitionId]);
+
+  useEffect(() => {
     try {
-      const response = await repo.competitionDetail.getCompetitionDetail(
-        competitionId,
-        { moreDetail: true },
-      );
-      setTargetCompetition(response);
+      if (competitionId) {
+        loadCompetition();
+      } else {
+        setTargetCompetition(null);
+      }
     } catch (error) {
       alert('대회 정보를 불러오는 중에 오류가 발생했습니다.');
     }
-  };
-
-  useEffect(() => {
-    if (competitionId) {
-      loadCompetition(competitionId);
-    } else {
-      setCompetitionId('');
-    }
-  }, [competitions, competitionId]);
+  }, [competitionId, loadCompetition]);
 
   const showParticipantEditDialog = async (participant: ParticipantItem) => {
     setTargetParticipant(participant);
-    console.log(participant);
+    setShowForm(true);
   };
 
   const showUnparticipationDialog = async (participant: ParticipantItem) => {
@@ -75,7 +79,7 @@ export default function ParticipantManagement() {
           participant.participantId,
         );
         alert('참가가 취소되었습니다.');
-        loadCompetition(competitionId);
+        loadCompetition();
       }
     } catch (error: any) {
       alert(error?.message || error?.response.data);
@@ -95,7 +99,7 @@ export default function ParticipantManagement() {
           className="border border-gray-300 rounded-md p-2 w-1/2 px-3 py-1.5 text-base text-gray-700 transition duration-150 ease-in-out
         focus:border-blue-300 focus:outline-0 focus:shadow-[0_0_0_0.2rem] focus:shadow-[rgba(0,123,255,.25)]"
           onChange={(e) => {
-            setCompetitionId(e.target.value);
+            setSearchParams({ cid: e.target.value });
           }}
         >
           <option value="">라인트레이서 대회 선택 ... </option>
@@ -195,7 +199,7 @@ export default function ParticipantManagement() {
             competition={targetCompetition!}
             participant={targetParticipant}
             onSubmitted={() => {
-              loadCompetition(competitionId);
+              loadCompetition();
               setTargetParticipant(null);
               setShowForm(false);
             }}

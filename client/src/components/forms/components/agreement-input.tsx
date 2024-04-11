@@ -27,9 +27,17 @@ export default function AgreementInput({
           {...register(name, { ...formOptions })}
           className="mr-2 align-middle"
         />
-        <label className="align-middle">{agreement.content}</label>
+        <label
+          className={`align-middle ${error ? 'text-red-500' : 'text-black'}`}
+        >
+          {agreement.content}
+        </label>
       </div>
-      {error && <p>{error as string}</p>}
+      {error && (
+        <p className="text-red-500 mt-1 text-[80%] w-full pl-5">
+          {error as string}
+        </p>
+      )}
     </div>
   );
 }

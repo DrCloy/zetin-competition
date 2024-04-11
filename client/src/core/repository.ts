@@ -17,9 +17,7 @@ export interface CompetitionListRepository {
 export interface CompetitionManagementRepository {
   getCompetitionDetail(
     competitionId: string,
-    option?: {
-      moreDetail?: boolean;
-    },
+    moreDetail?: boolean,
   ): Promise<CompetitionItem>;
   createCompetition(competition: CompetitionItem): Promise<CompetitionItem>;
   updateCompetition(competition: CompetitionItem): Promise<CompetitionItem>;

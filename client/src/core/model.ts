@@ -103,4 +103,5 @@ export type ParticipantInput = {
   comment: string;
   privacy: boolean;
   password?: string;
+  passwordCheck?: string;
 };
