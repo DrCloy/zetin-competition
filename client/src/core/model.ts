@@ -73,6 +73,7 @@ export type ParticipantItem = {
   robotSensor: string;
   eventName: string;
   entryOrder: number;
+  realOrder: number;
   comment: string;
   privacy: boolean;
 };
@@ -97,7 +98,7 @@ export type ParticipantInput = {
   robotMotor: string;
   robotADC: string;
   robotSensor: string;
-  eventName?: string;
+  eventName: string;
   entryOrder: number;
   comment: string;
   privacy: boolean;
