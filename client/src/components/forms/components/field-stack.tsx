@@ -12,7 +12,7 @@ export default function FieldStack({
   if (Array.isArray(children)) {
     const count = children.length;
     return (
-      <div className={`grid grid-cols-1 md:grid-cols-${count} gap-4`}>
+      <div className="flex flex-col md:flex-row gap-4">
         {children.map((child, index) => (
           <div key={index} className={`max-w-[${100 / count}%] w-full`}>
             {child}
