@@ -68,7 +68,6 @@ export default function ParticipantManagement() {
   };
 
   const showUnparticipationDialog = async (participant: ParticipantItem) => {
-    console.log(participant);
     try {
       if (
         window.confirm(

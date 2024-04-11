@@ -85,7 +85,7 @@ export default function ParticipantTable({
           {tableData &&
             tableData.map((participant, index) => (
               <tr key={index} className="odd:bg-gray-100 hover:bg-gray-200">
-                <td className="p-1.5 table-cell">{participant.entryOrder}</td>
+                <td className="p-1.5 table-cell">{participant.realOrder}</td>
                 <td className="p-1.5 table-cell">{participant.name}</td>
                 <td className="p-1.5 table-cell">{participant.team}</td>
                 <td className="p-1.5 table-cell">

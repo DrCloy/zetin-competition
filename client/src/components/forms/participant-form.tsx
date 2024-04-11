@@ -188,7 +188,6 @@ export default function ParticipantForm({
                 competition={competition}
                 formOption={{
                   required: '참가 부문을 선택해주세요.',
-                  onchange: (e: any) => console.log(e),
                 }}
               />
               <Input

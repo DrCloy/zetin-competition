@@ -24,7 +24,6 @@ export default function FileManagement() {
   }, [files]);
 
   const showCopyIdDialog = (file: FileData) => {
-    console.log(file.id);
     window.prompt(
       '선택한 파일의 ID입니다. Ctrl+C를 통해 ID를 복사하세요.',
       file.id,
