@@ -1,6 +1,7 @@
 import {
   AuthInput,
   AuthPayload,
+  CompetitionEvent,
   CompetitionItem,
   CompetitionItemMeta,
   FileData,
@@ -43,7 +44,8 @@ export interface FileRepository {
 }
 
 export interface ParticipantManagementRepository {
-  getParticipants(competitionId: string): Promise<ParticipantItem[]>;
+  getParticipants(competitionId: string): Promise<CompetitionEvent[]>;
+  getAllParticipants(competitionId: string): Promise<ParticipantItem[]>;
   createParticipant(participant: ParticipantInput): Promise<ParticipantItem>;
   updateParticipant(participant: ParticipantInput): Promise<ParticipantItem>;
   deleteParticipant(participantId: string): Promise<void>;

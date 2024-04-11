@@ -102,5 +102,5 @@ export type ParticipantInput = {
   entryOrder: number;
   comment: string;
   privacy: boolean;
-  password: string;
+  password?: string;
 };
