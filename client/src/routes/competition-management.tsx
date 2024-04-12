@@ -47,6 +47,22 @@ export default function CompetitionManagement() {
     }
   };
 
+  const onSubmit = async (competition: CompetitionItem) => {
+    try {
+      if (!competition.id) {
+        await repo.competitionDetail.createCompetition(competition);
+      } else {
+        await repo.competitionDetail.updateCompetition(competition);
+      }
+
+      window.alert('대회 페이지가 성공적으로 저장되었습니다.');
+      setCompetitions([]);
+      setShowForm(false);
+    } catch (error: any) {
+      window.alert(error.response?.data);
+    }
+  };
+
   return (
     <>
       <div>
@@ -95,10 +111,7 @@ export default function CompetitionManagement() {
             <CompetitionForm
               isOpen={showForm}
               competition={target}
-              onSubmitted={(response) => {
-                setCompetitions([]);
-                setShowForm(false);
-              }}
+              onSubmitted={onSubmit}
             />
           </div>
         </div>

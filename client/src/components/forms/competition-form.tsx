@@ -1,5 +1,4 @@
 import { CompetitionItem } from 'core/model';
-import { repo } from 'di';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Form, Link } from 'react-router-dom';
 import Input from './components/input';
@@ -89,15 +88,7 @@ export default function CompetitionForm({
 
   const onSubmit = async (data: any) => {
     try {
-      let response: CompetitionItem;
-      if (!competition) {
-        response = await repo.competitionDetail.createCompetition(data);
-      } else {
-        data.id = competition?.id || '';
-        response = await repo.competitionDetail.updateCompetition(data);
-      }
-
-      onSubmitted && onSubmitted(response);
+      onSubmitted && onSubmitted(data as CompetitionItem);
     } catch (error: any) {
       window.alert(error.response?.data);
     }
@@ -113,7 +104,6 @@ export default function CompetitionForm({
     <FormProvider {...form}>
       <Form
         noValidate
-        onSubmit={handleSubmit(onSubmit)}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
             e.preventDefault();
@@ -217,7 +207,6 @@ export default function CompetitionForm({
         />
       </Form>
       <button
-        type="submit"
         onClick={handleSubmit(onSubmit)}
         className="cursor-pointer text-white bg-blue-500 border-blue-500 inline-block text-center align-middle border px-3 py-1 rounded transition duration-150 ease-in-out active:bg-blue-600 active:border-blue-600 hover:bg-blue-600 hover:border-blue-600 no-underline focus:outline-0 focus:shadow-[0_0_0_0.2rem] focus:shadow-[rgba(38,143,255,.5)] focus:bg-blue-600 focus:border-blue-600"
       >

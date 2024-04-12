@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 import ReactModal from 'react-modal';
 import { Form } from 'react-router-dom';
 import Input from './input';
+import { CompetitionEvent } from 'core/model';
 
 export default function EventInput({
   label,
@@ -28,7 +29,7 @@ export default function EventInput({
 
   const [showModal, setShowModal] = useState(false);
   const [targetEvent, setTargetEvent] = useState<{
-    item: Object;
+    item: CompetitionEvent;
     index: number;
   } | null>(null);
 
@@ -126,7 +127,7 @@ export default function EventInput({
           onHide={() => {
             setShowModal(false);
           }}
-          onSubmit={(values: Object) => {
+          onSubmitted={(values: Object) => {
             const arr = value.slice();
             if (targetEvent) {
               arr.splice(targetEvent.index, 1, { ...values });
@@ -146,22 +147,29 @@ function EventAddition({
   isShow,
   value,
   onHide,
-  onSubmit,
+  onSubmitted,
 }: {
   isShow: boolean;
-  value?: Object;
+  value?: CompetitionEvent;
   onHide: () => void;
-  onSubmit: (values: Object) => void;
+  onSubmitted: (values: CompetitionEvent) => void;
 }) {
-  const defaultValues = useMemo(() => ({ name: '', desc: '', limit: 0 }), []);
-  const form = useForm({ defaultValues });
+  const form = useForm<CompetitionEvent>({
+    defaultValues: value || {
+      id: '',
+      participants: [],
+      name: '',
+      description: '',
+      limit: 0,
+    },
+  });
   const { handleSubmit, reset, register } = form;
   const numbOption = {
     form: {
       required: '참가 인원을 입력해주세요.',
-      min: {
-        value: 3,
-        message: '참가 인원을 입력해주세요.',
+      validate: {
+        min: (value: number) =>
+          value > 0 || '참가 인원은 1명 이상이어야 합니다.',
       },
       valueAsNumber: true,
     },
@@ -169,9 +177,21 @@ function EventAddition({
 
   useEffect(() => {
     if (isShow) {
-      reset({ ...defaultValues, ...value });
+      reset(value);
     }
-  }, [defaultValues, isShow, reset, value]);
+  }, [isShow, reset, value]);
+
+  const onSubmit = (data: CompetitionEvent) => {
+    data.participants =
+      data.participants.length >= data.limit
+        ? data.participants.slice(0, data.limit + 1)
+        : [
+            ...data.participants,
+            ...new Array(data.limit - data.participants.length + 1).fill(null),
+          ];
+
+    onSubmitted(data);
+  };
 
   return (
     <div className="relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding border border-opacity-20 border-white rounded-md outline-0">
@@ -186,10 +206,10 @@ function EventAddition({
       <FormProvider {...form}>
         <Form
           noValidate
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            handleSubmit(onSubmit)();
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+            }
           }}
         >
           <div className="relative p-4 box-border border-y border-gray-300">
@@ -205,11 +225,11 @@ function EventAddition({
                 설명
               </label>
               <textarea
-                id="desc"
+                id="description"
                 rows={4}
                 className="block w-full px-3 py-2 border border-gray-300 rounded transition duration-150 ease-in-out bg-clip-padding 
               focus:text-gray-500 focus:border-blue-400 focus:outline-0 focus:shadow-[0px_0px_0px_0.2rem] focus:shadow-[rgba(0,123,255,.25)]"
-                {...register('desc', {})}
+                {...register('description', {})}
               />
             </div>
             <Input

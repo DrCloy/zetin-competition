@@ -46,6 +46,7 @@ export default class CompetitionManagementBackendRepo
             }
           }),
           name: event.name,
+          description: event.desc,
           limit: event.numb,
         })) as CompetitionEvent[],
         regDateStart: new Date(data.regDateStart),
@@ -70,6 +71,7 @@ export default class CompetitionManagementBackendRepo
           id: event._id,
           participants: event.participants,
           name: event.name,
+          description: event.desc,
           limit: event.numb,
         })) as CompetitionEvent[],
         regDateStart: new Date(data.regDateStart),
@@ -95,15 +97,14 @@ export default class CompetitionManagementBackendRepo
         name: competition.name,
         desc: competition.description,
         events: competition.events.map((event) => ({
-          _id: event.id,
-          participants: new Array(event.limit + 1).fill(null),
+          participants: event.participants,
           name: event.name,
-          desc: '',
+          desc: event.description,
           numb: event.limit,
         })),
-        date: competition.date.toISOString(),
         regDateStart: competition.regDateStart.toISOString(),
         regDateEnd: competition.regDateEnd.toISOString(),
+        date: competition.date.toISOString(),
         place: competition.place,
         googleMap: competition.googleMap,
         organizer: competition.organizer,
@@ -122,6 +123,7 @@ export default class CompetitionManagementBackendRepo
           id: event._id,
           participants: event.participants,
           name: event.name,
+          description: event.desc,
           limit: event.numb,
         })) as CompetitionEvent[],
         regDateStart: new Date(data.regDateStart),
@@ -153,23 +155,14 @@ export default class CompetitionManagementBackendRepo
           desc: competition.description,
           events: competition.events.map((event) => ({
             _id: event.id,
-            participants:
-              event.participants.length >= event.limit
-                ? event.participants.slice(0, event.limit + 1)
-                : [
-                    ...event.participants,
-                    ...new Array(
-                      event.limit - event.participants.length + 1,
-                    ).fill(null),
-                  ],
-
+            participants: event.participants,
             name: event.name,
-            desc: '',
+            desc: event.description,
             numb: event.limit,
           })),
-          date: competition.date.toISOString(),
           regDateStart: competition.regDateStart.toISOString(),
           regDateEnd: competition.regDateEnd.toISOString(),
+          date: competition.date.toISOString(),
           place: competition.place,
           googleMap: competition.googleMap,
           organizer: competition.organizer,
@@ -189,6 +182,7 @@ export default class CompetitionManagementBackendRepo
           id: event._id,
           participants: event.participants,
           name: event.name,
+          description: event.desc,
           limit: event.numb,
         })) as CompetitionEvent[],
         regDateStart: new Date(data.regDateStart),
