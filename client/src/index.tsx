@@ -13,6 +13,7 @@ import Admin from 'routes/admin';
 import CompetitionManagement from 'routes/competition-management';
 import FileManagement from 'routes/file-management';
 import ParticipantManagement from 'routes/participant-management';
+import Participants from 'routes/participants';
 
 /* router */
 const router = createBrowserRouter([
@@ -63,7 +64,7 @@ const router = createBrowserRouter([
           },
           {
             path: 'participants',
-            element: null,
+            element: <Participants />,
           },
         ],
       },
