@@ -100,6 +100,7 @@ export default function ParticipantManagement() {
           onChange={(e) => {
             setSearchParams({ cid: e.target.value });
           }}
+          value={competitionId}
         >
           <option value="">라인트레이서 대회 선택 ... </option>
           {competitions &&
