@@ -30,7 +30,7 @@ export default function ParticipantManagement() {
   useEffect(() => {
     async function fetchCompetitions() {
       try {
-        const response = await repo.competitionList.getCompetitions();
+        const response = await repo.competitionList.getCompetitionList();
         setCompetitions(response);
       } catch (error) {
         alert('대회 목록을 불러오는 중에 오류가 발생했습니다.');

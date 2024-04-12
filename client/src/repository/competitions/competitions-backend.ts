@@ -4,7 +4,7 @@ import { CompetitionListRepository } from '../../core/repository';
 export default class CompetitionsBackendRepo
   implements CompetitionListRepository
 {
-  async getCompetitions() {
+  async getCompetitionList() {
     const { data } = await axios.get('/api/competitions');
 
     return data.map((competition: any) => ({

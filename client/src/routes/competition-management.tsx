@@ -12,7 +12,7 @@ export default function CompetitionManagement() {
 
   useEffect(() => {
     async function getCompetitions() {
-      const data = await repo.competitionList.getCompetitions();
+      const data = await repo.competitionList.getCompetitionList();
       setCompetitions(data);
     }
     if (competitions.length === 0) {

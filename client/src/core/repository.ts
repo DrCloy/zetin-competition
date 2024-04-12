@@ -11,7 +11,7 @@ import {
 } from './model';
 
 export interface CompetitionListRepository {
-  getCompetitions(): Promise<CompetitionItemMeta[]>;
+  getCompetitionList(): Promise<CompetitionItemMeta[]>;
 }
 
 export interface CompetitionManagementRepository {
