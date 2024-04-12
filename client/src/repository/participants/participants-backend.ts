@@ -20,9 +20,12 @@ export class ParticipantBackend implements ParticipantManagementRepository {
     }));
   }
 
-  async getAllParticipants(competitionId: string): Promise<ParticipantItem[]> {
+  async getAllParticipants(
+    competitionId: string,
+    dateSort: string = 'desc',
+  ): Promise<ParticipantItem[]> {
     const { data } = await axios.get(
-      `/api/competitions/${competitionId}/participants`,
+      `/api/competitions/${competitionId}/participants?dateSort=${dateSort}`,
     );
 
     return data.map((item: any) => ({
