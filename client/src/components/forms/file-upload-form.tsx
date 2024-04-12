@@ -1,5 +1,4 @@
 import { FileData, FileInput } from 'core/model';
-import { repo } from 'di';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Form } from 'react-router-dom';
@@ -10,7 +9,7 @@ export default function FileUploadForm({
   onSubmitted,
 }: {
   data: FileData | null;
-  onSubmitted: (response: FileData) => void;
+  onSubmitted: (response: FileInput) => void;
 }): JSX.Element {
   const form = useForm<FileInput>({
     defaultValues: {
@@ -31,23 +30,14 @@ export default function FileUploadForm({
   const error = errors.file?.message;
   const file = watch('file');
 
-  //   const [fileName, setFileName] = useState<string>('');
-
   const onSubmit = async (values: FileInput) => {
     try {
-      let response = null;
-      const submitData = {
+      const submitData: FileInput = {
         ...values,
-        id: data?.id,
+        id: data?.id || '',
       };
 
-      if (data) {
-        response = await repo.fileManager.updateFile(submitData);
-      } else {
-        response = await repo.fileManager.uploadFile(submitData);
-      }
-
-      onSubmitted && onSubmitted(response);
+      onSubmitted && onSubmitted(submitData);
     } catch (error: any) {
       alert(error.response?.data);
     }

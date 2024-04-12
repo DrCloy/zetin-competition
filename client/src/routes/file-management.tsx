@@ -1,6 +1,6 @@
 import DropdownButton from 'components/dropdown-button';
 import FileUploadForm from 'components/forms/file-upload-form';
-import { FileData } from 'core/model';
+import { FileData, FileInput } from 'core/model';
 import { repo } from 'di';
 import { useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
@@ -41,6 +41,21 @@ export default function FileManagement() {
         await repo.fileManager.deleteFile(file.id);
         setFiles([]);
       }
+    } catch (error: any) {
+      window.alert(error.response?.data);
+    }
+  };
+
+  const onSubmit = async (data: FileInput) => {
+    try {
+      if (data.id) {
+        await repo.fileManager.updateFile(data);
+      } else {
+        await repo.fileManager.uploadFile(data);
+      }
+
+      window.alert('파일이 성공적으로 업로드되었습니다.');
+      setFiles([]);
     } catch (error: any) {
       window.alert(error.response?.data);
     }
@@ -169,7 +184,8 @@ export default function FileManagement() {
           </div>
           <FileUploadForm
             data={uploadTarget}
-            onSubmitted={(response) => {
+            onSubmitted={(data: FileInput) => {
+              onSubmit(data);
               setFiles([]);
               setShowUploadForm(false);
             }}
