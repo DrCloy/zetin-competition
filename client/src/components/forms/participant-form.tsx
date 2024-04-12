@@ -22,7 +22,7 @@ export default function ParticipantForm({
 }: {
   competition: CompetitionItem;
   participant: ParticipantItem | null;
-  onSubmitted?: (response: ParticipantItem) => void;
+  onSubmitted?: (response: ParticipantInput) => void;
 }) {
   const form = useForm<ParticipantInput>();
   const {
@@ -36,19 +36,12 @@ export default function ParticipantForm({
   const [errorMessage, setErrorMessage] = useState('');
 
   const onSubmit = async (data: ParticipantInput) => {
-    let response: ParticipantItem | null = null;
     try {
       data.competitionId = competition.id;
       if (!data.password) delete data.password;
 
-      if (participant) {
-        response = await repo.participantManager.updateParticipant(data);
-      } else {
-        response = await repo.participantManager.createParticipant(data);
-      }
-
       setErrorMessage('');
-      onSubmitted && onSubmitted(response);
+      onSubmitted && onSubmitted(data);
     } catch (error: any) {
       setErrorMessage(error.message);
     }

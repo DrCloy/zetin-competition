@@ -5,6 +5,7 @@ import {
   CompetitionEvent,
   CompetitionItem,
   CompetitionItemMeta,
+  ParticipantInput,
   ParticipantItem,
 } from 'core/model';
 import { repo } from 'di';
@@ -80,6 +81,22 @@ export default function ParticipantManagement() {
         alert('참가가 취소되었습니다.');
         loadCompetition();
       }
+    } catch (error: any) {
+      alert(error?.message || error?.response.data);
+    }
+  };
+
+  const onsubmit = async (data: ParticipantInput) => {
+    try {
+      if (targetParticipant) {
+        await repo.participantManager.updateParticipant(data);
+        alert('참가자 정보가 수정되었습니다.');
+      } else {
+        await repo.participantManager.createParticipant(data);
+        alert('참가자가 등록되었습니다.');
+      }
+
+      loadCompetition();
     } catch (error: any) {
       alert(error?.message || error?.response.data);
     }
@@ -198,7 +215,8 @@ export default function ParticipantManagement() {
           <ParticipantForm
             competition={targetCompetition!}
             participant={targetParticipant}
-            onSubmitted={() => {
+            onSubmitted={(data: ParticipantInput) => {
+              onsubmit(data);
               loadCompetition();
               setTargetParticipant(null);
               setShowForm(false);
