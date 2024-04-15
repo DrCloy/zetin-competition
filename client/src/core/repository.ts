@@ -47,7 +47,14 @@ export interface ParticipantManagementRepository {
     competitionId: string,
     dateSort?: string,
   ): Promise<ParticipantItem[]>;
+  getParticipant(
+    participantId: string,
+    header: { Authorization: string },
+  ): Promise<ParticipantItem>;
   createParticipant(participant: ParticipantInput): Promise<ParticipantItem>;
   updateParticipant(participant: ParticipantInput): Promise<ParticipantItem>;
-  deleteParticipant(participantId: string): Promise<void>;
+  deleteParticipant(
+    participantId: string,
+    header?: { Authorization: string },
+  ): Promise<void>;
 }
