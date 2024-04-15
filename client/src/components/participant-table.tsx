@@ -104,7 +104,7 @@ export default function ParticipantTable({
                 <td className="p-1.5 table-cell">
                   {onRobotClick ? (
                     <div
-                      className="text-blue-500 no-underline hover:text-blue-700 hover:underline"
+                      className="text-blue-500 no-underline hover:text-blue-700 hover:underline cursor-pointer"
                       onClick={() => {
                         if (onRobotClick) {
                           onRobotClick(participant);
