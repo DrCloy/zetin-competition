@@ -54,7 +54,31 @@ export default function Competition() {
           </Link>
         </div>
         <div className="max-w-2/3 mx-2 flex-1 pt-4">
-          <h2 className="font-bold mb-3 flex text-3xl">{competition?.name}</h2>
+          <div className="inline-block w-full">
+            <h2 className="float-left font-bold mb-3 text-3xl">
+              {competition?.name}
+            </h2>
+            <button
+              className="float-right cursor-pointer no-underline"
+              onClick={() => {
+                navigate('/competitions');
+              }}
+            >
+              <svg
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                className="w-8 h-8 fill-gray-600 stroke-gray-600 stroke-1 hover:bg-gray-400 hover:fill-white hover:stroke-white hover:stroke-1 rounded-full"
+              >
+                <path
+                  clipRule="evenodd"
+                  fillRule="evenodd"
+                  d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z"
+                />
+              </svg>
+            </button>
+          </div>
           <nav className="rounded grid grid-flow-row bg-light p-2 mb-3">
             <ul className="flex">
               <li>
