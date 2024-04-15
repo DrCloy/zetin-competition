@@ -6,22 +6,32 @@ export default function ParticipantTable({
   data,
   countPerPage = 5,
   isFunctionActive = true,
+  page,
   onRobotClick,
   onEditClick,
   onUnparticipationClick,
+  onPaginationClick,
 }: {
   data: ParticipantItem[];
   countPerPage?: number;
   isFunctionActive?: boolean;
+  page?: number;
   onRobotClick?: (participant: ParticipantItem) => void;
   onEditClick?: (participant: ParticipantItem) => void;
   onUnparticipationClick?: (participant: ParticipantItem) => void;
+  onPaginationClick?: (page: number) => void;
 }) {
   const [currentPage, setCurrentPage] = useState(0);
   const [tableData, setTableData] = useState<ParticipantItem[]>([]);
   const [paginationItem, setPaginationItem] = useState<JSX.Element[]>([]);
   const [realData, setRealData] = useState<ParticipantItem[]>([]);
   const offset = currentPage * countPerPage;
+
+  useEffect(() => {
+    if (page) {
+      setCurrentPage(page - 1);
+    }
+  }, [page]);
 
   useEffect(() => {
     if (data) {
@@ -46,7 +56,10 @@ export default function ParticipantTable({
           } ${
             currentPage === i - 1 ? '' : 'border-l'
           }  border-y px-2 py-1 max-w-fit first:rounded-l last:rounded-r`}
-          onClick={() => setCurrentPage(i)}
+          onClick={() => {
+            setCurrentPage(i);
+            onPaginationClick && onPaginationClick(i + 1);
+          }}
         >
           {i + 1}
         </button>,
@@ -65,7 +78,7 @@ export default function ParticipantTable({
         ),
       );
     }
-  }, [realData, currentPage, countPerPage, offset]);
+  }, [realData, currentPage, countPerPage, offset, onPaginationClick]);
 
   return (
     <div>
