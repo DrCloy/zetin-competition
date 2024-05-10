@@ -1,6 +1,6 @@
 import Koa from 'koa';
 
-import mainRouter from './routes/main';
+import mainRouter from './src/v1/routes/main';
 import env from './env';
 
 const PORT = env.port;
