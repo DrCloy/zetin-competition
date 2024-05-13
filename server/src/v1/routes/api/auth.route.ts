@@ -34,12 +34,12 @@ export default class AuthRouter extends Router {
   }
 
   private signIn(): Koa.Middleware {
-    const schema = z.object({
+    const signInSchema = z.object({
       id: z.string(),
       pw: z.string(),
     });
     return async (ctx: Koa.Context) => {
-      const { id, pw }: { id: string; pw: string } = schema.parse(
+      const { id, pw }: { id: string; pw: string } = signInSchema.parse(
         ctx.request.body,
       );
       const { token, payload } = await this.authService.signIn(id, pw);
