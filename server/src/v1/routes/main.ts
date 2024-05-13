@@ -12,6 +12,7 @@ dotenv.config({
   encoding: 'utf8',
 });
 
+/* Services */
 const authService = new AuthService({
   options: {
     adminID: process.env.ADMIN_ID || 'admin',
@@ -19,6 +20,7 @@ const authService = new AuthService({
   },
 });
 
+/* Router */
 const mainRouter = new Router({
   prefix: '/api',
 });
@@ -34,6 +36,7 @@ const authRouter = new AuthRouter(
   },
 );
 
+/* Middleware */
 mainRouter.use(cookie());
 mainRouter.use(bodyParser());
 
@@ -46,6 +49,7 @@ mainRouter.use(async (ctx: Koa.Context, next: Koa.Next) => {
   }
 });
 
+/* API server routes */
 mainRouter.use('/admin', authRouter.routes());
 
 export default mainRouter;
