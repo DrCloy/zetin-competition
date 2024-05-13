@@ -2,7 +2,14 @@ import Koa from 'koa';
 
 import mainRouter from './src/v1/routes/main';
 
-const PORT = process.env.port;
+import dotenv from 'dotenv';
+
+dotenv.config({
+  override: true,
+  encoding: 'utf8',
+});
+
+const PORT = process.env.PORT;
 
 const app = new Koa();
 app.use(mainRouter.routes());
