@@ -1,3 +1,6 @@
+/* Service Interface
+ */
+
 import { AdminTokenPayload } from './model';
 
 export default interface IAuthService {
