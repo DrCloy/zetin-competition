@@ -1,6 +1,6 @@
 import Koa from 'koa';
 
-import mainRouter from './src/v1/routes/main';
+import mainRouter from './src/v1/main';
 
 import dotenv from 'dotenv';
 

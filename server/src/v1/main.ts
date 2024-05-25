@@ -4,8 +4,8 @@ import bodyParser from 'koa-bodyparser';
 import cookie from 'koa-cookie';
 
 import dotenv from 'dotenv';
-import AuthRouter from './api/auth.route';
-import AuthService from '../service/auth.service';
+import AuthRouter from './routes/api/auth.route';
+import AuthService from './service/auth.service';
 
 dotenv.config({
   override: true,
