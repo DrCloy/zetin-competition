@@ -5,7 +5,7 @@ import cookie from 'koa-cookie';
 
 import dotenv from 'dotenv';
 import AuthRouter from './routes/api/auth.route';
-import AuthService from './service/auth.service';
+import AuthService from './service/auth.server.service';
 
 dotenv.config({
   override: true,
